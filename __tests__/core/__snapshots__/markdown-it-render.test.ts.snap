@@ -1,6 +1,78 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`markdown-it should render 1`] = `
+exports[`CoreLibrary Unit Tests - MarkdownItRender Basic Render Test: Can render from file 1`] = `
+"
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    
+</head>
+<body>
+    <h1>test</h1>
+<p>hello world</p>
+
+</body>"
+`;
+
+exports[`CoreLibrary Unit Tests - MarkdownItRender Basic Render Test: Can render from string 1`] = `
+"
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    
+</head>
+<body>
+    <h1>test</h1>
+<p>hello world</p>
+
+</body>"
+`;
+
+exports[`CoreLibrary Unit Tests - MarkdownItRender Render Test: Can use plugins 1`] = `
+"
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    
+</head>
+<body>
+    <h1>test</h1>
+<p>hello <sup>world</sup></p>
+
+</body>"
+`;
+
+exports[`CoreLibrary Unit Tests - MarkdownItRender Render Test: Styles are rendered (externalStylesUrls) 1`] = `
+"
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://hoo.bar/styles/test.css">
+</head>
+<body>
+    <h1>test</h1>
+<p>hello world</p>
+
+</body>"
+`;
+
+exports[`CoreLibrary Unit Tests - MarkdownItRender Render Test: Styles are rendered (styleFilePaths) 1`] = `
 "
 <!DOCTYPE html>
 <html lang="en">

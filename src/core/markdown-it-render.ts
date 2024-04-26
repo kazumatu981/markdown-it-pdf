@@ -34,11 +34,12 @@ export class MarkdownItRender {
         return this.render(markdown);
     }
 
+    //#region private members
     //#region Static Variables
-    static styles = '<!-- [[[STYLES]]] -->';
-    static contents = '<!-- [[[CONTENTS]]] -->';
+    private static styles = '<!-- [[[STYLES]]] -->';
+    private static contents = '<!-- [[[CONTENTS]]] -->';
 
-    static htmlTemplate = `
+    private static htmlTemplate = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -54,14 +55,15 @@ export class MarkdownItRender {
     //#endregion
 
     //#region Static Methods
-    static generateStyleTag(stylePath: string): string {
+    private static generateStyleTag(stylePath: string): string {
         return `<link rel="stylesheet" href="${stylePath}">`;
     }
-    static generateStyleTags(styleFilePaths?: string[], externalStylesUrls?: string[]): string {
+    private static generateStyleTags(styleFilePaths?: string[], externalStylesUrls?: string[]): string {
         return (
             (styleFilePaths?.map(MarkdownItRender.generateStyleTag).join('\n') ?? '') +
             (externalStylesUrls?.map(MarkdownItRender.generateStyleTag).join('\n') ?? '')
         );
     }
+    //#endregion
     //#endregion
 }
