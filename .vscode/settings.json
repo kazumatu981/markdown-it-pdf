@@ -1,0 +1,7 @@
+{
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true,
+    "cSpell.globRoot": "${workspaceFolder:src}",
+    "cSpell.spellCheckOnlyWorkspaceFiles": true
+}
