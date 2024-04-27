@@ -1,6 +1,8 @@
+import { jest, describe, it, expect } from '@jest/globals';
 import { MarkdownItRender } from '../../src/core/markdown-it-render';
-import { jest } from '@jest/globals';
+
 import fsAsync from 'fs/promises';
+
 const MarkdownItSup = require('markdown-it-sup');
 
 jest.mock('fs/promises');

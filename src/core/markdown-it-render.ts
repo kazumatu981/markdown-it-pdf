@@ -1,5 +1,5 @@
 import MarkdownIt from 'markdown-it';
-import fsAsync from 'fs/promises';
+import fsPromises from 'fs/promises';
 
 export interface MarkdownItRenderOptions {
     styleFilePaths?: string[];
@@ -29,8 +29,10 @@ export class MarkdownItRender {
             .replace(MarkdownItRender.styles, styleTags)
             .replace(MarkdownItRender.contents, htmlBody);
     }
-    public async renderFromFileAsync(markdownFilePath: string): Promise<string> {
-        const markdown = await fsAsync.readFile(markdownFilePath, 'utf8');
+    public async renderFromFileAsync(
+        markdownFilePath: string
+    ): Promise<string> {
+        const markdown = await fsPromises.readFile(markdownFilePath, 'utf8');
         return this.render(markdown);
     }
 
@@ -58,10 +60,17 @@ export class MarkdownItRender {
     private static generateStyleTag(stylePath: string): string {
         return `<link rel="stylesheet" href="${stylePath}">`;
     }
-    private static generateStyleTags(styleFilePaths?: string[], externalStylesUrls?: string[]): string {
+    private static generateStyleTags(
+        styleFilePaths?: string[],
+        externalStylesUrls?: string[]
+    ): string {
         return (
-            (styleFilePaths?.map(MarkdownItRender.generateStyleTag).join('\n') ?? '') +
-            (externalStylesUrls?.map(MarkdownItRender.generateStyleTag).join('\n') ?? '')
+            (styleFilePaths
+                ?.map(MarkdownItRender.generateStyleTag)
+                .join('\n') ?? '') +
+            (externalStylesUrls
+                ?.map(MarkdownItRender.generateStyleTag)
+                .join('\n') ?? '')
         );
     }
     //#endregion
