@@ -1,25 +1,59 @@
 import http from 'http';
-import { ContentsResolver } from './contents-resolver';
-import { MarkdownItRender } from './markdown-it-render';
 
-export interface ContentEntry {}
-export type ContentsMap = Map<string, ContentEntry>;
+import { type ContentsMap, RenderedEntity } from './contents-map';
 
-export class MarkdownRenderServer extends ContentsResolver {
+export class MarkdownRenderServer {
     private _server: http.Server;
-    constructor(render: MarkdownItRender) {
-        super(render);
+    private _map?: ContentsMap;
+    constructor() {
         this._server = http.createServer(this.serverListener.bind(this));
+    }
+
+    public map(map: ContentsMap): this {
+        this._map = map;
+        return this;
     }
 
     public serverListener(
         req: http.IncomingMessage,
         res: http.ServerResponse
-    ): void {}
+    ): void {
+        if (!this._map) {
+            this.writeNotFound(res);
+            return;
+        }
+        const filePath = req.url ?? '';
+        this._map
+            .render(filePath)
+            .then((entity) => {
+                if (!entity) {
+                    this.writeNotFound(res);
+                    return;
+                }
+                this.writeEntity(res, entity);
+            })
+            .catch((err) => {
+                console.error(err);
+                this.writeNotFound(res);
+            });
+    }
     public listen(port: number): void {
         this._server.listen(port);
     }
     public close(): void {
         this._server.close();
+    }
+
+    public writeNotFound(res: http.ServerResponse): void {
+        res.statusCode = 404;
+        res.appendHeader('Content-Type', 'text/plain');
+        res.write('Not Found');
+        res.end();
+    }
+    public writeEntity(res: http.ServerResponse, entity: RenderedEntity): void {
+        res.statusCode = 200;
+        res.appendHeader('Content-Type', entity.mediaType);
+        res.write(entity.contents);
+        res.end();
     }
 }

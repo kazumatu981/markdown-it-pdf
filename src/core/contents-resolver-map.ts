@@ -19,6 +19,16 @@ export class ContentsResolver extends Map<
         });
     }
 
+    public static resolveMediaType(contentType: ContentType): string{
+        switch (contentType) {
+            case 'markdown':
+                return 'text/html';
+            case 'style':
+                return 'text/css';
+            default:
+                return 'text/plain';
+        }
+    }
     public async resolve(type: ContentType, filePath: string): Promise<string> {
         const resolver = this.get(type);
         if (!resolver) {

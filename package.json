@@ -6,7 +6,8 @@
     "types": "dist/lib/index.d.ts",
     "scripts": {
         "transpile:typescript": "tsc --project tsconfig.json",
-        "test": "jest"
+        "test": "jest",
+        "test:update-snap": "npm test -- -u"
     },
     "keywords": [],
     "author": "",
