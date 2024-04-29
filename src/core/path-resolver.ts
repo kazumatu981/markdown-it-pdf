@@ -14,39 +14,28 @@ type TransformFunction<T> = (filePath: string) => T;
  * @param {TransformFunction<T>} transform - A function to transform each found file.
  * @return {Promise<T[]>} A promise that resolves to an array of transformed file results.
  */
-export function findFiles<T>(
+export async function findFiles<T>(
     rootDir: string,
     recursive: boolean,
     isMatch: IsMatchFunction,
     transform: TransformFunction<T>
 ): Promise<T[]> {
-    return new Promise((resolve, reject) => {
-        fsPromises
-            .readdir(rootDir, { withFileTypes: true })
-            .then((elements) => {
-                const markdownFiles = elements
-                    .filter((e) => e.isFile() && isMatch(path.extname(e.name)))
-                    .map((e) => path.join(rootDir, e.name))
-                    .map(transform);
-                if (recursive) {
-                    Promise.all(
-                        elements
-                            .filter((e) => e.isDirectory())
-                            .map((e) => path.join(rootDir, e.name))
-                            .map((d) =>
-                                findFiles(d, recursive, isMatch, transform)
-                            )
-                    )
-                        .then((subMarkdownFiles) => {
-                            resolve(markdownFiles.concat(...subMarkdownFiles));
-                        })
-                        .catch(reject);
-                } else {
-                    resolve(markdownFiles);
-                }
-            })
-            .catch(reject);
-    });
+    const elements = await fsPromises.readdir(rootDir, { withFileTypes: true });
+    const fileElements = elements
+        .filter((e) => e.isFile() && isMatch(e.name))
+        .map((e) => path.join(rootDir, e.name))
+        .map(transform);
+    if (recursive) {
+        const subFileElements = await Promise.all(
+            elements
+                .filter((e) => e.isDirectory())
+                .map((e) => path.join(rootDir, e.name))
+                .map((d) => findFiles(d, recursive, isMatch, transform))
+        );
+
+        fileElements.push(...subFileElements.flat());
+    }
+    return fileElements;
 }
 /**
  * Converts a file path to a URL relative to the root directory.
