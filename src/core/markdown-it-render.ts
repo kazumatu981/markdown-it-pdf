@@ -1,17 +1,26 @@
 import MarkdownIt from 'markdown-it';
 import fsPromises from 'fs/promises';
 
-export interface MarkdownItRenderOptions {
-    styleFilePaths?: string[];
-    externalStylesUrls?: string[];
+export interface Styles {
+    internalUrls: string[];
+    externalUrls: string[];
 }
 
 export class MarkdownItRender {
     private _md: MarkdownIt = new MarkdownIt();
-    private _options: MarkdownItRenderOptions;
+    private _styles: Styles = {
+        internalUrls: [],
+        externalUrls: [],
+    };
 
-    public constructor(options?: MarkdownItRenderOptions) {
-        this._options = options ?? {};
+    public addStyles(urls: string[]): this {
+        this._styles.internalUrls = urls;
+        return this;
+    }
+
+    public addExternalStyles(urls: string[]): this {
+        this._styles.externalUrls = urls;
+        return this;
     }
 
     public use(plugin: MarkdownIt.PluginWithParams, ...params: any[]): this {
@@ -22,8 +31,8 @@ export class MarkdownItRender {
     public render(markdown: string): string {
         const htmlBody = this._md.render(markdown);
         const styleTags = MarkdownItRender.generateStyleTags(
-            this._options.styleFilePaths,
-            this._options.externalStylesUrls
+            this._styles.internalUrls,
+            this._styles.externalUrls
         );
         return MarkdownItRender.htmlTemplate
             .replace(MarkdownItRender.styles, styleTags)
@@ -61,14 +70,14 @@ export class MarkdownItRender {
         return `<link rel="stylesheet" href="${stylePath}">`;
     }
     private static generateStyleTags(
-        styleFilePaths?: string[],
-        externalStylesUrls?: string[]
+        internalUrls?: string[],
+        externalUrls?: string[]
     ): string {
         return (
-            (styleFilePaths
+            (internalUrls
                 ?.map(MarkdownItRender.generateStyleTag)
                 .join('\n') ?? '') +
-            (externalStylesUrls
+            (externalUrls
                 ?.map(MarkdownItRender.generateStyleTag)
                 .join('\n') ?? '')
         );

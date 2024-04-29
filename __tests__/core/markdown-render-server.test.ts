@@ -1,6 +1,6 @@
 import { jest, expect, describe, it } from '@jest/globals';
 import { MarkdownRenderServer } from '../../src/core/markdown-render-server';
-import { ContentsMap } from '../../src/core/contents-map';
+import { type ContentsMapEntity } from '../../src/core/contents-map';
 import { MarkdownItRender } from '../../src/core/markdown-it-render';
 import http from 'http';
 import { mockingTestDir, unmockingTestDir } from '../utils/test-dir';
@@ -24,14 +24,15 @@ describe('CoreLibrary Unit Tests - MarkdownRenderServer', () => {
         mockingTestDir();
         const render = new MarkdownItRender();
 
-        const contentsMap = new ContentsMap(render);
-        contentsMap.set('/test/test.md', {
-            type: 'markdown',
-            contentPath: 'test/test.md',
-        });
+        const contentsMap = new Map<string, ContentsMapEntity>([
+            [
+                '/test/test.md',
+                { type: 'markdown', contentPath: 'test/test.md' },
+            ],
+        ]);
 
-        const server = new MarkdownRenderServer();
-        server.map(contentsMap).listen(3000);
+        const server = new MarkdownRenderServer(render);
+        server.addContents(contentsMap).listen(3000);
 
         const data = await readFromServer('http://localhost:3000/test/test.md');
 

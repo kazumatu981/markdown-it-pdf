@@ -12,9 +12,9 @@ describe('CoreLibrary Unit Tests - MarkdownItRender', () => {
         jest.clearAllMocks();
     });
     it('Basic Render Test: Can render from file', async () => {
-        (fsAsync.readFile as jest.MockedFunction<typeof fsAsync.readFile>).mockResolvedValueOnce(
-            '# test\n\nhello world'
-        );
+        (
+            fsAsync.readFile as jest.MockedFunction<typeof fsAsync.readFile>
+        ).mockResolvedValueOnce('# test\n\nhello world');
         const markdownItRender = new MarkdownItRender();
         const result = await markdownItRender.renderFromFileAsync('./test.md');
         expect(result).toMatchSnapshot();
@@ -31,16 +31,14 @@ describe('CoreLibrary Unit Tests - MarkdownItRender', () => {
         expect(result).toMatchSnapshot();
     });
     it('Render Test: Styles are rendered (styleFilePaths)', async () => {
-        const markdownItRender = new MarkdownItRender({
-            styleFilePaths: ['./test.css'],
-        });
+        const markdownItRender = new MarkdownItRender();
+        markdownItRender.addStyles(['./test.css']);
         const result = markdownItRender.render('# test\n\nhello world');
         expect(result).toMatchSnapshot();
     });
     it('Render Test: Styles are rendered (externalStylesUrls)', async () => {
-        const markdownItRender = new MarkdownItRender({
-            externalStylesUrls: ['https://hoo.bar/styles/test.css'],
-        });
+        const markdownItRender = new MarkdownItRender();
+        markdownItRender.addExternalStyles(['https://hoo.bar/styles/test.css']);
         const result = markdownItRender.render('# test\n\nhello world');
         expect(result).toMatchSnapshot();
     });
