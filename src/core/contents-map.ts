@@ -83,19 +83,7 @@ export class ContentsMap extends Map<string, ContentsMapEntity> {
     private constructor(render: MarkdownItRender) {
         super();
         this._render = render;
-        this._resolver = new Map<ContentType, ContentsResolver>()
-            .set('markdown', {
-                mediaType: 'text/html',
-                resolve: this._markdownResolver.bind(this),
-            })
-            .set('style', {
-                mediaType: 'text/css',
-                resolve: this._simpleResolver.bind(this),
-            })
-            .set('unknown', {
-                mediaType: 'text/plain',
-                resolve: this._simpleResolver.bind(this),
-            });
+        this._resolver = this.generateDefaultResolvers();
     }
 
     public get markdownEntryUrls(): string[] {
@@ -118,10 +106,28 @@ export class ContentsMap extends Map<string, ContentsMapEntity> {
         return { ...entity, contents, mediaType };
     }
 
+    //#region private methods
+    private generateDefaultResolvers(): Map<ContentType, ContentsResolver> {
+        // add default resolvers
+        return new Map<ContentType, ContentsResolver>()
+            .set('markdown', {
+                mediaType: 'text/html',
+                resolve: this._markdownResolver.bind(this),
+            })
+            .set('style', {
+                mediaType: 'text/css',
+                resolve: this._simpleResolver.bind(this),
+            })
+            .set('unknown', {
+                mediaType: 'text/plain',
+                resolve: this._simpleResolver.bind(this),
+            });
+    }
     private async _markdownResolver(filePath: string): Promise<string> {
         return this._render.renderFromFileAsync(filePath);
     }
     private async _simpleResolver(filePath: string): Promise<string> {
         return fsPromises.readFile(filePath, 'utf8');
     }
+    //#endregion
 }
