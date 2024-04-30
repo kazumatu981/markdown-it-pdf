@@ -83,8 +83,6 @@ export class MarkdownRenderServer extends MarkdownItRender {
                 this.writeEntity(res, entity);
             })
             .catch((err) => {
-                // Log error to the console
-                console.error(err);
                 // Return "Not Found" to the client
                 this.writeNotFound(res);
             });
@@ -101,7 +99,7 @@ export class MarkdownRenderServer extends MarkdownItRender {
         entity: RenderedEntity
     ): void {
         res.statusCode = 200;
-        res.appendHeader('Content-Type', entity.mediaType);
+        res.appendHeader('Content-Type', entity.contentType);
         res.write(entity.contents);
         res.end();
     }
