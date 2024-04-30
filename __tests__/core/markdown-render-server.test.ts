@@ -22,19 +22,15 @@ function readFromServer(url: string): Promise<string> {
 describe('CoreLibrary Unit Tests - MarkdownRenderServer', () => {
     it('Basic Test', async () => {
         mockingTestDir();
-        const render = new MarkdownItRender();
 
-        const contentsMap = new Map<string, ContentsMapEntity>([
-            [
-                '/test/test.md',
-                { type: 'markdown', contentPath: 'test/test.md' },
-            ],
-        ]);
+        const server = await MarkdownRenderServer.createInstance({
+            rootDir: 'test',
+            externalUrls: ['https://hoo.bar/styles/test.css'],
+        });
 
-        const server = new MarkdownRenderServer(render);
-        server.addContents(contentsMap).listen(3000);
+        server.listen(3000);
 
-        const data = await readFromServer('http://localhost:3000/test/test.md');
+        const data = await readFromServer('http://localhost:3000/sub/test.md');
 
         server.close();
         unmockingTestDir();

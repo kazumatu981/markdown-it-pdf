@@ -20,7 +20,7 @@ export class MarkdownItRender {
      * @return {this} - Returns the current instance for method chaining.
      */
     public addStyles(urls: string[]): this {
-        this._styles.internalUrls = urls;
+        this._styles.internalUrls.push(...urls);
         return this;
     }
 
@@ -31,7 +31,7 @@ export class MarkdownItRender {
      * @return {this} - Returns the current instance for method chaining.
      */
     public addExternalStyles(urls: string[]): this {
-        this._styles.externalUrls = urls;
+        this._styles.externalUrls.push(...urls);
         return this;
     }
 
@@ -113,14 +113,13 @@ export class MarkdownItRender {
      * @return {string} The generated style tags as a string.
      */
     private static generateStyleTags(
-        internalUrls?: string[],
-        externalUrls?: string[]
+        internalUrls: string[],
+        externalUrls: string[]
     ): string {
         return (
-            (internalUrls?.map(MarkdownItRender.generateStyleTag).join('\n') ??
-                '') +
-            (externalUrls?.map(MarkdownItRender.generateStyleTag).join('\n') ??
-                '')
+            internalUrls.map(MarkdownItRender.generateStyleTag).join('\n') +
+            '\n' +
+            externalUrls.map(MarkdownItRender.generateStyleTag).join('\n')
         );
     }
     //#endregion

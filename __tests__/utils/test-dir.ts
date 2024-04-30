@@ -20,6 +20,7 @@ export function mockingTestDir() {
                     'sample.txt': 'hello world',
                 },
             },
+            'test.css': 'h1 { color: red; }',
         },
     });
 }

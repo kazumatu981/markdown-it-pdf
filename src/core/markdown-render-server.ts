@@ -4,33 +4,45 @@ import {
     ContentsMap,
     RenderedEntity,
     type ContentsMapEntity,
+    type ContentsMapOptions,
 } from './contents-map';
 import { MarkdownItRender } from './markdown-it-render';
 
-export interface MarkdownRenderServerOptions {
+export interface MarkdownRenderServerOptions extends ContentsMapOptions {
     rootDir?: string;
-    recursive?: boolean;
-    styleFilePaths?: string[];
-    externalStylesUrls?: string[];
 }
-export class MarkdownRenderServer {
+export class MarkdownRenderServer extends MarkdownItRender {
     private _server: http.Server;
-    private _contentsMap: ContentsMap;
-    constructor(MarkdownItRender: MarkdownItRender) {
+    private _contentsMap?: ContentsMap;
+
+    public static async createInstance(
+        options?: MarkdownRenderServerOptions
+    ): Promise<MarkdownRenderServer> {
+        // create this instance
+        const theInstance = new MarkdownRenderServer();
+
+        // create contents map
+        const contentsMap = await ContentsMap.createInstance(
+            theInstance,
+            options?.rootDir ?? '.',
+            options
+        );
+
+        // set contents map
+        theInstance.contentsMap = contentsMap;
+        return theInstance;
+    }
+    private constructor() {
+        super();
         this._server = http.createServer(this.serverListener.bind(this));
-        this._contentsMap = new ContentsMap(MarkdownItRender);
     }
 
-    public addContent(url: string, entity: ContentsMapEntity): this {
-        this._contentsMap.set(url, entity);
-        return this;
+    private set contentsMap(contentsMap: ContentsMap) {
+        this._contentsMap = contentsMap;
     }
-
-    public addContents(contents: Map<string, ContentsMapEntity>): this {
-        contents.forEach((entity, url) => {
-            this._contentsMap.set(url, entity);
-        });
-        return this;
+    public get contentsMap(): ContentsMap {
+        if (!this._contentsMap) throw new Error('Not Initialized');
+        return this._contentsMap;
     }
 
     public listen(port: number): void {
