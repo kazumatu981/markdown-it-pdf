@@ -3,13 +3,13 @@ import puppeteer from 'puppeteer';
 import { buildTreeOfFiles } from './path-resolver';
 import path from 'path';
 
-export type PuppeteerPDFPrinterPaperFormat = Omit<PaperFormat, 'path'>;
+export type PuppeteerPDFOptions = Omit<PDFOptions, 'path'>;
 
 export async function printManyPages(
     siteUrl: string,
     pagePaths: string[],
     outputDir: string,
-    paperFormat?: PuppeteerPDFPrinterPaperFormat
+    pdfOptions?: PuppeteerPDFOptions
 ) {
     // build folder tree.
     await buildTreeOfFiles(pagePaths.map((page) => path.join(outputDir, page)));
@@ -32,7 +32,7 @@ export async function printManyPages(
         // print into pdf file
         await page.pdf({
             path: url.pathToPdf,
-            ...paperFormat,
+            ...pdfOptions,
         });
     }
     // close page and browser
@@ -45,16 +45,16 @@ export async function printOnePage(
     siteUrl: string,
     pagePath: string,
     outputDir: string,
-    paperFormat?: PuppeteerPDFPrinterPaperFormat
+    pdfOptions?: PuppeteerPDFOptions
 ) {
-    await printManyPages(siteUrl, [pagePath], outputDir, paperFormat);
+    await printManyPages(siteUrl, [pagePath], outputDir, pdfOptions);
     return;
 }
 
 export async function printIntoMemory(
     siteUrl: string,
     pagePath: string,
-    paperFormat?: PuppeteerPDFPrinterPaperFormat
+    pdfOptions?: PuppeteerPDFOptions
 ): Promise<Buffer> {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
@@ -63,7 +63,7 @@ export async function printIntoMemory(
     // wait for the page to be loaded.
     await page.waitForSelector('body');
     // print into pdf file
-    const pdf = await page.pdf(paperFormat as PDFOptions);
+    const pdf = await page.pdf(pdfOptions as PDFOptions);
     await page.close();
     await browser.close();
     return pdf;

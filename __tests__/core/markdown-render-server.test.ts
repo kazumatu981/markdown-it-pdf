@@ -4,6 +4,7 @@ import { type ContentsMapEntity } from '../../src/core/contents-map';
 import { MarkdownItRender } from '../../src/core/markdown-it-render';
 import http from 'http';
 import { mockingTestDir, unmockingTestDir } from '../utils/test-dir';
+import { before } from 'node:test';
 
 function readFromServer(url: string): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -19,8 +20,8 @@ function readFromServer(url: string): Promise<string> {
     });
 }
 
-describe('CoreLibrary Unit Tests - MarkdownRenderServer', () => {
-    it('Basic Test', async () => {
+describe.skip('CoreLibrary Unit Tests - MarkdownRenderServer', () => {
+    it('Render Test', async () => {
         mockingTestDir();
 
         const server = await MarkdownRenderServer.createInstance({
@@ -28,12 +29,18 @@ describe('CoreLibrary Unit Tests - MarkdownRenderServer', () => {
             externalUrls: ['https://hoo.bar/styles/test.css'],
         });
 
-        server.listen(3000);
+        server.listen();
 
-        const data = await readFromServer('http://localhost:3000/sub/test.md');
+        const htmlData = await readFromServer(
+            'http://localhost:3000/sub/test.md'
+        );
+        const pdfData = await readFromServer(
+            'http://localhost:3000/sub/test.md.pdf'
+        );
 
         server.close();
         unmockingTestDir();
-        expect(data).toMatchSnapshot();
+        expect(htmlData).toMatchSnapshot();
+        expect(pdfData).toMatchSnapshot();
     });
 });

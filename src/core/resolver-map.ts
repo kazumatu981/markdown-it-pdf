@@ -1,14 +1,19 @@
 import fsPromises from 'fs/promises';
 import path from 'path';
 
-export type ResolverType = 'markdown' | 'style' | 'plainText' | 'binary';
+export type ResolverType =
+    | 'markdown'
+    | 'style'
+    | 'plainText'
+    | 'pdf'
+    | 'binary';
 
 export type ContentsResolverFunction = (
-    filePath: string
+    contentPath: string
 ) => Promise<string | Buffer>;
 
-function defaultContentsResolver(filePath: string): Promise<Buffer> {
-    return fsPromises.readFile(filePath);
+function defaultContentsResolver(contentPath: string): Promise<Buffer> {
+    return fsPromises.readFile(contentPath);
 }
 
 interface ExtensionTypeInfo {
@@ -73,6 +78,13 @@ const defaultExtensionMap: Map<string, ExtensionTypeInfo> = new Map([
         {
             resolverType: 'binary',
             contentType: 'image/svg+xml',
+        },
+    ],
+    [
+        '.pdf',
+        {
+            resolverType: 'pdf',
+            contentType: 'application/pdf',
         },
     ],
 ]);

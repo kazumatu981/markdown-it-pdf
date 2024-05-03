@@ -29,7 +29,8 @@ export class ContentsMap extends Map<string, ContentsMapEntity> {
         // create the instance
         const theInstance = new ContentsMap(resolverMap);
 
-        // resolve to entity
+        // resolve to local resources entities in contentRoot.
+        // like markdown, style, images, etc.
         const contents = await findFiles<ContentsMapEntity>(
             contentsRoot,
             options?.recursive ?? true,

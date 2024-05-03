@@ -4,31 +4,41 @@ import fsPromise from 'fs/promises';
 import {
     ContentsMap,
     RenderedEntity,
-    type ContentsMapEntity,
     type ContentsMapOptions,
 } from './contents-map';
+import { printIntoMemory } from './puppeteer-pdf-printer';
 import { ResolverMap } from './resolver-map';
 import { MarkdownItRender } from './markdown-it-render';
 
 export interface MarkdownRenderServerOptions extends ContentsMapOptions {
+    port?: number;
     rootDir?: string;
     externalUrls?: string[];
 }
+const defaultOptions: MarkdownRenderServerOptions = {
+    port: 3000,
+    rootDir: '.',
+    externalUrls: [],
+};
 export class MarkdownRenderServer extends MarkdownItRender {
-    private _server: http.Server;
+    private _options?: MarkdownRenderServerOptions;
+    private _server: http.Server = http.createServer();
     private _contentsMap?: ContentsMap;
 
     public static async createInstance(
-        options?: MarkdownRenderServerOptions,
+        options?: MarkdownRenderServerOptions
     ): Promise<MarkdownRenderServer> {
         // create this instance
         const theInstance = new MarkdownRenderServer();
+        theInstance._options = options;
 
         // create resolver map
         const resolverMap = new ResolverMap();
-        resolverMap.set('markdown', async (filePath) => {
-            return await theInstance.renderFromFileAsync(filePath);
-        });
+        resolverMap.set(
+            'markdown',
+            theInstance.renderFromFileAsync.bind(theInstance)
+        );
+        resolverMap.set('pdf', theInstance.printIntoPdf.bind(theInstance));
         resolverMap.set('style', async (filePath) => {
             return await fsPromise.readFile(filePath, 'utf-8');
         });
@@ -42,6 +52,15 @@ export class MarkdownRenderServer extends MarkdownItRender {
             options?.rootDir ?? '.',
             options
         );
+        // set pdf urls
+        contentsMap.markdownEntryUrls.forEach((url) => {
+            contentsMap.set(`${url}.pdf`, {
+                url: `${url}.pdf`,
+                resolverType: 'pdf',
+                contentType: 'application/pdf',
+                contentPath: `${url}.pdf`,
+            });
+        });
         // set contents map
         theInstance.contentsMap = contentsMap;
 
@@ -49,11 +68,22 @@ export class MarkdownRenderServer extends MarkdownItRender {
         theInstance.addStyles(theInstance.contentsMap.styleEntryUrls);
         theInstance.addExternalStyles(options?.externalUrls ?? []);
 
+        // bind the server event listener
+        theInstance._server.on(
+            'request',
+            theInstance.serverListener.bind(theInstance)
+        );
+
+        // return the instance
         return theInstance;
     }
-    private constructor() {
-        super();
-        this._server = http.createServer(this.serverListener.bind(this));
+
+    private async printIntoPdf(markdownUrl: string): Promise<Buffer> {
+        const pdfBuffer = await printIntoMemory(
+            `http://localhost:${this._options?.port ?? defaultOptions.port}`,
+            `${markdownUrl.replace(/\.pdf$/, '')}`
+        );
+        return pdfBuffer;
     }
 
     private set contentsMap(contentsMap: ContentsMap) {
@@ -64,8 +94,8 @@ export class MarkdownRenderServer extends MarkdownItRender {
         return this._contentsMap;
     }
 
-    public listen(port: number): void {
-        this._server.listen(port);
+    public listen(): void {
+        this._server.listen(this._options?.port ?? defaultOptions.port);
     }
     public close(): void {
         this._server.close();
