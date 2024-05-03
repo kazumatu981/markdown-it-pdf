@@ -1,4 +1,5 @@
 import http from 'http';
+import fsPromise from 'fs/promises';
 
 import {
     ContentsMap,
@@ -6,30 +7,48 @@ import {
     type ContentsMapEntity,
     type ContentsMapOptions,
 } from './contents-map';
+import { ResolverMap } from './resolver-map';
 import { MarkdownItRender } from './markdown-it-render';
 
 export interface MarkdownRenderServerOptions extends ContentsMapOptions {
     rootDir?: string;
+    externalUrls?: string[];
 }
 export class MarkdownRenderServer extends MarkdownItRender {
     private _server: http.Server;
     private _contentsMap?: ContentsMap;
 
     public static async createInstance(
-        options?: MarkdownRenderServerOptions
+        options?: MarkdownRenderServerOptions,
     ): Promise<MarkdownRenderServer> {
         // create this instance
         const theInstance = new MarkdownRenderServer();
 
+        // create resolver map
+        const resolverMap = new ResolverMap();
+        resolverMap.set('markdown', async (filePath) => {
+            return await theInstance.renderFromFileAsync(filePath);
+        });
+        resolverMap.set('style', async (filePath) => {
+            return await fsPromise.readFile(filePath, 'utf-8');
+        });
+        resolverMap.set('plainText', async (filePath) => {
+            return await fsPromise.readFile(filePath, 'utf-8');
+        });
+
         // create contents map
         const contentsMap = await ContentsMap.createInstance(
-            theInstance,
+            resolverMap,
             options?.rootDir ?? '.',
             options
         );
-
         // set contents map
         theInstance.contentsMap = contentsMap;
+
+        // set style urls
+        theInstance.addStyles(theInstance.contentsMap.styleEntryUrls);
+        theInstance.addExternalStyles(options?.externalUrls ?? []);
+
         return theInstance;
     }
     private constructor() {
