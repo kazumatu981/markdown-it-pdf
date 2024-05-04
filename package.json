@@ -6,6 +6,7 @@
     "types": "dist/lib/index.d.ts",
     "scripts": {
         "transpile:typescript": "tsc --project tsconfig.json",
+        "transpile-watch:typescript": "tsc --watch --project tsconfig.json",
         "test": "jest",
         "test:unit": "jest --config=unit.jest.config.js",
         "test:render": "jest --runInBand --config=render.jest.config.js",
