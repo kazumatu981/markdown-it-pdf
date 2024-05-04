@@ -7,6 +7,8 @@
     "scripts": {
         "transpile:typescript": "tsc --project tsconfig.json",
         "test": "jest",
+        "test:unit": "jest --config=unit.jest.config.js",
+        "test:render": "jest --runInBand --config=render.jest.config.js",
         "test:update-snap": "npm test -- -u"
     },
     "keywords": [],
