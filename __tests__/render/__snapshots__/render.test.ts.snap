@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`render test render to html on local server 1`] = `
+"
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="/test.css">
+<link rel="stylesheet" type="text/css" href="https://hoo.bar/styles/test.css">
+</head>
+<body>
+    <h1>markdown-it-pdf</h1>
+<h2>abstract</h2>
+<h2>function</h2>
+<h2>refer to</h2>
+<ul>
+<li><a href="https://www.npmjs.com/package/markdown-it">markdown-it</a></li>
+<li><a href="https://www.npmjs.com/package/puppeteer">puppeteer</a></li>
+</ul>
+
+</body>"
+`;
