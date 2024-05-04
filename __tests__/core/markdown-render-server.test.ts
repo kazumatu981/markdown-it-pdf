@@ -1,10 +1,8 @@
 import { jest, expect, describe, it } from '@jest/globals';
 import { MarkdownRenderServer } from '../../src/core/markdown-render-server';
-import { type ContentsMapEntity } from '../../src/core/contents-map';
-import { MarkdownItRender } from '../../src/core/markdown-it-render';
+
 import http from 'http';
 import { mockingTestDir, unmockingTestDir } from '../utils/test-dir';
-import { before } from 'node:test';
 
 function readFromServer(url: string): Promise<string> {
     return new Promise((resolve, reject) => {

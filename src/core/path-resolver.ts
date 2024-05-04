@@ -79,16 +79,13 @@ export function normalizePath(filePath: string): string {
  */
 export async function buildTreeOfFiles(files: string[]): Promise<void> {
     const dirs = Array.from(new Set(files.map((file) => path.dirname(file))));
-    return new Promise(async (resolve, reject) => {
-        try {
-            await Promise.all<void>(
-                dirs.map(async (dir) => {
-                    await fsPromises.mkdir(dir, { recursive: true });
-                })
-            );
-            resolve();
-        } catch (err) {
-            reject(err);
-        }
+    return new Promise((resolve, reject) => {
+        Promise.all<void>(
+            dirs.map(async (dir) => {
+                await fsPromises.mkdir(dir, { recursive: true });
+            })
+        )
+            .then((_) => resolve())
+            .catch((err) => reject(err));
     });
 }

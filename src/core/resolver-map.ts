@@ -12,7 +12,7 @@ export type ContentsResolverFunction = (
     contentPath: string
 ) => Promise<string | Buffer>;
 
-function defaultContentsResolver(contentPath: string): Promise<Buffer> {
+export function defaultContentsResolver(contentPath: string): Promise<Buffer> {
     return fsPromises.readFile(contentPath);
 }
 
