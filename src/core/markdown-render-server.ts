@@ -38,7 +38,6 @@ export class MarkdownRenderServer extends MarkdownItRender {
             'markdown',
             theInstance.renderFromFileAsync.bind(theInstance)
         );
-        resolverMap.set('pdf', theInstance.printIntoPdf.bind(theInstance));
         resolverMap.set('style', async (filePath) => {
             return await fsPromise.readFile(filePath, 'utf-8');
         });
@@ -52,15 +51,6 @@ export class MarkdownRenderServer extends MarkdownItRender {
             options?.rootDir ?? '.',
             options
         );
-        // set pdf urls
-        contentsMap.markdownEntryUrls.forEach((url) => {
-            contentsMap.set(`${url}.pdf`, {
-                url: `${url}.pdf`,
-                resolverType: 'pdf',
-                contentType: 'application/pdf',
-                contentPath: `${url}.pdf`,
-            });
-        });
         // set contents map
         theInstance.contentsMap = contentsMap;
 
@@ -76,14 +66,6 @@ export class MarkdownRenderServer extends MarkdownItRender {
 
         // return the instance
         return theInstance;
-    }
-
-    private async printIntoPdf(markdownUrl: string): Promise<Buffer> {
-        const pdfBuffer = await printIntoMemory(
-            `http://localhost:${this._options?.port ?? defaultOptions.port}`,
-            `${markdownUrl.replace(/\.pdf$/, '')}`
-        );
-        return pdfBuffer;
     }
 
     private set contentsMap(contentsMap: ContentsMap) {
@@ -106,7 +88,7 @@ export class MarkdownRenderServer extends MarkdownItRender {
      * @param req Incoming message
      * @param res Server response
      */
-    private serverListener(
+    public serverListener(
         req: http.IncomingMessage,
         res: http.ServerResponse
     ): void {
