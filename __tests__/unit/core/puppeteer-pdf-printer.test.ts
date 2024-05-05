@@ -4,7 +4,7 @@ import {
     printManyPages,
     printOnePage,
     printIntoMemory,
-} from '../../src/core/puppeteer-pdf-printer';
+} from '../../../src/core/puppeteer-pdf-printer';
 
 jest.mock('puppeteer');
 

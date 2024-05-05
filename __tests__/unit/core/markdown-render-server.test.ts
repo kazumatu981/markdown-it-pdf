@@ -1,7 +1,7 @@
 import { jest, expect, describe, it } from '@jest/globals';
-import { MarkdownRenderServer } from '../../src/core/markdown-render-server';
+import { MarkdownRenderServer } from '../../../src/core/markdown-render-server';
 
-import { mockingTestDir, unmockingTestDir } from '../utils/test-dir';
+import { mockingTestDir, unmockingTestDir } from '../../utils/test-dir';
 import http from 'http';
 
 jest.mock('http');

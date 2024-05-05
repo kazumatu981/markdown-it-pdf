@@ -4,8 +4,8 @@ import {
     filePathToUrl,
     normalizePath,
     buildTreeOfFiles,
-} from '../../src/core/path-resolver';
-import { mockingTestDir, unmockingTestDir } from '../utils/test-dir';
+} from '../../../src/core/path-resolver';
+import { mockingTestDir, unmockingTestDir } from '../../utils/test-dir';
 import fsPromise from 'fs/promises';
 import path from 'path';
 
