@@ -1,6 +1,35 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`render test render to html on local server 1`] = `
+exports[`render test render to html on local server: MD file on sub directory 1`] = `
+"
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="/test.css">
+<link rel="stylesheet" type="text/css" href="https://hoo.bar/styles/test.css">
+</head>
+<body>
+    <h1>こんにちは世界</h1>
+<p><em>Hello</em></p>
+
+</body>"
+`;
+
+exports[`render test render to html on local server: Not Found 1`] = `"Not Found"`;
+
+exports[`render test render to html on local server: css file 1`] = `
+"h1 {
+    border-bottom: 3px solid grey;
+    text-align: center;
+}
+"
+`;
+
+exports[`render test render to html on local server: html file 1`] = `
 "
 <!DOCTYPE html>
 <html lang="en">
@@ -23,4 +52,9 @@ exports[`render test render to html on local server 1`] = `
 </ul>
 
 </body>"
+`;
+
+exports[`render test render to html on local server: txt file 1`] = `
+"hello world.
+"
 `;

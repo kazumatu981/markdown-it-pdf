@@ -76,8 +76,8 @@ export class MarkdownRenderServer extends MarkdownItRender {
         return this._contentsMap;
     }
 
-    public listen(): void {
-        this._server.listen(this._options?.port ?? defaultOptions.port);
+    public listen(port?: number): void {
+        this._server.listen(port ?? this._options?.port ?? defaultOptions.port);
     }
     public close(): void {
         this._server.close();
