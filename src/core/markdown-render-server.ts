@@ -24,6 +24,7 @@ export class MarkdownRenderServer extends MarkdownItRender {
     private _options?: MarkdownRenderServerOptions;
     private _server: http.Server = http.createServer();
     private _contentsMap?: ContentsMap;
+    private _listeningPort?: number;
 
     public static async createInstance(
         options?: MarkdownRenderServerOptions
@@ -76,10 +77,16 @@ export class MarkdownRenderServer extends MarkdownItRender {
         return this._contentsMap;
     }
 
+    public get listeningPort(): number | undefined {
+        return this._listeningPort;
+    }
     public listen(port?: number): void {
-        this._server.listen(port ?? this._options?.port ?? defaultOptions.port);
+        this._listeningPort =
+            port ?? this._options?.port ?? defaultOptions.port;
+        this._server.listen(this._listeningPort);
     }
     public close(): void {
+        this._listeningPort = undefined;
         this._server.close();
     }
 
