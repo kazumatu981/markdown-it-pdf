@@ -1,7 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`render test render to html on local server: MD file on sub directory 1`] = `
-"
+{
+  "body": "
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,21 +17,35 @@ exports[`render test render to html on local server: MD file on sub directory 1`
     <h1>こんにちは世界</h1>
 <p><em>Hello</em></p>
 
-</body>"
+</body>",
+  "contentType": "text/html",
+  "statusCode": 200,
+}
 `;
 
-exports[`render test render to html on local server: Not Found 1`] = `"Not Found"`;
+exports[`render test render to html on local server: Not Found 1`] = `
+{
+  "body": "Not Found",
+  "contentType": "text/plain",
+  "statusCode": 404,
+}
+`;
 
 exports[`render test render to html on local server: css file 1`] = `
-"h1 {
+{
+  "body": "h1 {
     border-bottom: 3px solid grey;
     text-align: center;
 }
-"
+",
+  "contentType": "text/css",
+  "statusCode": 200,
+}
 `;
 
 exports[`render test render to html on local server: html file 1`] = `
-"
+{
+  "body": "
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -51,10 +66,17 @@ exports[`render test render to html on local server: html file 1`] = `
 <li><a href="https://www.npmjs.com/package/puppeteer">puppeteer</a></li>
 </ul>
 
-</body>"
+</body>",
+  "contentType": "text/html",
+  "statusCode": 200,
+}
 `;
 
 exports[`render test render to html on local server: txt file 1`] = `
-"hello world.
-"
+{
+  "body": "hello world.
+",
+  "contentType": "text/plain",
+  "statusCode": 200,
+}
 `;

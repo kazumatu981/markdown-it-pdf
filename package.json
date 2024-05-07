@@ -10,7 +10,7 @@
         "test": "jest",
         "test-watch": "jest --watch",
         "test:unit": "jest --config=unit.jest.config.js",
-        "test:render": "jest --runInBand --config=render.jest.config.js",
+        "test:render": "jest -u --runInBand --config=render.jest.config.js",
         "test:update-snap": "npm test -- -u"
     },
     "keywords": [],

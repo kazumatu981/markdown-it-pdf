@@ -4,20 +4,8 @@ import { printOnePage } from '../../src/core/puppeteer-pdf-printer';
 import { buildTreeOfFiles } from '../../src/core/path-resolver';
 import fsPromises from 'fs/promises';
 import http from 'http';
+import { readFromServer } from '../utils/http-util';
 
-function readFromServer(url: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-        http.get(url, (res) => {
-            let data = '';
-            res.on('data', (chunk) => {
-                data += chunk;
-            });
-            res.on('end', () => {
-                resolve(data);
-            });
-        });
-    });
-}
 describe('render test', () => {
     beforeAll(async () => {
         await buildTreeOfFiles([`${__dirname}/out/test.pdf`]);
@@ -28,7 +16,7 @@ describe('render test', () => {
             externalUrls: ['https://hoo.bar/styles/test.css'],
         });
 
-        server.listen();
+        server.listen(3000);
 
         const htmlData = await readFromServer('http://localhost:3000/test.md');
         expect(htmlData).toMatchSnapshot('html file');
@@ -57,7 +45,7 @@ describe('render test', () => {
             externalUrls: ['https://hoo.bar/styles/test.css'],
         });
 
-        server.listen();
+        server.listen(3000);
 
         await printOnePage(
             'http://localhost:3000',
