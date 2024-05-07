@@ -6,9 +6,9 @@ import {
     RenderedEntity,
     type ContentsMapOptions,
 } from './contents-map';
-import { printIntoMemory } from './puppeteer-pdf-printer';
 import { ResolverMap } from './resolver-map';
 import { MarkdownItRender } from './markdown-it-render';
+import { tryToListen } from './port-util';
 
 export interface MarkdownRenderServerOptions extends ContentsMapOptions {
     port?: number;
@@ -16,13 +16,13 @@ export interface MarkdownRenderServerOptions extends ContentsMapOptions {
     externalUrls?: string[];
 }
 const defaultOptions: MarkdownRenderServerOptions = {
-    port: 3000,
     rootDir: '.',
     externalUrls: [],
 };
 export class MarkdownRenderServer extends MarkdownItRender {
     private _options?: MarkdownRenderServerOptions;
-    private _server: http.Server = http.createServer();
+    // private _server: http.Server = http.createServer();
+    private _server?: http.Server;
     private _contentsMap?: ContentsMap;
     private _listeningPort?: number;
 
@@ -59,12 +59,6 @@ export class MarkdownRenderServer extends MarkdownItRender {
         theInstance.addStyles(theInstance.contentsMap.styleEntryUrls);
         theInstance.addExternalStyles(options?.externalUrls ?? []);
 
-        // bind the server event listener
-        theInstance._server.on(
-            'request',
-            theInstance.serverListener.bind(theInstance)
-        );
-
         // return the instance
         return theInstance;
     }
@@ -80,14 +74,22 @@ export class MarkdownRenderServer extends MarkdownItRender {
     public get listeningPort(): number | undefined {
         return this._listeningPort;
     }
-    public listen(port?: number): void {
-        this._listeningPort =
-            port ?? this._options?.port ?? defaultOptions.port;
-        this._server.listen(this._listeningPort);
+    public async listen(port?: number): Promise<number> {
+        const portCandidate = port ?? this._options?.port;
+        const serverPort = await tryToListen(portCandidate, { retry: 10 });
+        if (serverPort === undefined) {
+            throw new Error('Can not listen');
+        }
+        this._listeningPort = serverPort.port;
+        this._server = serverPort.httpServer;
+
+        // bind the server event listener
+        this._server.on('request', this.serverListener.bind(this));
+        return this._listeningPort;
     }
     public close(): void {
         this._listeningPort = undefined;
-        this._server.close();
+        this._server?.close();
     }
 
     /**
