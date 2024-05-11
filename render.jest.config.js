@@ -4,5 +4,5 @@ module.exports = {
     testEnvironment: 'node',
     testTimeout: 30000,
 
-    testMatch: ['**/render/*.test.ts'],
+    testMatch: ['**/__tests__/render/*.test.ts'],
 };

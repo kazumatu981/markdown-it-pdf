@@ -63,7 +63,7 @@ class MarkdownItPdfPrinter extends MarkdownItPdf {
         outputDir?: string,
         options?: PuppeteerPDFOptions
     ): Promise<void> {
-        this._server.listen();
+        await this._server.listen();
 
         const urls = this.availableMarkdownUrls;
 
@@ -71,11 +71,11 @@ class MarkdownItPdfPrinter extends MarkdownItPdf {
             `http://localhost:${this._server.listeningPort}`,
             urls,
             outputDir ??
-                (this._options as MarkdownItPdfPrinterOptions)?.outputDir ??
+                (this._options as MarkdownItPdfPrinterOptions).outputDir ??
                 defaultOutputDir,
             options ??
                 (this._options as MarkdownItPdfPrinterOptions)
-                    ?.defaultPrinterOption
+                    .defaultPrinterOption
         );
 
         this._server.close();
@@ -85,7 +85,7 @@ class MarkdownItPdfPrinter extends MarkdownItPdf {
         outputDir?: string,
         options?: PuppeteerPDFOptions
     ): Promise<void> {
-        this._server.listen();
+        await this._server.listen();
 
         if (!Array.isArray(url)) {
             url = [url];
@@ -94,11 +94,11 @@ class MarkdownItPdfPrinter extends MarkdownItPdf {
             `http://localhost:${this._server.listeningPort}`,
             url,
             outputDir ??
-                (this._options as MarkdownItPdfPrinterOptions)?.outputDir ??
+                (this._options as MarkdownItPdfPrinterOptions).outputDir ??
                 defaultOutputDir,
             options ??
                 (this._options as MarkdownItPdfPrinterOptions)
-                    ?.defaultPrinterOption
+                    .defaultPrinterOption
         );
 
         this._server.close();
@@ -107,14 +107,14 @@ class MarkdownItPdfPrinter extends MarkdownItPdf {
         url: string,
         options?: PuppeteerPDFOptions
     ): Promise<Buffer> {
-        this._server.listen();
+        await this._server.listen();
 
         const buffer = await printIntoMemory(
             `http://localhost:${this._server.listeningPort}`,
             url,
             options ??
                 (this._options as MarkdownItPdfPrinterOptions)
-                    ?.defaultPrinterOption
+                    .defaultPrinterOption
         );
 
         this._server.close();
@@ -124,8 +124,8 @@ class MarkdownItPdfPrinter extends MarkdownItPdf {
 }
 
 class MarkdownItfRenderServer extends MarkdownItPdf {
-    public listen(port?: number): void {
-        this._server.listen(port ?? this._options?.port);
+    public listen(port?: number): Promise<number> {
+        return this._server.listen(port);
     }
     public close(): void {
         this._server.close();
