@@ -64,12 +64,13 @@ export class ContentsMap extends Map<string, ContentsMapEntity> {
 
     public get markdownEntryUrls(): string[] {
         return [...this.keys()].filter(
-            (url) => this.get(url)?.resolverType === 'markdown'
+            (url) =>
+                (this.get(url) as ContentsMapEntity).resolverType === 'markdown'
         );
     }
     public get styleEntryUrls(): string[] {
         return [...this.keys()].filter(
-            (url) => this.get(url)?.resolverType === 'style'
+            (url) => (this.get(url) as ContentsMapEntity).resolverType === 'style'
         );
     }
 

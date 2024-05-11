@@ -8,9 +8,11 @@ import {
 } from './contents-map';
 import { ResolverMap } from './resolver-map';
 import { MarkdownItRender } from './markdown-it-render';
-import { tryToListen } from './port-util';
+import { ServerPortOptions, tryToListen } from './port-util';
 
-export interface MarkdownRenderServerOptions extends ContentsMapOptions {
+export interface MarkdownRenderServerOptions
+    extends ContentsMapOptions,
+        ServerPortOptions {
     port?: number;
     rootDir?: string;
     externalUrls?: string[];
@@ -67,8 +69,7 @@ export class MarkdownRenderServer extends MarkdownItRender {
         this._contentsMap = contentsMap;
     }
     public get contentsMap(): ContentsMap {
-        if (!this._contentsMap) throw new Error('Not Initialized');
-        return this._contentsMap;
+        return this._contentsMap as ContentsMap;
     }
 
     public get listeningPort(): number | undefined {
@@ -76,7 +77,7 @@ export class MarkdownRenderServer extends MarkdownItRender {
     }
     public async listen(port?: number): Promise<number> {
         const portCandidate = port ?? this._options?.port;
-        const serverPort = await tryToListen(portCandidate, { retry: 10 });
+        const serverPort = await tryToListen(portCandidate, this._options);
         if (serverPort === undefined) {
             throw new Error('Can not listen');
         }
@@ -101,31 +102,20 @@ export class MarkdownRenderServer extends MarkdownItRender {
         req: http.IncomingMessage,
         res: http.ServerResponse
     ): void {
-        // If contents map is not initialized
-        // Return "Not Found" to the client
-        if (!this._contentsMap) {
-            this.writeNotFound(res);
-            return;
-        }
+        this;
         // Get requested file path
-        const filePath = req.url ?? '';
+        const filePath = req.url as string;
         // Render the file contents with given path
-        this._contentsMap
-            .render(filePath)
-            .then((entity) => {
-                // If file not found or rendering failed
-                // Return "Not Found" to the client
-                if (!entity) {
-                    this.writeNotFound(res);
-                    return;
-                }
-                // Write the rendered entity to the response
-                this.writeEntity(res, entity);
-            })
-            .catch((err) => {
-                // Return "Not Found" to the client
+        (this._contentsMap as ContentsMap).render(filePath).then((entity) => {
+            // If file not found or rendering failed
+            // Return "Not Found" to the client
+            if (!entity) {
                 this.writeNotFound(res);
-            });
+                return;
+            }
+            // Write the rendered entity to the response
+            this.writeEntity(res, entity);
+        });
     }
 
     private writeNotFound(res: http.ServerResponse): void {

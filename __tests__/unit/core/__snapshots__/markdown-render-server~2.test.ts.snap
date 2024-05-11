@@ -30,3 +30,19 @@ exports[`CoreLibrary Unit Tests - MarkdownRenderServer serverListener can render
   "statusCode": 200,
 }
 `;
+
+exports[`CoreLibrary Unit Tests - MarkdownRenderServer serverListener can render txt file: rendered txt file 1`] = `
+{
+  "body": "hello world",
+  "contentType": "text/plain",
+  "statusCode": 200,
+}
+`;
+
+exports[`CoreLibrary Unit Tests - MarkdownRenderServer serverListener root dir is not found: Root is Not Found 1`] = `
+{
+  "body": "Not Found",
+  "contentType": "text/plain",
+  "statusCode": 404,
+}
+`;

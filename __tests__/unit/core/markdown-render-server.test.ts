@@ -103,6 +103,19 @@ describe('CoreLibrary Unit Tests - MarkdownRenderServer', () => {
                 expect(listenFn).toBeCalledWith(3030, expect.any(Function));
             });
         });
+
+        describe("should return server's port", () => {
+            it("should return server's port", async () => {
+                mockingTestDir();
+                const server = await MarkdownRenderServer.createInstance({
+                    port: 3100,
+                });
+                const port = await server.listen();
+                unmockingTestDir();
+                expect(server.listeningPort).toEqual(3100);
+                expect(port).toEqual(3100);
+            });
+        });
     });
     describe('close', () => {
         it('close call the server close', async () => {
@@ -115,6 +128,16 @@ describe('CoreLibrary Unit Tests - MarkdownRenderServer', () => {
             server.close();
             unmockingTestDir();
             expect(closeFn).toBeCalledTimes(1);
+        });
+        it('to do nothing on close, if the server is not listening', async () => {
+            mockingTestDir();
+            const server = await MarkdownRenderServer.createInstance({
+                rootDir: 'test',
+                externalUrls: ['https://hoo.bar/styles/test.css'],
+            });
+            server.close();
+            unmockingTestDir();
+            expect(closeFn).toBeCalledTimes(0);
         });
     });
 });
