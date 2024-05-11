@@ -59,6 +59,28 @@ export abstract class MarkdownItPdf {
 }
 
 class MarkdownItPdfPrinter extends MarkdownItPdf {
+    public safeOutputDir(outputDir?: string): string {
+        let candidate = outputDir;
+        if (!candidate) {
+            candidate = (this._options as MarkdownItPdfPrinterOptions)
+                .outputDir;
+            if (!candidate) {
+                candidate = defaultOutputDir;
+            }
+        }
+        return candidate;
+    }
+    public safeOptions(options?: PuppeteerPDFOptions): PuppeteerPDFOptions {
+        let candidate = options;
+        if (!candidate) {
+            candidate = (this._options as MarkdownItPdfPrinterOptions)
+                .defaultPrinterOption;
+            if (!candidate) {
+                candidate = {};
+            }
+        }
+        return candidate;
+    }
     public async printAll(
         outputDir?: string,
         options?: PuppeteerPDFOptions
@@ -70,12 +92,8 @@ class MarkdownItPdfPrinter extends MarkdownItPdf {
         await printManyPages(
             `http://localhost:${this._server.listeningPort}`,
             urls,
-            outputDir ??
-                (this._options as MarkdownItPdfPrinterOptions).outputDir ??
-                defaultOutputDir,
-            options ??
-                (this._options as MarkdownItPdfPrinterOptions)
-                    .defaultPrinterOption
+            this.safeOutputDir(outputDir),
+            this.safeOptions(options)
         );
 
         this._server.close();
@@ -93,12 +111,8 @@ class MarkdownItPdfPrinter extends MarkdownItPdf {
         await printManyPages(
             `http://localhost:${this._server.listeningPort}`,
             url,
-            outputDir ??
-                (this._options as MarkdownItPdfPrinterOptions).outputDir ??
-                defaultOutputDir,
-            options ??
-                (this._options as MarkdownItPdfPrinterOptions)
-                    .defaultPrinterOption
+            this.safeOutputDir(outputDir),
+            this.safeOptions(options)
         );
 
         this._server.close();
@@ -112,9 +126,7 @@ class MarkdownItPdfPrinter extends MarkdownItPdf {
         const buffer = await printIntoMemory(
             `http://localhost:${this._server.listeningPort}`,
             url,
-            options ??
-                (this._options as MarkdownItPdfPrinterOptions)
-                    .defaultPrinterOption
+            this.safeOptions(options)
         );
 
         this._server.close();
