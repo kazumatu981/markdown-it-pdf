@@ -2,7 +2,6 @@ import { jest, expect, describe, it } from '@jest/globals';
 import { MarkdownRenderServer } from '../../../src/core/markdown-render-server';
 import { mockingTestDir, unmockingTestDir } from '../../utils/test-dir';
 import { readFromServer } from '../../utils/http-util';
-import exp from 'constants';
 
 describe('CoreLibrary Unit Tests - MarkdownRenderServer', () => {
     describe('serverListener', () => {
