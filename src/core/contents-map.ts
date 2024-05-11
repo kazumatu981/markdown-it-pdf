@@ -1,16 +1,8 @@
 import { type MarkdownItRender } from './markdown-it-render';
 import { findFiles, filePathToUrl } from './path-resolver';
-import { type ResolverType, isSupported, getResolver } from './resolver-map';
+import { type ResolverType, type ResolverMap } from './resolver-map';
 import fsPromises from 'fs/promises';
 import path from 'path';
-export type ContentsResolverFunction = (
-    filePath: string
-) => Promise<string | Buffer>;
-
-export interface ContentsResolver {
-    mediaType: string;
-    resolve: ContentsResolverFunction;
-}
 
 export interface ContentsMapEntity {
     url: string;
@@ -25,27 +17,28 @@ export interface RenderedEntity extends ContentsMapEntity {
 
 export interface ContentsMapOptions {
     recursive?: boolean;
-    externalUrls?: string[];
 }
 export class ContentsMap extends Map<string, ContentsMapEntity> {
-    private _resolver: Map<ResolverType, ContentsResolverFunction>;
-    private _render: MarkdownItRender;
+    private _resolver: ResolverMap;
 
     public static async createInstance(
-        render: MarkdownItRender,
+        resolverMap: ResolverMap,
         contentsRoot: string,
         options?: ContentsMapOptions
     ): Promise<ContentsMap> {
         // create the instance
-        const theInstance = new ContentsMap(render);
+        const theInstance = new ContentsMap(resolverMap);
 
-        // resolve to entity
+        // resolve to local resources entities in contentRoot.
+        // like markdown, style, images, etc.
         const contents = await findFiles<ContentsMapEntity>(
             contentsRoot,
             options?.recursive ?? true,
-            isSupported,
+            resolverMap.isSupported.bind(resolverMap),
             (filePath) => {
-                const resolver = getResolver(path.extname(filePath));
+                const resolver = resolverMap.getTypeInfo(
+                    path.extname(filePath)
+                );
                 return {
                     url: filePathToUrl(contentsRoot, filePath),
                     resolverType: resolver.resolverType,
@@ -61,26 +54,23 @@ export class ContentsMap extends Map<string, ContentsMapEntity> {
             theInstance.set(entry.url, entry);
         });
 
-        // add into internalUrls
-        const internalUrls = contents
-            .filter((entry) => entry.contentType === 'text/css')
-            .map((kv) => kv.url);
-        render.addStyles(internalUrls);
-        // add into externalUrls
-        render.addExternalStyles(options?.externalUrls ?? []);
-
         return theInstance;
     }
 
-    private constructor(render: MarkdownItRender) {
+    private constructor(resolverMap: ResolverMap) {
         super();
-        this._render = render;
-        this._resolver = this.generateDefaultResolvers();
+        this._resolver = resolverMap;
     }
 
     public get markdownEntryUrls(): string[] {
         return [...this.keys()].filter(
-            (url) => this.get(url)?.resolverType === 'markdown'
+            (url) =>
+                (this.get(url) as ContentsMapEntity).resolverType === 'markdown'
+        );
+    }
+    public get styleEntryUrls(): string[] {
+        return [...this.keys()].filter(
+            (url) => (this.get(url) as ContentsMapEntity).resolverType === 'style'
         );
     }
 
@@ -89,34 +79,8 @@ export class ContentsMap extends Map<string, ContentsMapEntity> {
         if (!entity) {
             return;
         }
-        const contentResolver = this._resolver.get(entity.resolverType);
-        if (!contentResolver) {
-            return;
-        }
+        const contentResolver = this._resolver.getResolver(entity.resolverType);
         const contents = await contentResolver(entity.contentPath);
         return { ...entity, contents };
     }
-
-    //#region private methods
-    private generateDefaultResolvers(): Map<
-        ResolverType,
-        ContentsResolverFunction
-    > {
-        // add default resolvers
-        return new Map<ResolverType, ContentsResolverFunction>()
-            .set('markdown', this._markdownResolver.bind(this))
-            .set('style', this._plainTextResolver.bind(this))
-            .set('plainText', this._plainTextResolver.bind(this))
-            .set('binary', this._binaryResolver.bind(this));
-    }
-    private async _markdownResolver(filePath: string): Promise<string> {
-        return this._render.renderFromFileAsync(filePath);
-    }
-    private async _plainTextResolver(filePath: string): Promise<string> {
-        return fsPromises.readFile(filePath, 'utf8');
-    }
-    private async _binaryResolver(filePath: string): Promise<Buffer> {
-        return fsPromises.readFile(filePath);
-    }
-    //#endregion
 }

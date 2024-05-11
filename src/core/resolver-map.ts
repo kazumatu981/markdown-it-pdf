@@ -1,14 +1,28 @@
+import fsPromises from 'fs/promises';
 import path from 'path';
 
-export type ResolverType = 'markdown' | 'style' | 'plainText' | 'binary';
+export type ResolverType =
+    | 'markdown'
+    | 'style'
+    | 'plainText'
+    | 'pdf'
+    | 'binary';
 
-export interface ResolverMapEntity {
+export type ContentsResolverFunction = (
+    contentPath: string
+) => Promise<string | Buffer>;
+
+export function defaultContentsResolver(contentPath: string): Promise<Buffer> {
+    return fsPromises.readFile(contentPath);
+}
+
+interface ExtensionTypeInfo {
     resolverType: ResolverType;
     contentType: string;
     resolvedContentType?: string;
 }
 
-export const resolverMap: Map<string, ResolverMapEntity> = new Map([
+const defaultExtensionMap: Map<string, ExtensionTypeInfo> = new Map([
     [
         '.md',
         {
@@ -66,17 +80,38 @@ export const resolverMap: Map<string, ResolverMapEntity> = new Map([
             contentType: 'image/svg+xml',
         },
     ],
+    [
+        '.pdf',
+        {
+            resolverType: 'pdf',
+            contentType: 'application/pdf',
+        },
+    ],
 ]);
 
-export const defaultResolver: ResolverMapEntity = {
+export const defaultTypeInfo: ExtensionTypeInfo = {
     resolverType: 'binary',
     contentType: 'application/octet-stream',
 };
 
-export function getResolver(extName: string): ResolverMapEntity {
-    return resolverMap.get(extName) ?? defaultResolver;
-}
+export class ResolverMap extends Map<ResolverType, ContentsResolverFunction> {
+    private _extensionMap: Map<string, ExtensionTypeInfo>;
+    public constructor() {
+        super();
+        this._extensionMap = defaultExtensionMap;
+    }
+    public getTypeInfo(extName: string): ExtensionTypeInfo {
+        return this._extensionMap.get(extName) ?? defaultTypeInfo;
+    }
 
-export function isSupported(fileName: string): boolean {
-    return resolverMap.has(path.extname(fileName));
+    public isSupported(fileName: string): boolean {
+        return this._extensionMap.has(path.extname(fileName));
+    }
+
+    public getResolver(resolverType: ResolverType): ContentsResolverFunction {
+        return this.get(resolverType) ?? defaultContentsResolver;
+    }
+    public getResolverByExtension(extName: string): ContentsResolverFunction {
+        return this.getResolver(this.getTypeInfo(extName).resolverType);
+    }
 }

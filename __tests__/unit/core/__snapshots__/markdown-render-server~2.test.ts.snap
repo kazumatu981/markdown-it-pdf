@@ -1,0 +1,48 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CoreLibrary Unit Tests - MarkdownRenderServer serverListener can render md file: rendered md file 1`] = `
+{
+  "body": "
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="/test.css">
+
+</head>
+<body>
+    <h1>test</h1>
+<p>hello world</p>
+
+</body>",
+  "contentType": "text/html",
+  "statusCode": 200,
+}
+`;
+
+exports[`CoreLibrary Unit Tests - MarkdownRenderServer serverListener can render style file: rendered css file 1`] = `
+{
+  "body": "h1 { color: red; }",
+  "contentType": "text/css",
+  "statusCode": 200,
+}
+`;
+
+exports[`CoreLibrary Unit Tests - MarkdownRenderServer serverListener can render txt file: rendered txt file 1`] = `
+{
+  "body": "hello world",
+  "contentType": "text/plain",
+  "statusCode": 200,
+}
+`;
+
+exports[`CoreLibrary Unit Tests - MarkdownRenderServer serverListener root dir is not found: Root is Not Found 1`] = `
+{
+  "body": "Not Found",
+  "contentType": "text/plain",
+  "statusCode": 404,
+}
+`;

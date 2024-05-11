@@ -3,9 +3,10 @@ import {
     findFiles,
     filePathToUrl,
     normalizePath,
-} from '../../src/core/path-resolver';
-import { mockingTestDir, unmockingTestDir } from '../utils/test-dir';
-
+    buildTreeOfFiles,
+} from '../../../src/core/path-resolver';
+import { mockingTestDir, unmockingTestDir } from '../../utils/test-dir';
+import fsPromise from 'fs/promises';
 import path from 'path';
 
 describe('CoreLibrary Unit Tests - PathResolver', () => {
@@ -79,7 +80,7 @@ describe('CoreLibrary Unit Tests - PathResolver', () => {
     });
 });
 
-describe('filePathToUrl', () => {
+describe('CoreLibrary Unit Tests - filePathToUrl', () => {
     const rootDir = 'path';
 
     it('should convert a relative file path to a URL relative to the root directory', () => {
@@ -103,7 +104,7 @@ describe('filePathToUrl', () => {
     });
 });
 
-describe('normalizePath', () => {
+describe('CoreLibrary Unit Tests - normalizePath', () => {
     it('should normalize a relative file path', () => {
         const filePath = 'path/to/file.txt';
         const expectedNormalizedPath = 'path/to/file.txt';
@@ -119,5 +120,18 @@ describe('normalizePath', () => {
     it('should throw an error if the file path is absolute', () => {
         const filePath = '/path/to/file.txt';
         expect(() => normalizePath(filePath)).toThrow('Path must be relative');
+    });
+});
+
+describe('CoreLibrary Unit Tests - buildTreeOfFiles', () => {
+    it('should build a tree of directories', async () => {
+        mockingTestDir();
+        const files = ['path/to/file.txt', 'path/to/sub/file.txt'];
+        await buildTreeOfFiles(files);
+        // test that the directories were created
+        const children = await fsPromise.readdir('path/to');
+        expect(children).toContain('sub');
+
+        unmockingTestDir();
     });
 });

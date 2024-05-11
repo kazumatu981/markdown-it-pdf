@@ -6,8 +6,7 @@ export interface Styles {
     externalUrls: string[];
 }
 
-export class MarkdownItRender {
-    private _md: MarkdownIt = new MarkdownIt();
+export class MarkdownItRender extends MarkdownIt {
     private _styles: Styles = {
         internalUrls: [],
         externalUrls: [],
@@ -36,25 +35,13 @@ export class MarkdownItRender {
     }
 
     /**
-     * Uses the provided plugin with optional parameters.
-     *
-     * @param {MarkdownIt.PluginWithParams} plugin - The plugin to use.
-     * @param {any[]} params - Optional parameters for the plugin.
-     * @return {this} The MarkdownItRender instance for chaining.
-     */
-    public use(plugin: MarkdownIt.PluginWithParams, ...params: any[]): this {
-        this._md.use(plugin, ...params);
-        return this;
-    }
-
-    /**
      * Renders the given markdown string into HTML.
      *
      * @param {string} markdown - The markdown string to render.
      * @return {string} The rendered HTML string.
      */
     public render(markdown: string): string {
-        const htmlBody = this._md.render(markdown);
+        const htmlBody = super.render(markdown);
         const styleTags = MarkdownItRender.generateStyleTags(
             this._styles.internalUrls,
             this._styles.externalUrls

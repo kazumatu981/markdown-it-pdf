@@ -1,5 +1,5 @@
 import { jest, describe, it, expect } from '@jest/globals';
-import { MarkdownItRender } from '../../src/core/markdown-it-render';
+import { MarkdownItRender } from '../../../src/core/markdown-it-render';
 
 import fsAsync from 'fs/promises';
 

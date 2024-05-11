@@ -2,5 +2,7 @@
 module.exports = {
     preset: 'ts-jest',
     testEnvironment: 'node',
-    testMatch: ['**/core/**/*.test.ts'],
+    testTimeout: 30000,
+
+    testMatch: ['**/__tests__/render/*.test.ts'],
 };

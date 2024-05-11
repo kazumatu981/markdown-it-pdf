@@ -1,0 +1,122 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CoreLibrary Unit Tests - PuppeteerPDFPrinter printIntoMemory 1`] = `
+[MockFunction] {
+  "calls": [
+    [
+      "http://localhost:3000/test1.md",
+    ],
+  ],
+  "results": [
+    {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
+exports[`CoreLibrary Unit Tests - PuppeteerPDFPrinter printIntoMemory 2`] = `
+[MockFunction] {
+  "calls": [
+    [
+      {
+        "format": "a4",
+      },
+    ],
+  ],
+  "results": [
+    {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
+exports[`CoreLibrary Unit Tests - PuppeteerPDFPrinter printManyPages 1`] = `
+[MockFunction] {
+  "calls": [
+    [
+      "http://localhost:3000/test1.md",
+    ],
+    [
+      "http://localhost:3000/test2.md",
+    ],
+  ],
+  "results": [
+    {
+      "type": "return",
+      "value": undefined,
+    },
+    {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
+exports[`CoreLibrary Unit Tests - PuppeteerPDFPrinter printManyPages 2`] = `
+[MockFunction] {
+  "calls": [
+    [
+      {
+        "format": "a4",
+        "path": "test\\test1.md.pdf",
+      },
+    ],
+    [
+      {
+        "format": "a4",
+        "path": "test\\test2.md.pdf",
+      },
+    ],
+  ],
+  "results": [
+    {
+      "type": "return",
+      "value": undefined,
+    },
+    {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
+exports[`CoreLibrary Unit Tests - PuppeteerPDFPrinter printOnePages 1`] = `
+[MockFunction] {
+  "calls": [
+    [
+      "http://localhost:3000/test1.md",
+    ],
+  ],
+  "results": [
+    {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
+exports[`CoreLibrary Unit Tests - PuppeteerPDFPrinter printOnePages 2`] = `
+[MockFunction] {
+  "calls": [
+    [
+      {
+        "format": "a4",
+        "path": "test\\test1.md.pdf",
+      },
+    ],
+  ],
+  "results": [
+    {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;

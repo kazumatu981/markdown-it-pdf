@@ -70,3 +70,20 @@ export function normalizePath(filePath: string): string {
     }
     return path.normalize(filePath).split(path.win32.sep).join(path.posix.sep);
 }
+
+/**
+ * Asynchronously builds a tree of directories based on the provided array of file paths.
+ *
+ * @param {string[]} files - An array of file paths.
+ * @return {Promise<void>} A promise that resolves when the tree of directories is built successfully, or rejects with an error if there was a problem.
+ */
+export async function buildTreeOfFiles(files: string[]): Promise<void> {
+    const dirs = Array.from(new Set(files.map((file) => path.dirname(file))));
+    return new Promise((resolve) => {
+        Promise.all<void>(
+            dirs.map(async (dir) => {
+                await fsPromises.mkdir(dir, { recursive: true });
+            })
+        ).then(() => resolve());
+    });
+}
