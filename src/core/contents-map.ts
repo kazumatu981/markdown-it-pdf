@@ -1,7 +1,5 @@
-import { type MarkdownItRender } from './markdown-it-render';
 import { findFiles, filePathToUrl } from './path-resolver';
 import { type ResolverType, type ResolverMap } from './resolver-map';
-import fsPromises from 'fs/promises';
 import path from 'path';
 
 export interface ContentsMapEntity {
@@ -70,7 +68,8 @@ export class ContentsMap extends Map<string, ContentsMapEntity> {
     }
     public get styleEntryUrls(): string[] {
         return [...this.keys()].filter(
-            (url) => (this.get(url) as ContentsMapEntity).resolverType === 'style'
+            (url) =>
+                (this.get(url) as ContentsMapEntity).resolverType === 'style'
         );
     }
 
