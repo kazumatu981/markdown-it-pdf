@@ -49,7 +49,7 @@ describe('render test', () => {
 
         await printOnePage(
             'http://localhost:3000',
-            'test.md',
+            '/test.md',
             `${__dirname}/out`
         );
 

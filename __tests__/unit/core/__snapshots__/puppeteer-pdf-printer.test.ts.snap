@@ -4,7 +4,7 @@ exports[`CoreLibrary Unit Tests - PuppeteerPDFPrinter printIntoMemory 1`] = `
 [MockFunction] {
   "calls": [
     [
-      "http://localhost:3000/test1.md",
+      "http://localhost:3000//test1.md",
     ],
   ],
   "results": [

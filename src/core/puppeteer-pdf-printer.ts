@@ -17,7 +17,7 @@ export async function printManyPages(
     const urls = pagePaths.map((page) => {
         return {
             pathToPdf: `${path.join(outputDir, page)}.pdf`,
-            fullUrl: `${siteUrl}/${page}`,
+            fullUrl: `${siteUrl}${page}`,
         };
     });
 
