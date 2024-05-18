@@ -32,7 +32,7 @@ describe('CoreLibrary Unit Tests - PuppeteerPDFPrinter', () => {
     it('printManyPages', async () => {
         await printManyPages(
             'http://localhost:3000',
-            ['test1.md', 'test2.md'],
+            ['/test1.md', '/test2.md'],
             'test',
             {
                 format: 'a4',
@@ -45,7 +45,7 @@ describe('CoreLibrary Unit Tests - PuppeteerPDFPrinter', () => {
         expect(pdfFn).toMatchSnapshot();
     });
     it('printOnePages', async () => {
-        await printOnePage('http://localhost:3000', 'test1.md', 'test', {
+        await printOnePage('http://localhost:3000', '/test1.md', 'test', {
             format: 'a4',
         });
         expect(gotoFn).toBeCalledTimes(1);
@@ -54,7 +54,7 @@ describe('CoreLibrary Unit Tests - PuppeteerPDFPrinter', () => {
         expect(pdfFn).toMatchSnapshot();
     });
     it('printIntoMemory', async () => {
-        await printIntoMemory('http://localhost:3000', 'test1.md', {
+        await printIntoMemory('http://localhost:3000', '/test1.md', {
             format: 'a4',
         });
         expect(gotoFn).toBeCalledTimes(1);
