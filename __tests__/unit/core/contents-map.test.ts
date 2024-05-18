@@ -62,7 +62,7 @@ describe('CoreLibrary Unit Tests - ContentsMap', () => {
             unmockingTestDir();
         });
     });
-    describe('get markdownEntryUrls', () => {
+    describe('getEntityUrls() with markdown', () => {
         it('should return the markdown entry urls', async () => {
             const resolverMap = new ResolverMap();
             mockingTestDir();
@@ -70,14 +70,20 @@ describe('CoreLibrary Unit Tests - ContentsMap', () => {
                 resolverMap,
                 'test'
             );
-            expect(contentsMap.markdownEntryUrls).toContain('/test.md');
-            expect(contentsMap.markdownEntryUrls).toContain('/sub/test.md');
-            expect(contentsMap.markdownEntryUrls).not.toContain('/sample.txt');
-            expect(contentsMap.markdownEntryUrls).not.toContain('/test.css');
+            expect(contentsMap.getEntityUrls('markdown')).toContain('/test.md');
+            expect(contentsMap.getEntityUrls('markdown')).toContain(
+                '/sub/test.md'
+            );
+            expect(contentsMap.getEntityUrls('markdown')).not.toContain(
+                '/sample.txt'
+            );
+            expect(contentsMap.getEntityUrls('markdown')).not.toContain(
+                '/test.css'
+            );
             unmockingTestDir();
         });
     });
-    describe('get styleEntryUrls', () => {
+    describe('get styleEntryUrls with style', () => {
         it('should return the style entry urls', async () => {
             const resolverMap = new ResolverMap();
             mockingTestDir();
@@ -85,13 +91,36 @@ describe('CoreLibrary Unit Tests - ContentsMap', () => {
                 resolverMap,
                 'test'
             );
-            expect(contentsMap.styleEntryUrls).not.toContain('/test.md');
-            expect(contentsMap.styleEntryUrls).not.toContain('/sub/test.md');
-            expect(contentsMap.styleEntryUrls).not.toContain('/sample.txt');
-            expect(contentsMap.styleEntryUrls).toContain('/test.css');
+            expect(contentsMap.getEntityUrls('style')).not.toContain(
+                '/test.md'
+            );
+            expect(contentsMap.getEntityUrls('style')).not.toContain(
+                '/sub/test.md'
+            );
+            expect(contentsMap.getEntityUrls('style')).not.toContain(
+                '/sample.txt'
+            );
+            expect(contentsMap.getEntityUrls('style')).toContain('/test.css');
             unmockingTestDir();
         });
     });
+
+    describe('get all styleEntryUrls ', () => {
+        it('should return the style entry urls', async () => {
+            const resolverMap = new ResolverMap();
+            mockingTestDir();
+            const contentsMap = await ContentsMap.createInstance(
+                resolverMap,
+                'test'
+            );
+            expect(contentsMap.getEntityUrls()).toContain('/test.md');
+            expect(contentsMap.getEntityUrls()).toContain('/sub/test.md');
+            expect(contentsMap.getEntityUrls()).toContain('/sample.txt');
+            expect(contentsMap.getEntityUrls()).toContain('/test.css');
+            unmockingTestDir();
+        });
+    });
+
     describe('render', () => {
         it('should render markdown', async () => {
             const resolverMap = new ResolverMap();
