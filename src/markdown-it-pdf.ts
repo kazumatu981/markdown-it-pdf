@@ -54,7 +54,7 @@ export abstract class MarkdownItPdf {
     }
 
     public get availableMarkdownUrls(): string[] {
-        return this._server.contentsMap.markdownEntryUrls;
+        return this._server.availableMarkdownUrls;
     }
 }
 

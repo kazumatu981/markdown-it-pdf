@@ -58,11 +58,19 @@ export class MarkdownRenderServer extends MarkdownItRender {
         theInstance.contentsMap = contentsMap;
 
         // set style urls
-        theInstance.addStyles(theInstance.contentsMap.styleEntryUrls);
+        theInstance.addStyles(theInstance.availableStyleUrls);
         theInstance.addExternalStyles(options?.externalUrls ?? []);
 
         // return the instance
         return theInstance;
+    }
+
+    public get availableMarkdownUrls(): string[] {
+        return this.contentsMap.getEntityUrls('markdown');
+    }
+
+    public get availableStyleUrls(): string[] {
+        return this.contentsMap.getEntityUrls('style');
     }
 
     private set contentsMap(contentsMap: ContentsMap) {
