@@ -1,5 +1,9 @@
 import { findFiles, filePathToUrl } from './path-resolver';
-import { type ResolverType, type ResolverMap } from './resolver-map';
+import {
+    type ResolverType,
+    type ResolverMap,
+    DefaultExtensionMap,
+} from './resolver-map';
 import path from 'path';
 
 export interface ContentsMapEntity {
@@ -49,7 +53,7 @@ export class ContentsMap extends Map<string, ContentsMapEntity> {
         const contents = await findFiles<ContentsMapEntity>(
             this._contentsRoot,
             this._options?.recursive ?? true,
-            this._resolver.isSupported.bind(this._resolver),
+            DefaultExtensionMap.isSupported.bind(DefaultExtensionMap),
             this.generateContentMapEntity.bind(this)
         );
         contents.forEach((entry) => {
@@ -80,7 +84,9 @@ export class ContentsMap extends Map<string, ContentsMapEntity> {
     }
 
     private generateContentMapEntity(filePath: string): ContentsMapEntity {
-        const resolver = this._resolver.getTypeInfo(path.extname(filePath));
+        const resolver = DefaultExtensionMap.getTypeInfo(
+            path.extname(filePath)
+        );
         return {
             url: filePathToUrl(this._contentsRoot, filePath),
             resolverType: resolver.resolverType,

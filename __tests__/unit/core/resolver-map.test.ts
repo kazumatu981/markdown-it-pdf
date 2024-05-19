@@ -3,6 +3,7 @@ import {
     ResolverMap,
     defaultContentsResolver,
     ContentsResolverFunction,
+    DefaultExtensionMap,
 } from '../../../src/core/resolver-map';
 
 import { mockingTestDir, unmockingTestDir } from '../../utils/test-dir';
@@ -16,12 +17,7 @@ describe('CoreLibrary Unit Tests - defaultContentsResolver', () => {
     });
 });
 
-describe('CoreLibrary Unit Tests - ResolverMap', () => {
-    let resolverMap: ResolverMap;
-
-    beforeEach(() => {
-        resolverMap = new ResolverMap();
-    });
+describe('CoreLibrary Unit Tests - ExtensionMap', () => {
     describe('getTypeInfo', () => {
         it('should return correct ExtensionTypeInfo for a valid extension name', () => {
             const extName = '.md';
@@ -30,7 +26,7 @@ describe('CoreLibrary Unit Tests - ResolverMap', () => {
                 contentType: 'text/markdown',
                 resolvedContentType: 'text/html',
             };
-            const result = resolverMap.getTypeInfo(extName);
+            const result = DefaultExtensionMap.getTypeInfo(extName);
             expect(result).toEqual(expectedTypeInfo);
         });
 
@@ -40,18 +36,25 @@ describe('CoreLibrary Unit Tests - ResolverMap', () => {
                 resolverType: 'binary',
                 contentType: 'application/octet-stream',
             };
-            const result = resolverMap.getTypeInfo(extName);
+            const result = DefaultExtensionMap.getTypeInfo(extName);
             expect(result).toEqual(expectedTypeInfo);
         });
     });
     describe('isSupported', () => {
         it('should return true for a supported file extension', () => {
-            expect(resolverMap.isSupported('file.md')).toBeTruthy();
+            expect(DefaultExtensionMap.isSupported('file.md')).toBeTruthy();
         });
 
         it('should return false for an unsupported file extension', () => {
-            expect(resolverMap.isSupported('file.unknown')).toBeFalsy();
+            expect(DefaultExtensionMap.isSupported('file.unknown')).toBeFalsy();
         });
+    });
+});
+describe('CoreLibrary Unit Tests - ResolverMap', () => {
+    let resolverMap: ResolverMap;
+
+    beforeEach(() => {
+        resolverMap = new ResolverMap();
     });
 
     describe('getResolverType', () => {
@@ -91,37 +94,6 @@ describe('CoreLibrary Unit Tests - ResolverMap', () => {
             const result = resolverMap.getResolver('pdf');
 
             expect(result).toBe(defaultContentsResolver);
-        });
-    });
-    describe('getResolverByExtension', () => {
-        it('should return the correct resolver function for a valid extension name', () => {
-            const extName = '.md';
-            const expectedResolver = jest.fn();
-            resolverMap.set('markdown', expectedResolver);
-
-            const result = resolverMap.getResolverByExtension(extName);
-
-            expect(result).toBe(expectedResolver);
-        });
-
-        it('should return the default resolver function for an extension name that does not exist in the extension map', () => {
-            const extName = '.unknown';
-            const expectedResolver = jest.fn();
-            resolverMap.set('binary', expectedResolver);
-
-            const result = resolverMap.getResolverByExtension(extName);
-
-            expect(result).toBe(expectedResolver);
-        });
-
-        it('should return the default resolver function for an empty extension name', () => {
-            const extName = '';
-            const expectedResolver = jest.fn();
-            resolverMap.set('binary', expectedResolver);
-
-            const result = resolverMap.getResolverByExtension(extName);
-
-            expect(result).toBe(expectedResolver);
         });
     });
 });
