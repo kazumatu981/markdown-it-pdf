@@ -1,7 +1,9 @@
-import { type MarkdownItRender } from './markdown-it-render';
 import { findFiles, filePathToUrl } from './path-resolver';
-import { type ResolverType, type ResolverMap } from './resolver-map';
-import fsPromises from 'fs/promises';
+import {
+    type ResolverType,
+    type ResolverMap,
+    DefaultExtensionMap,
+} from './resolver-map';
 import path from 'path';
 
 export interface ContentsMapEntity {
@@ -20,6 +22,8 @@ export interface ContentsMapOptions {
 }
 export class ContentsMap extends Map<string, ContentsMapEntity> {
     private _resolver: ResolverMap;
+    private _contentsRoot: string;
+    private _options?: ContentsMapOptions;
 
     public static async createInstance(
         resolverMap: ResolverMap,
@@ -27,51 +31,46 @@ export class ContentsMap extends Map<string, ContentsMapEntity> {
         options?: ContentsMapOptions
     ): Promise<ContentsMap> {
         // create the instance
-        const theInstance = new ContentsMap(resolverMap);
-
-        // resolve to local resources entities in contentRoot.
-        // like markdown, style, images, etc.
-        const contents = await findFiles<ContentsMapEntity>(
-            contentsRoot,
-            options?.recursive ?? true,
-            resolverMap.isSupported.bind(resolverMap),
-            (filePath) => {
-                const resolver = resolverMap.getTypeInfo(
-                    path.extname(filePath)
-                );
-                return {
-                    url: filePathToUrl(contentsRoot, filePath),
-                    resolverType: resolver.resolverType,
-                    contentType:
-                        resolver.resolvedContentType ?? resolver.contentType,
-                    contentPath: filePath,
-                };
-            }
-        );
-
-        // set into entity
-        contents.forEach((entry) => {
-            theInstance.set(entry.url, entry);
-        });
-
+        const theInstance = new ContentsMap(resolverMap, contentsRoot, options);
+        await theInstance.refresh();
         return theInstance;
     }
 
-    private constructor(resolverMap: ResolverMap) {
+    private constructor(
+        resolverMap: ResolverMap,
+        contentsRoot: string,
+        options?: ContentsMapOptions
+    ) {
         super();
         this._resolver = resolverMap;
+        this._contentsRoot = contentsRoot;
+        this._options = options;
     }
 
-    public get markdownEntryUrls(): string[] {
-        return [...this.keys()].filter(
-            (url) =>
-                (this.get(url) as ContentsMapEntity).resolverType === 'markdown'
+    public async refresh(): Promise<void> {
+        this.clear();
+
+        const contents = await findFiles<ContentsMapEntity>(
+            this._contentsRoot,
+            this._options?.recursive ?? true,
+            DefaultExtensionMap.isSupported.bind(DefaultExtensionMap),
+            this.generateContentMapEntity.bind(this)
         );
+        contents.forEach((entry) => {
+            this.set(entry.url, entry);
+        });
     }
-    public get styleEntryUrls(): string[] {
-        return [...this.keys()].filter(
-            (url) => (this.get(url) as ContentsMapEntity).resolverType === 'style'
-        );
+
+    public getEntityUrls(resolverType?: ResolverType): string[] {
+        return resolverType
+            ? // if resolverType is provided, filter by resolverType.
+              [...this.keys()].filter(
+                  (url) =>
+                      (this.get(url) as ContentsMapEntity).resolverType ===
+                      resolverType
+              )
+            : // if resolverType is not provided, return all
+              [...this.keys()];
     }
 
     public async render(filePath: string): Promise<RenderedEntity | undefined> {
@@ -82,5 +81,17 @@ export class ContentsMap extends Map<string, ContentsMapEntity> {
         const contentResolver = this._resolver.getResolver(entity.resolverType);
         const contents = await contentResolver(entity.contentPath);
         return { ...entity, contents };
+    }
+
+    private generateContentMapEntity(filePath: string): ContentsMapEntity {
+        const resolver = DefaultExtensionMap.getTypeInfo(
+            path.extname(filePath)
+        );
+        return {
+            url: filePathToUrl(this._contentsRoot, filePath),
+            resolverType: resolver.resolverType,
+            contentType: resolver.resolvedContentType ?? resolver.contentType,
+            contentPath: filePath,
+        };
     }
 }
