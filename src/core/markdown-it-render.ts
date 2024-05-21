@@ -1,12 +1,14 @@
 import MarkdownIt from 'markdown-it';
 import fsPromises from 'fs/promises';
-
+import { Logger } from '../cli/logger';
 export interface Styles {
     internalUrls: string[];
     externalUrls: string[];
 }
 
 export class MarkdownItRender extends MarkdownIt {
+    public _logger?: Logger;
+
     private _styles: Styles = {
         internalUrls: [],
         externalUrls: [],

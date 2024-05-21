@@ -3,6 +3,7 @@ import path from 'path';
 import { type MarkdownItPdfCommandOptions } from './command-options';
 import { readOptions } from './configure';
 import { MarkdownItPdf, MarkdownItPdfPrinterOptions } from '../markdown-it-pdf';
+import { ConsoleLogger } from './logger';
 // exports.command: string (or array of strings) that executes this command when given on the command line, first string may contain positional args
 export const command: string = 'print [dir] [outputDir]';
 // exports.aliases: array of strings (or a single string) representing aliases of exports.command, positional args defined in an alias are ignored
@@ -37,21 +38,32 @@ export const builder: (
 
 // exports.handler: a function which will be passed the parsed argv.
 export const handler = (args: MarkdownItPdfCommandOptions) => {
+    const logger = new ConsoleLogger(args.log);
+    logger.info('MarkdownItPDF Printer is starting...');
+
     const options = readOptions<MarkdownItPdfPrinterOptions>(args.config);
-    MarkdownItPdf.createPdfPrinter({
+    MarkdownItPdf.createPdfPrinter(logger, {
         rootDir: args.dir,
         outputDir: args.outputDir,
         ...options,
     })
         .then((printer) => {
+            logger.info('ready to print.');
             return printer.printAll();
         })
-        .then(() => {
-            console.log('done');
+        .then((printer) => {
+            // success
+            logger.info(
+                '%d files printed',
+                printer.availableMarkdownUrls.length
+            );
+            logger.debug("printed files's ids:");
+            logger.debug(printer.availableMarkdownUrls);
         })
-        .catch((error) => {
+        .catch((error: Error) => {
             // error
-            console.error('error');
+            logger.error('Error Occurred on printing: %s', error.message);
+            logger.debug(error.stack);
         });
 };
 

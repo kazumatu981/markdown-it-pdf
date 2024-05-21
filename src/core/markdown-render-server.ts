@@ -9,6 +9,7 @@ import {
 import { ResolverMap } from './resolver-map';
 import { MarkdownItRender } from './markdown-it-render';
 import { ServerPortOptions, tryToListen } from './port-util';
+import { Logger } from '../cli/logger';
 
 export interface MarkdownRenderServerOptions
     extends ContentsMapOptions,
@@ -23,17 +24,18 @@ const defaultOptions: MarkdownRenderServerOptions = {
 };
 export class MarkdownRenderServer extends MarkdownItRender {
     private _options?: MarkdownRenderServerOptions;
-    // private _server: http.Server = http.createServer();
     private _server?: http.Server;
     private _contentsMap?: ContentsMap;
     private _listeningPort?: number;
 
     public static async createInstance(
+        logger?: Logger,
         options?: MarkdownRenderServerOptions
     ): Promise<MarkdownRenderServer> {
         // create this instance
         const theInstance = new MarkdownRenderServer();
         theInstance._options = options;
+        theInstance._logger = logger;
 
         // create resolver map
         const resolverMap = new ResolverMap();
@@ -110,7 +112,7 @@ export class MarkdownRenderServer extends MarkdownItRender {
         req: http.IncomingMessage,
         res: http.ServerResponse
     ): void {
-        this;
+        this._logger?.info('Request: %s', req.url);
         // Get requested file path
         const filePath = req.url as string;
         // Render the file contents with given path

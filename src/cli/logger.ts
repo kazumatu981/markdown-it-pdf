@@ -16,34 +16,37 @@ export interface Logger {
      * Logs a trace message.
      * @param message - The message to log.
      */
-    trace: (message: string) => void;
+    trace: (message: any, ...args: any[]) => void;
     /**
      * Logs a debug message.
      * @param message - The message to log.
      */
-    debug: (message: string) => void;
+    debug: (message: any, ...args: any[]) => void;
     /**
      * Logs an info message.
      * @param message - The message to log.
      */
-    info: (message: string) => void;
+    info: (message: any, ...args: any[]) => void;
     /**
      * Logs a warning message.
      * @param message - The message to log.
      */
-    warn: (message: string) => void;
+    warn: (message: any, ...args: any[]) => void;
     /**
      * Logs an error message.
      * @param message - The message to log.
      */
-    error: (message: string) => void;
+    error: (message: any, ...args: any[]) => void;
 }
 
 /**
  * Implements a logger that logs messages to the console.
  */
 export class ConsoleLogger implements Logger {
-    public level: LogLevel = 'info';
+    private level: LogLevel;
+    public constructor(level: LogLevel = 'info') {
+        this.level = level;
+    }
     /**
      * Logs a trace message.
      * @param message - The message to log.

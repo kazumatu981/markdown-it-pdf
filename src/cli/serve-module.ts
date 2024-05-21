@@ -6,6 +6,7 @@ import {
     MarkdownItPdf,
     MarkdownItfRenderServerOptions,
 } from '../markdown-it-pdf';
+import { ConsoleLogger } from './logger';
 
 // exports.command: string (or array of strings) that executes this command when given on the command line, first string may contain positional args
 export const command: string = 'serve [dir]';
@@ -32,20 +33,29 @@ export const builder: (
 
 // exports.handler: a function which will be passed the parsed argv.
 export const handler = (args: MarkdownItPdfCommandOptions) => {
+    const logger = new ConsoleLogger(args.log);
+    logger.info('MarkdownItPDF Render Server is starting...');
+
     const options = readOptions<MarkdownItfRenderServerOptions>(args.config);
-    MarkdownItPdf.createRenderServer({
+    MarkdownItPdf.createRenderServer(logger, {
         rootDir: args.dir,
         ...options,
     })
         .then((server) => {
+            logger.info('ready to serve.');
             return server.listen();
         })
         .then((port) => {
-            console.log(`server started at http://localhost:${port}`);
+            // success
+            logger.info('server started at http://localhost:%d', port);
         })
-        .catch((error) => {
+        .catch((error: Error) => {
             // error
-            console.error('error');
+            logger.error(
+                'Error Occurred while starting server: %s',
+                error.message
+            );
+            logger.debug(error.stack);
         });
 };
 

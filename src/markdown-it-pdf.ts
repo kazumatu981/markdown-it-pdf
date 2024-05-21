@@ -8,6 +8,8 @@ import {
     printIntoMemory,
 } from './core/puppeteer-pdf-printer';
 
+import { Logger } from './cli/logger';
+
 import type MarkdownIt from 'markdown-it';
 
 export interface MarkdownItfRenderServerOptions
@@ -22,24 +24,35 @@ const defaultOutputDir = 'pdf';
 
 export abstract class MarkdownItPdf {
     protected _server: MarkdownRenderServer;
+    protected _logger?: Logger;
     protected _options?: MarkdownItfRenderServerOptions;
     public static async createRenderServer(
+        logger?: Logger,
         options?: MarkdownItfRenderServerOptions
     ): Promise<MarkdownItfRenderServer> {
-        const server = await MarkdownRenderServer.createInstance(options);
-        return new MarkdownItfRenderServer(server, options);
+        const server = await MarkdownRenderServer.createInstance(
+            logger,
+            options
+        );
+        return new MarkdownItfRenderServer(server, logger, options);
     }
     public static async createPdfPrinter(
+        logger: Logger,
         options?: MarkdownItPdfPrinterOptions
     ): Promise<MarkdownItPdfPrinter> {
-        const server = await MarkdownRenderServer.createInstance(options);
-        return new MarkdownItPdfPrinter(server, options);
+        const server = await MarkdownRenderServer.createInstance(
+            logger,
+            options
+        );
+        return new MarkdownItPdfPrinter(server, logger, options);
     }
     protected constructor(
         server: MarkdownRenderServer,
+        logger?: Logger,
         options?: MarkdownItfRenderServerOptions
     ) {
         this._server = server;
+        this._logger = logger;
         this._options = options;
     }
 
@@ -84,7 +97,7 @@ class MarkdownItPdfPrinter extends MarkdownItPdf {
     public async printAll(
         outputDir?: string,
         options?: PuppeteerPDFOptions
-    ): Promise<void> {
+    ): Promise<this> {
         await this._server.listen();
 
         const urls = this.availableMarkdownUrls;
@@ -97,12 +110,13 @@ class MarkdownItPdfPrinter extends MarkdownItPdf {
         );
 
         this._server.close();
+        return this;
     }
     public async print(
         url: string | string[],
         outputDir?: string,
         options?: PuppeteerPDFOptions
-    ): Promise<void> {
+    ): Promise<this> {
         await this._server.listen();
 
         if (!Array.isArray(url)) {
@@ -116,6 +130,7 @@ class MarkdownItPdfPrinter extends MarkdownItPdf {
         );
 
         this._server.close();
+        return this;
     }
     public async printIntoBuffer(
         url: string,
