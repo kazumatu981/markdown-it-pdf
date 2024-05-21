@@ -4,5 +4,5 @@
     "editor.formatOnSave": true,
     "cSpell.globRoot": "${workspaceFolder:src}",
     "cSpell.spellCheckOnlyWorkspaceFiles": true,
-    "cSpell.userWords": ["unmocking"],
+    "cSpell.userWords": ["unmocking", "endregion"],
 }
