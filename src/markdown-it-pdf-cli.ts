@@ -41,27 +41,3 @@ export default function markdownItPdfCli() {
         .help()
         .parse();
 }
-
-function definePrintCommand(yargs: yargs.Argv<{}>): void {
-    yargs
-        .positional('dir', {
-            alias: 'd',
-            describe:
-                'The directory containing the markdown, css, and other resources files',
-            type: 'string',
-            demandOption: true,
-            default: process.cwd(),
-            coerce: (dir: string) => path.resolve(process.cwd(), dir),
-        })
-        .positional('outputDir', {
-            alias: 'o',
-            describe: 'Output directory',
-            type: 'string',
-            demandOption: true,
-            default: process.cwd(),
-            coerce: (dir: string) => path.resolve(process.cwd(), dir),
-        });
-}
-function runPrint(args: yargs.ArgumentsCamelCase<{}>) {
-    console.log('print start....');
-}
