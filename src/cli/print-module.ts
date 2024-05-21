@@ -41,7 +41,6 @@ export const handler = (args: MarkdownItPdfCommandOptions) => {
     MarkdownItPdf.createPdfPrinter({
         rootDir: args.dir,
         outputDir: args.outputDir,
-        port: args.port,
         ...options,
     })
         .then((printer) => {

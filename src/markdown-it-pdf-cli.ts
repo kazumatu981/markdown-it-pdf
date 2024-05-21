@@ -19,6 +19,16 @@ export default function markdownItPdfCli() {
     yargs
         .scriptName('markdown-it-pdf')
         .usage('$0 <cmd> [options]')
+        .command<MarkdownItPdfCommandOptions>(serveModule)
+        .command<MarkdownItPdfCommandOptions>(printModule)
+        .option('log', {
+            alias: 'l',
+            describe: 'Log level',
+            type: 'string',
+            demandOption: false,
+            default: 'info',
+            choices: ['trace', 'debug', 'info', 'warn', 'error', 'silent'],
+        })
         .option('config', {
             alias: 'c',
             describe: 'Configuration file',
@@ -26,8 +36,6 @@ export default function markdownItPdfCli() {
             demandOption: false,
             coerce: (config: string) => path.resolve(process.cwd(), config),
         })
-        .command<MarkdownItPdfCommandOptions>(serveModule)
-        .command<MarkdownItPdfCommandOptions>(printModule)
         .alias('h', 'help')
         .alias('v', 'version')
         .help()

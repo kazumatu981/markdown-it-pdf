@@ -20,6 +20,7 @@ export const builder: (
     yargs: Argv<MarkdownItPdfCommandOptions>
 ) => Argv<MarkdownItPdfCommandOptions> = (yargs: any) => {
     return yargs.positional('dir', {
+        alias: 'd',
         describe:
             'The directory containing the markdown, css, and other resources files',
         type: 'string',
@@ -34,7 +35,6 @@ export const handler = (args: MarkdownItPdfCommandOptions) => {
     const options = readOptions<MarkdownItfRenderServerOptions>(args.config);
     MarkdownItPdf.createRenderServer({
         rootDir: args.dir,
-        port: args.port,
         ...options,
     })
         .then((server) => {
