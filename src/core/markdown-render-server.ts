@@ -32,6 +32,10 @@ export class MarkdownRenderServer extends MarkdownItRender {
         logger?: Logger,
         options?: MarkdownRenderServerOptions
     ): Promise<MarkdownRenderServer> {
+        logger?.debug(
+            `MarkdownRenderServer.createRenderServer() called with options: ${JSON.stringify(options)}`
+        );
+
         // create this instance
         const theInstance = new MarkdownRenderServer();
         theInstance._options = options;
@@ -56,6 +60,8 @@ export class MarkdownRenderServer extends MarkdownItRender {
             options?.rootDir ?? '.',
             options
         );
+        logger?.debug('contentsUrls: %o', contentsMap.getEntityUrls());
+
         // set contents map
         theInstance.contentsMap = contentsMap;
 
@@ -87,12 +93,20 @@ export class MarkdownRenderServer extends MarkdownItRender {
     }
     public async listen(port?: number): Promise<number> {
         const portCandidate = port ?? this._options?.port;
-        const serverPort = await tryToListen(portCandidate, this._options);
+        const serverPort = await tryToListen(
+            portCandidate,
+            this._options,
+            this._logger
+        );
         if (serverPort === undefined) {
+            this._logger?.error('Can not listen on port %d', portCandidate);
+            this._logger?.trace('Port not available');
             throw new Error('Can not listen');
         }
         this._listeningPort = serverPort.port;
         this._server = serverPort.httpServer;
+
+        this._logger?.debug('Listening on port %d', this._listeningPort);
 
         // bind the server event listener
         this._server.on('request', this.serverListener.bind(this));
@@ -112,7 +126,7 @@ export class MarkdownRenderServer extends MarkdownItRender {
         req: http.IncomingMessage,
         res: http.ServerResponse
     ): void {
-        this._logger?.info('Request: %s', req.url);
+        this._logger?.debug('Request: %s', req.url);
         // Get requested file path
         const filePath = req.url as string;
         // Render the file contents with given path
@@ -129,6 +143,11 @@ export class MarkdownRenderServer extends MarkdownItRender {
     }
 
     private writeNotFound(res: http.ServerResponse): void {
+        this._logger?.warn(
+            'Response for url: %s, status code: %d',
+            res.req.url,
+            404
+        );
         res.statusCode = 404;
         res.appendHeader('Content-Type', 'text/plain');
         res.write('Not Found');
@@ -138,6 +157,13 @@ export class MarkdownRenderServer extends MarkdownItRender {
         res: http.ServerResponse,
         entity: RenderedEntity
     ): void {
+        this._logger?.debug(
+            'Response for url: %s, status code: %d',
+            res.req.url,
+            200
+        );
+        this._logger?.debug('content type: %s', entity.contentType);
+
         res.statusCode = 200;
         res.appendHeader('Content-Type', entity.contentType);
         res.write(entity.contents);

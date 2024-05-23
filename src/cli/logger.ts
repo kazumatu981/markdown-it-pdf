@@ -1,12 +1,25 @@
+import chalk = require('chalk');
+
 /**
  * Represents a logging method.
  */
 type LogMethods = 'trace' | 'debug' | 'info' | 'warn' | 'error';
 
+const methodIndexes = ['trace', 'debug', 'info', 'warn', 'error'];
+
 /**
  * Represents a log level.
  */
 export type LogLevel = LogMethods | 'silent';
+
+export const levelIndexes = [
+    'trace',
+    'debug',
+    'info',
+    'warn',
+    'error',
+    'silent',
+];
 
 /**
  * Represents a logger interface.
@@ -102,18 +115,10 @@ export class ConsoleLogger implements Logger {
      */
     private shouldLog(level: LogLevel): boolean {
         // Get the index of the log level in the list of log levels.
-        const levelIndex = ['trace', 'debug', 'info', 'warn', 'error'].indexOf(
-            level
-        );
+        const levelIndex = methodIndexes.indexOf(level);
 
         // Get the index of the current log level in the list of log levels.
-        const currentLevelIndex = [
-            'trace',
-            'debug',
-            'info',
-            'warn',
-            'error',
-        ].indexOf(this.level);
+        const currentLevelIndex = methodIndexes.indexOf(this.level);
 
         // If the log level index is greater than or equal to the current log level index,
         // then the log level should be logged.
@@ -129,7 +134,34 @@ export class ConsoleLogger implements Logger {
      */
     private createMessage(level: LogLevel, message: string): string {
         // Format the log message with the log level, timestamp, and message.
-        return `[${level.toUpperCase()} ${new Date().toTimeString()}] ${message}`;
+        let levelString: string = level;
+        switch (level) {
+            case 'trace':
+                levelString = chalk.yellowBright(level.toUpperCase());
+                break;
+            case 'debug':
+                levelString = chalk.gray(level.toUpperCase());
+                break;
+            case 'info':
+                levelString = chalk.blue(level.toUpperCase());
+                break;
+            case 'warn':
+                levelString = chalk.redBright(level.toUpperCase());
+                break;
+            case 'error':
+                levelString = chalk.bgRed(level.toUpperCase());
+                break;
+        }
+        const messageString = `[${levelString} ${getCurrentTimeString()}] ${message}`;
+
+        // Return the formatted log message.
+        switch (level) {
+            case 'trace':
+            case 'debug':
+                return chalk.gray(messageString);
+            default:
+                return messageString;
+        }
     }
 
     /**
@@ -156,4 +188,9 @@ export class ConsoleLogger implements Logger {
         }
     }
     // #endregion
+}
+
+function getCurrentTimeString(): string {
+    const date = new Date();
+    return `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
 }

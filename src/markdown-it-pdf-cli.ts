@@ -5,6 +5,7 @@ import yargs from 'yargs';
 import serveModule from './cli/serve-module';
 import printModule from './cli/print-module';
 import { type MarkdownItPdfCommandOptions } from './cli/command-options';
+import { levelIndexes } from './cli/logger';
 
 export default function markdownItPdfCli() {
     // CLI interface
@@ -26,8 +27,8 @@ export default function markdownItPdfCli() {
             describe: 'Log level',
             type: 'string',
             demandOption: false,
-            default: 'info',
-            choices: ['trace', 'debug', 'info', 'warn', 'error', 'silent'],
+            default: levelIndexes[2],
+            choices: levelIndexes,
         })
         .option('config', {
             alias: 'c',

@@ -41,7 +41,10 @@ export const handler = (args: MarkdownItPdfCommandOptions) => {
     const logger = new ConsoleLogger(args.log);
     logger.info('MarkdownItPDF Printer is starting...');
 
-    const options = readOptions<MarkdownItPdfPrinterOptions>(args.config);
+    const options = readOptions<MarkdownItPdfPrinterOptions>(
+        args.config,
+        logger
+    );
     MarkdownItPdf.createPdfPrinter(logger, {
         rootDir: args.dir,
         outputDir: args.outputDir,

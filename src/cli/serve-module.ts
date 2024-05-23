@@ -36,7 +36,10 @@ export const handler = (args: MarkdownItPdfCommandOptions) => {
     const logger = new ConsoleLogger(args.log);
     logger.info('MarkdownItPDF Render Server is starting...');
 
-    const options = readOptions<MarkdownItfRenderServerOptions>(args.config);
+    const options = readOptions<MarkdownItfRenderServerOptions>(
+        args.config,
+        logger
+    );
     MarkdownItPdf.createRenderServer(logger, {
         rootDir: args.dir,
         ...options,

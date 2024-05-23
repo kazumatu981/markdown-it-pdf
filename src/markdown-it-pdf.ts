@@ -16,11 +16,19 @@ export interface MarkdownItfRenderServerOptions
     extends MarkdownRenderServerOptions {}
 export interface MarkdownItPdfPrinterOptions
     extends MarkdownItfRenderServerOptions {
-    defaultPrinterOption?: PuppeteerPDFOptions;
+    printerOption?: PuppeteerPDFOptions;
     outputDir?: string;
 }
 
 const defaultOutputDir = 'pdf';
+const defaultPrinterOption: PuppeteerPDFOptions = {
+    margin: {
+        top: '12.7mm',
+        bottom: '12.7mm',
+        left: '12.7mm',
+        right: '12.7mm',
+    },
+};
 
 export abstract class MarkdownItPdf {
     protected _server: MarkdownRenderServer;
@@ -30,6 +38,9 @@ export abstract class MarkdownItPdf {
         logger?: Logger,
         options?: MarkdownItfRenderServerOptions
     ): Promise<MarkdownItfRenderServer> {
+        logger?.debug(
+            `createRenderServer() called with options: ${JSON.stringify(options)}`
+        );
         const server = await MarkdownRenderServer.createInstance(
             logger,
             options
@@ -40,6 +51,9 @@ export abstract class MarkdownItPdf {
         logger: Logger,
         options?: MarkdownItPdfPrinterOptions
     ): Promise<MarkdownItPdfPrinter> {
+        logger?.debug(
+            `createPdfPrinter() called with options: ${JSON.stringify(options)}`
+        );
         const server = await MarkdownRenderServer.createInstance(
             logger,
             options
@@ -87,9 +101,9 @@ class MarkdownItPdfPrinter extends MarkdownItPdf {
         let candidate = options;
         if (!candidate) {
             candidate = (this._options as MarkdownItPdfPrinterOptions)
-                .defaultPrinterOption;
+                .printerOption;
             if (!candidate) {
-                candidate = {};
+                candidate = defaultPrinterOption;
             }
         }
         return candidate;

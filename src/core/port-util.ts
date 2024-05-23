@@ -1,4 +1,5 @@
 import http from 'http';
+import { Logger } from '../cli/logger';
 
 interface Range {
     min?: number;
@@ -38,12 +39,15 @@ function getRandom(range?: Range): number {
 
 export async function tryToListen(
     port?: number,
-    options?: ServerPortOptions
+    options?: ServerPortOptions,
+    logger?: Logger
 ): Promise<ServerPort | undefined> {
     let serverPort = undefined;
     if (port != undefined) {
+        logger?.debug('Try to Listen on port %d', port);
         serverPort = await tryToListenCore(port);
     } else {
+        logger?.debug('Try to Listen on port random mode');
         for (let i = 0; i < (options?.retry ?? 10); i++) {
             port = getRandom(options?.range);
             serverPort = await tryToListenCore(port);
