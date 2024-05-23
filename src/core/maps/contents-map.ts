@@ -1,9 +1,10 @@
-import { findFiles, filePathToUrl } from './path-resolver';
+import { findFiles, filePathToUrl } from '../utils/path-resolver';
 import {
     type ResolverType,
     type ResolverMap,
     DefaultExtensionMap,
 } from './resolver-map';
+import { type ContentsMapOptions } from '../../common/configure';
 import path from 'path';
 
 export interface ContentsMapEntity {
@@ -17,9 +18,6 @@ export interface RenderedEntity extends ContentsMapEntity {
     contents: string | Buffer;
 }
 
-export interface ContentsMapOptions {
-    recursive?: boolean;
-}
 export class ContentsMap extends Map<string, ContentsMapEntity> {
     private _resolver: ResolverMap;
     private _contentsRoot: string;

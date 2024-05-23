@@ -1,9 +1,9 @@
 import { type Argv } from 'yargs';
 import path from 'path';
 import { type MarkdownItPdfCommandOptions } from './command-options';
-import { readOptions } from './configure';
-import { MarkdownItPdf, MarkdownItPdfPrinterOptions } from '../markdown-it-pdf';
-import { ConsoleLogger } from './logger';
+import { readOptions, MarkdownItPdfPrinterOptions } from '../common/configure';
+import { MarkdownItPdf } from '../markdown-it-pdf';
+import { ConsoleLogger } from '../common/logger';
 // exports.command: string (or array of strings) that executes this command when given on the command line, first string may contain positional args
 export const command: string = 'print [dir] [outputDir]';
 // exports.aliases: array of strings (or a single string) representing aliases of exports.command, positional args defined in an alias are ignored

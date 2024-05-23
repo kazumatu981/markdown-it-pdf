@@ -1,4 +1,4 @@
-import { LogLevel } from './logger';
+import { LogLevel } from '../common/logger';
 
 export interface MarkdownItPdfCommandOptions {
     dir?: string;

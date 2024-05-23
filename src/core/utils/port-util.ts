@@ -1,14 +1,11 @@
 import http from 'http';
-import { Logger } from '../cli/logger';
+import { Logger } from '../../common/logger';
+import type {
+    Range,
+    SafeRange,
+    ServerPortOptions,
+} from '../../common/configure';
 
-interface Range {
-    min?: number;
-    max?: number;
-}
-interface SafeRange {
-    min: number;
-    max: number;
-}
 const privatePortRange: SafeRange = {
     min: 49152,
     max: 65535,
@@ -17,11 +14,6 @@ const privatePortRange: SafeRange = {
 export interface ServerPort {
     port: number;
     httpServer: http.Server;
-}
-
-export interface ServerPortOptions {
-    retry?: number;
-    range?: Range;
 }
 
 function getRandom(range?: Range): number {

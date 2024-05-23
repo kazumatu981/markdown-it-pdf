@@ -1,24 +1,15 @@
-import {
-    type MarkdownRenderServerOptions,
-    MarkdownRenderServer,
-} from './core/markdown-render-server';
-import {
-    type PuppeteerPDFOptions,
-    printManyPages,
-    printIntoMemory,
-} from './core/puppeteer-pdf-printer';
+import { MarkdownRenderServer } from './core/markdown-render-server';
+import { printManyPages, printIntoMemory } from './core/puppeteer-pdf-printer';
 
-import { Logger } from './cli/logger';
+import { Logger } from './common/logger';
+import type {
+    MarkdownItfRenderServerOptions,
+    MarkdownItPdfPrinterOptions,
+    PuppeteerPDFOptions,
+} from './common/configure';
 
 import type MarkdownIt from 'markdown-it';
 
-export interface MarkdownItfRenderServerOptions
-    extends MarkdownRenderServerOptions {}
-export interface MarkdownItPdfPrinterOptions
-    extends MarkdownItfRenderServerOptions {
-    printerOption?: PuppeteerPDFOptions;
-    outputDir?: string;
-}
 
 const defaultOutputDir = 'pdf';
 const defaultPrinterOption: PuppeteerPDFOptions = {
@@ -48,7 +39,7 @@ export abstract class MarkdownItPdf {
         return new MarkdownItfRenderServer(server, logger, options);
     }
     public static async createPdfPrinter(
-        logger: Logger,
+        logger?: Logger,
         options?: MarkdownItPdfPrinterOptions
     ): Promise<MarkdownItPdfPrinter> {
         logger?.debug(

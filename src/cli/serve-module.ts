@@ -1,12 +1,12 @@
 import { type Argv } from 'yargs';
 import { type MarkdownItPdfCommandOptions } from '../cli/command-options';
 import path from 'path';
-import { readOptions } from './configure';
 import {
-    MarkdownItPdf,
+    readOptions,
     MarkdownItfRenderServerOptions,
-} from '../markdown-it-pdf';
-import { ConsoleLogger } from './logger';
+} from '../common/configure';
+import { MarkdownItPdf } from '../markdown-it-pdf';
+import { ConsoleLogger } from '../common/logger';
 
 // exports.command: string (or array of strings) that executes this command when given on the command line, first string may contain positional args
 export const command: string = 'serve [dir]';

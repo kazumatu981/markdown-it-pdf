@@ -1,9 +1,8 @@
-import { PDFOptions, type PaperFormat } from 'puppeteer';
 import puppeteer from 'puppeteer';
-import { buildTreeOfFiles } from './path-resolver';
+import { buildTreeOfFiles } from './utils/path-resolver';
 import path from 'path';
-
-export type PuppeteerPDFOptions = Omit<PDFOptions, 'path'>;
+import { type PuppeteerPDFOptions } from '../common/configure';
+import { type PDFOptions } from 'puppeteer';
 
 export async function printManyPages(
     siteUrl: string,

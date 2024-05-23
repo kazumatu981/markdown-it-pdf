@@ -5,7 +5,7 @@ import yargs from 'yargs';
 import serveModule from './cli/serve-module';
 import printModule from './cli/print-module';
 import { type MarkdownItPdfCommandOptions } from './cli/command-options';
-import { levelIndexes } from './cli/logger';
+import { levelIndexes } from './common/logger';
 
 export default function markdownItPdfCli() {
     // CLI interface
