@@ -1,8 +1,8 @@
 import { jest, describe, it, expect } from '@jest/globals';
-import { ContentsMap } from '../../../src/core/contents-map';
-import { ResolverMap } from '../../../src/core/resolver-map';
-import { mockingTestDir, unmockingTestDir } from '../../utils/test-dir';
-import { type ContentsResolverFunction } from '../../../src/core/resolver-map';
+import { ContentsMap } from '../../../../src/core/maps/contents-map';
+import { ResolverMap } from '../../../../src/core/maps/resolver-map';
+import { mockingTestDir, unmockingTestDir } from '../../../utils/test-dir';
+import { type ContentsResolverFunction } from '../../../../src/core/maps/resolver-map';
 
 describe('CoreLibrary Unit Tests - ContentsMap', () => {
     describe('createInstance', () => {
