@@ -5,14 +5,13 @@ import { Logger } from './common/logger';
 import type {
     MarkdownItfRenderServerOptions,
     MarkdownItPdfPrinterOptions,
-    PuppeteerPDFOptions,
+    PrinterOptions,
 } from './common/configure';
 
 import type MarkdownIt from 'markdown-it';
 
-
 const defaultOutputDir = 'pdf';
-const defaultPrinterOption: PuppeteerPDFOptions = {
+const defaultPrinterOption: PrinterOptions = {
     margin: {
         top: '12.7mm',
         bottom: '12.7mm',
@@ -88,7 +87,7 @@ class MarkdownItPdfPrinter extends MarkdownItPdf {
         }
         return candidate;
     }
-    public safeOptions(options?: PuppeteerPDFOptions): PuppeteerPDFOptions {
+    public safeOptions(options?: PrinterOptions): PrinterOptions {
         let candidate = options;
         if (!candidate) {
             candidate = (this._options as MarkdownItPdfPrinterOptions)
@@ -101,7 +100,7 @@ class MarkdownItPdfPrinter extends MarkdownItPdf {
     }
     public async printAll(
         outputDir?: string,
-        options?: PuppeteerPDFOptions
+        options?: PrinterOptions
     ): Promise<this> {
         await this._server.listen();
 
@@ -120,7 +119,7 @@ class MarkdownItPdfPrinter extends MarkdownItPdf {
     public async print(
         url: string | string[],
         outputDir?: string,
-        options?: PuppeteerPDFOptions
+        options?: PrinterOptions
     ): Promise<this> {
         await this._server.listen();
 
@@ -139,7 +138,7 @@ class MarkdownItPdfPrinter extends MarkdownItPdf {
     }
     public async printIntoBuffer(
         url: string,
-        options?: PuppeteerPDFOptions
+        options?: PrinterOptions
     ): Promise<Buffer> {
         await this._server.listen();
 

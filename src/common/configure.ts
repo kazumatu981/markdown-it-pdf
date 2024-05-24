@@ -32,13 +32,13 @@ export interface MarkdownRenderServerOptions
     externalUrls?: string[];
 }
 
-export type PuppeteerPDFOptions = Omit<PDFOptions, 'path'>;
+export type PrinterOptions = Omit<PDFOptions, 'path'>;
 
 export interface MarkdownItfRenderServerOptions
     extends MarkdownRenderServerOptions {}
 export interface MarkdownItPdfPrinterOptions
     extends MarkdownItfRenderServerOptions {
-    printerOption?: PuppeteerPDFOptions;
+    printerOption?: PrinterOptions;
     outputDir?: string;
 }
 

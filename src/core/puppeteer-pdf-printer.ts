@@ -1,14 +1,33 @@
 import puppeteer from 'puppeteer';
 import { buildTreeOfFiles } from './utils/path-resolver';
 import path from 'path';
-import { type PuppeteerPDFOptions } from '../common/configure';
+import { type PrinterOptions } from '../common/configure';
 import { type PDFOptions } from 'puppeteer';
+import { Logger } from '../common/logger';
 
+export class PuppeteerPDFPrinter {
+    private _siteUrl: string;
+    private _outputDir: string;
+    private _options?: PrinterOptions;
+    private _logger?: Logger;
+
+    constructor(
+        siteUrl: string,
+        outputDir: string,
+        options?: PrinterOptions,
+        logger?: Logger
+    ) {
+        this._siteUrl = siteUrl;
+        this._outputDir = outputDir;
+        this._options = options;
+        this._logger = logger;
+    }
+}
 export async function printManyPages(
     siteUrl: string,
     pagePaths: string[],
     outputDir: string,
-    pdfOptions?: PuppeteerPDFOptions
+    pdfOptions?: PrinterOptions
 ) {
     // build folder tree.
     await buildTreeOfFiles(pagePaths.map((page) => path.join(outputDir, page)));
@@ -44,7 +63,7 @@ export async function printOnePage(
     siteUrl: string,
     pagePath: string,
     outputDir: string,
-    pdfOptions?: PuppeteerPDFOptions
+    pdfOptions?: PrinterOptions
 ) {
     await printManyPages(siteUrl, [pagePath], outputDir, pdfOptions);
     return;
@@ -53,7 +72,7 @@ export async function printOnePage(
 export async function printIntoMemory(
     siteUrl: string,
     pagePath: string,
-    pdfOptions?: PuppeteerPDFOptions
+    pdfOptions?: PrinterOptions
 ): Promise<Buffer> {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
