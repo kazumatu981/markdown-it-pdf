@@ -1,6 +1,6 @@
 import { jest, expect, describe, it } from '@jest/globals';
 
-import { tryToListen } from '../../../src/core/port-util';
+import { tryToListen } from '../../../src/core/utils/http-helper';
 describe('CoreLibrary Unit Tests - port util', () => {
     it('should return a valid port', async () => {
         const serverPort = await tryToListen();
