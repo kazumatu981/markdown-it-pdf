@@ -37,12 +37,12 @@ export async function tryToListen(
     let serverPort = undefined;
     if (port != undefined) {
         logger?.debug('Try to Listen on port %d', port);
-        serverPort = await tryToListenCore(port);
+        serverPort = await tryToListenCore(port, logger);
     } else {
         logger?.debug('Try to Listen on port random mode');
         for (let i = 0; i < (options?.retry ?? 10); i++) {
             port = getRandom(options?.range);
-            serverPort = await tryToListenCore(port);
+            serverPort = await tryToListenCore(port, logger);
             if (serverPort !== undefined) {
                 break; // success
             }
@@ -50,16 +50,23 @@ export async function tryToListen(
     }
     return serverPort;
 }
-function tryToListenCore(port: number): Promise<ServerPort | undefined> {
+function tryToListenCore(
+    port: number,
+    logger?: Logger
+): Promise<ServerPort | undefined> {
     const server = http.createServer();
     return new Promise((resolve) => {
         server.listen(port, () => {
+            logger?.debug('reserved port: %d', port);
             resolve({
                 port,
                 httpServer: server,
             });
         });
-        server.on('error', () => {
+        server.on('error', (error) => {
+            logger?.debug('listen error: %s', error.message);
+            logger?.trace(error.stack);
+            logger?.warn('port %d may be used.', port);
             resolve(undefined);
         });
     });
