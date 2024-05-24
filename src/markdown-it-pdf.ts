@@ -1,5 +1,5 @@
 import { MarkdownRenderServer } from './core/markdown-render-server';
-import { printManyPages, printIntoMemory } from './core/puppeteer-pdf-printer';
+import { PuppeteerPDFPrinter } from './core/puppeteer-pdf-printer';
 
 import { Logger } from './common/logger';
 import type {
@@ -106,12 +106,12 @@ class MarkdownItPdfPrinter extends MarkdownItPdf {
 
         const urls = this.availableMarkdownUrls;
 
-        await printManyPages(
+        await PuppeteerPDFPrinter.intoFiles(
             `http://localhost:${this._server.listeningPort}`,
-            urls,
             this.safeOutputDir(outputDir),
-            this.safeOptions(options)
-        );
+            this.safeOptions(options),
+            this._logger
+        ).print(urls);
 
         this._server.close();
         return this;
@@ -126,12 +126,13 @@ class MarkdownItPdfPrinter extends MarkdownItPdf {
         if (!Array.isArray(url)) {
             url = [url];
         }
-        await printManyPages(
+
+        await PuppeteerPDFPrinter.intoFiles(
             `http://localhost:${this._server.listeningPort}`,
-            url,
             this.safeOutputDir(outputDir),
-            this.safeOptions(options)
-        );
+            this.safeOptions(options),
+            this._logger
+        ).print(url);
 
         this._server.close();
         return this;
@@ -142,11 +143,11 @@ class MarkdownItPdfPrinter extends MarkdownItPdf {
     ): Promise<Buffer> {
         await this._server.listen();
 
-        const buffer = await printIntoMemory(
+        const buffer = await PuppeteerPDFPrinter.intoMemory(
             `http://localhost:${this._server.listeningPort}`,
-            url,
-            this.safeOptions(options)
-        );
+            this.safeOptions(options),
+            this._logger
+        ).print(url);
 
         this._server.close();
 

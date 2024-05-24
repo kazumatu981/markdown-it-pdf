@@ -1,40 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`CoreLibrary Unit Tests - PuppeteerPDFPrinter printIntoMemory 1`] = `
-[MockFunction] {
-  "calls": [
-    [
-      "http://localhost:3000//test1.md",
-    ],
-  ],
-  "results": [
-    {
-      "type": "return",
-      "value": undefined,
-    },
-  ],
-}
-`;
-
-exports[`CoreLibrary Unit Tests - PuppeteerPDFPrinter printIntoMemory 2`] = `
-[MockFunction] {
-  "calls": [
-    [
-      {
-        "format": "a4",
-      },
-    ],
-  ],
-  "results": [
-    {
-      "type": "return",
-      "value": undefined,
-    },
-  ],
-}
-`;
-
-exports[`CoreLibrary Unit Tests - PuppeteerPDFPrinter printManyPages 1`] = `
+exports[`CoreLibrary Unit Tests - PuppeteerPDFPrinter print into files 1`] = `
 [MockFunction] {
   "calls": [
     [
@@ -57,7 +23,7 @@ exports[`CoreLibrary Unit Tests - PuppeteerPDFPrinter printManyPages 1`] = `
 }
 `;
 
-exports[`CoreLibrary Unit Tests - PuppeteerPDFPrinter printManyPages 2`] = `
+exports[`CoreLibrary Unit Tests - PuppeteerPDFPrinter print into files 2`] = `
 [MockFunction] {
   "calls": [
     [
@@ -86,7 +52,7 @@ exports[`CoreLibrary Unit Tests - PuppeteerPDFPrinter printManyPages 2`] = `
 }
 `;
 
-exports[`CoreLibrary Unit Tests - PuppeteerPDFPrinter printOnePages 1`] = `
+exports[`CoreLibrary Unit Tests - PuppeteerPDFPrinter print into memory 1`] = `
 [MockFunction] {
   "calls": [
     [
@@ -102,13 +68,12 @@ exports[`CoreLibrary Unit Tests - PuppeteerPDFPrinter printOnePages 1`] = `
 }
 `;
 
-exports[`CoreLibrary Unit Tests - PuppeteerPDFPrinter printOnePages 2`] = `
+exports[`CoreLibrary Unit Tests - PuppeteerPDFPrinter print into memory 2`] = `
 [MockFunction] {
   "calls": [
     [
       {
         "format": "a4",
-        "path": "test\\test1.md.pdf",
       },
     ],
   ],
