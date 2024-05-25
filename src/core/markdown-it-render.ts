@@ -1,12 +1,11 @@
 import MarkdownIt from 'markdown-it';
 import fsPromises from 'fs/promises';
-
-export interface Styles {
-    internalUrls: string[];
-    externalUrls: string[];
-}
+import { Logger } from '../common/logger';
+import { type Styles } from '../common/configure';
 
 export class MarkdownItRender extends MarkdownIt {
+    public _logger?: Logger;
+
     private _styles: Styles = {
         internalUrls: [],
         externalUrls: [],
@@ -41,6 +40,8 @@ export class MarkdownItRender extends MarkdownIt {
      * @return {string} The rendered HTML string.
      */
     public render(markdown: string): string {
+        this._logger?.debug(`render() called.`);
+        this._logger?.debug(`styles: %o`, this._styles);
         const htmlBody = super.render(markdown);
         const styleTags = MarkdownItRender.generateStyleTags(
             this._styles.internalUrls,

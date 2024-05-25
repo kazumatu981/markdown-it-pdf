@@ -1,11 +1,12 @@
 import { type Argv } from 'yargs';
 import { type MarkdownItPdfCommandOptions } from '../cli/command-options';
 import path from 'path';
-import { readOptions } from './configure';
 import {
-    MarkdownItPdf,
+    readOptions,
     MarkdownItfRenderServerOptions,
-} from '../markdown-it-pdf';
+} from '../common/configure';
+import { MarkdownItPdf } from '../markdown-it-pdf';
+import { ConsoleLogger } from '../common/logger';
 
 // exports.command: string (or array of strings) that executes this command when given on the command line, first string may contain positional args
 export const command: string = 'serve [dir]';
@@ -20,6 +21,7 @@ export const builder: (
     yargs: Argv<MarkdownItPdfCommandOptions>
 ) => Argv<MarkdownItPdfCommandOptions> = (yargs: any) => {
     return yargs.positional('dir', {
+        alias: 'd',
         describe:
             'The directory containing the markdown, css, and other resources files',
         type: 'string',
@@ -31,21 +33,32 @@ export const builder: (
 
 // exports.handler: a function which will be passed the parsed argv.
 export const handler = (args: MarkdownItPdfCommandOptions) => {
-    const options = readOptions<MarkdownItfRenderServerOptions>(args.config);
-    MarkdownItPdf.createRenderServer({
+    const logger = new ConsoleLogger(args.log);
+    logger.info('MarkdownItPDF Render Server is starting...');
+
+    const options = readOptions<MarkdownItfRenderServerOptions>(
+        args.config,
+        logger
+    );
+    MarkdownItPdf.createRenderServer(logger, {
         rootDir: args.dir,
-        port: args.port,
         ...options,
     })
         .then((server) => {
+            logger.info('ready to serve.');
             return server.listen();
         })
         .then((port) => {
-            console.log(`server started at http://localhost:${port}`);
+            // success
+            logger.info('server started at http://localhost:%d', port);
         })
-        .catch((error) => {
+        .catch((error: Error) => {
             // error
-            console.error('error');
+            logger.error(
+                'Error Occurred while starting server: %s',
+                error.message
+            );
+            logger.debug(error.stack);
         });
 };
 

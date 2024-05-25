@@ -1,7 +1,7 @@
 import { jest, expect, describe, it } from '@jest/globals';
 import { MarkdownRenderServer } from '../../src/core/markdown-render-server';
-import { printOnePage } from '../../src/core/puppeteer-pdf-printer';
-import { buildTreeOfFiles } from '../../src/core/path-resolver';
+import { PuppeteerPDFPrinter } from '../../src/core/puppeteer-pdf-printer';
+import { buildTreeOfFiles } from '../../src/core/utils/path-resolver';
 import fsPromises from 'fs/promises';
 import http from 'http';
 import { readFromServer } from '../utils/http-util';
@@ -11,12 +11,12 @@ describe('render test', () => {
         await buildTreeOfFiles([`${__dirname}/out/test.pdf`]);
     });
     it('render to html on local server', async () => {
-        const server = await MarkdownRenderServer.createInstance({
+        const server = await MarkdownRenderServer.createInstance(undefined, {
             rootDir: `${__dirname}/src`,
             externalUrls: ['https://hoo.bar/styles/test.css'],
         });
 
-        server.listen(3000);
+        await server.listen(3000);
 
         const htmlData = await readFromServer('http://localhost:3000/test.md');
         expect(htmlData).toMatchSnapshot('html file');
@@ -37,23 +37,22 @@ describe('render test', () => {
         );
         expect(notFoundData).toMatchSnapshot('Not Found');
 
-        server.close();
+        await server.close();
     });
     it('render and print to pdf', async () => {
-        const server = await MarkdownRenderServer.createInstance({
+        const server = await MarkdownRenderServer.createInstance(undefined, {
             rootDir: `${__dirname}/src`,
             externalUrls: ['https://hoo.bar/styles/test.css'],
         });
 
-        server.listen(3000);
+        await server.listen(3001);
 
-        await printOnePage(
-            'http://localhost:3000',
-            '/test.md',
+        await PuppeteerPDFPrinter.intoFiles(
+            'http://localhost:3001',
             `${__dirname}/out`
-        );
+        ).print(['/test.md']);
 
-        server.close();
+        await server.close();
     });
 });
 

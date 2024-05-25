@@ -16,13 +16,28 @@ export function defaultContentsResolver(contentPath: string): Promise<Buffer> {
     return fsPromises.readFile(contentPath);
 }
 
+export class ResolverMap extends Map<ResolverType, ContentsResolverFunction> {
+    public getResolver(resolverType: ResolverType): ContentsResolverFunction {
+        return this.get(resolverType) ?? defaultContentsResolver;
+    }
+}
+
 interface ExtensionTypeInfo {
     resolverType: ResolverType;
     contentType: string;
     resolvedContentType?: string;
 }
 
-const defaultExtensionMap: Map<string, ExtensionTypeInfo> = new Map([
+export class ExtensionMap extends Map<string, ExtensionTypeInfo> {
+    public getTypeInfo(extName: string): ExtensionTypeInfo {
+        return this.get(extName) ?? defaultTypeInfo;
+    }
+    public isSupported(fileName: string): boolean {
+        return this.has(path.extname(fileName));
+    }
+}
+
+export const DefaultExtensionMap: ExtensionMap = new ExtensionMap([
     [
         '.md',
         {
@@ -89,29 +104,7 @@ const defaultExtensionMap: Map<string, ExtensionTypeInfo> = new Map([
     ],
 ]);
 
-export const defaultTypeInfo: ExtensionTypeInfo = {
+const defaultTypeInfo: ExtensionTypeInfo = {
     resolverType: 'binary',
     contentType: 'application/octet-stream',
 };
-
-export class ResolverMap extends Map<ResolverType, ContentsResolverFunction> {
-    private _extensionMap: Map<string, ExtensionTypeInfo>;
-    public constructor() {
-        super();
-        this._extensionMap = defaultExtensionMap;
-    }
-    public getTypeInfo(extName: string): ExtensionTypeInfo {
-        return this._extensionMap.get(extName) ?? defaultTypeInfo;
-    }
-
-    public isSupported(fileName: string): boolean {
-        return this._extensionMap.has(path.extname(fileName));
-    }
-
-    public getResolver(resolverType: ResolverType): ContentsResolverFunction {
-        return this.get(resolverType) ?? defaultContentsResolver;
-    }
-    public getResolverByExtension(extName: string): ContentsResolverFunction {
-        return this.getResolver(this.getTypeInfo(extName).resolverType);
-    }
-}

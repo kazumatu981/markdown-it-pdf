@@ -1,39 +1,35 @@
 import http from 'http';
 import fsPromise from 'fs/promises';
 
-import {
-    ContentsMap,
-    RenderedEntity,
-    type ContentsMapOptions,
-} from './contents-map';
-import { ResolverMap } from './resolver-map';
+import { ContentsMap, RenderedEntity } from './maps/contents-map';
+import { ResolverMap } from './maps/resolver-map';
 import { MarkdownItRender } from './markdown-it-render';
-import { ServerPortOptions, tryToListen } from './port-util';
+import { tryToListen } from './utils/http-helper';
+import { Logger } from '../common/logger';
+import { type MarkdownRenderServerOptions } from '../common/configure';
 
-export interface MarkdownRenderServerOptions
-    extends ContentsMapOptions,
-        ServerPortOptions {
-    port?: number;
-    rootDir?: string;
-    externalUrls?: string[];
-}
 const defaultOptions: MarkdownRenderServerOptions = {
     rootDir: '.',
     externalUrls: [],
 };
 export class MarkdownRenderServer extends MarkdownItRender {
     private _options?: MarkdownRenderServerOptions;
-    // private _server: http.Server = http.createServer();
     private _server?: http.Server;
     private _contentsMap?: ContentsMap;
     private _listeningPort?: number;
 
     public static async createInstance(
+        logger?: Logger,
         options?: MarkdownRenderServerOptions
     ): Promise<MarkdownRenderServer> {
+        logger?.debug(
+            `MarkdownRenderServer.createRenderServer() called with options: ${JSON.stringify(options)}`
+        );
+
         // create this instance
         const theInstance = new MarkdownRenderServer();
         theInstance._options = options;
+        theInstance._logger = logger;
 
         // create resolver map
         const resolverMap = new ResolverMap();
@@ -54,15 +50,25 @@ export class MarkdownRenderServer extends MarkdownItRender {
             options?.rootDir ?? '.',
             options
         );
+        logger?.debug('contentsUrls: %o', contentsMap.getEntityUrls());
+
         // set contents map
         theInstance.contentsMap = contentsMap;
 
         // set style urls
-        theInstance.addStyles(theInstance.contentsMap.styleEntryUrls);
+        theInstance.addStyles(theInstance.availableStyleUrls);
         theInstance.addExternalStyles(options?.externalUrls ?? []);
 
         // return the instance
         return theInstance;
+    }
+
+    public get availableMarkdownUrls(): string[] {
+        return this.contentsMap.getEntityUrls('markdown');
+    }
+
+    public get availableStyleUrls(): string[] {
+        return this.contentsMap.getEntityUrls('style');
     }
 
     private set contentsMap(contentsMap: ContentsMap) {
@@ -77,20 +83,38 @@ export class MarkdownRenderServer extends MarkdownItRender {
     }
     public async listen(port?: number): Promise<number> {
         const portCandidate = port ?? this._options?.port;
-        const serverPort = await tryToListen(portCandidate, this._options);
+        const serverPort = await tryToListen(
+            portCandidate,
+            this._options,
+            this._logger
+        );
         if (serverPort === undefined) {
+            this._logger?.error('Can not listen on port %d', portCandidate);
+            this._logger?.trace('Port not available');
             throw new Error('Can not listen');
         }
         this._listeningPort = serverPort.port;
         this._server = serverPort.httpServer;
 
+        this._logger?.debug('Listening on port %d', this._listeningPort);
+
         // bind the server event listener
         this._server.on('request', this.serverListener.bind(this));
         return this._listeningPort;
     }
-    public close(): void {
+    public async close(): Promise<void> {
         this._listeningPort = undefined;
-        this._server?.close();
+        return new Promise((resolve, rejects) => {
+            this._server?.close((err) => {
+                if (err) {
+                    this._logger?.error('Can not close server');
+                    this._logger?.trace(err);
+                    rejects(err);
+                } else {
+                    resolve();
+                }
+            });
+        });
     }
 
     /**
@@ -102,7 +126,7 @@ export class MarkdownRenderServer extends MarkdownItRender {
         req: http.IncomingMessage,
         res: http.ServerResponse
     ): void {
-        this;
+        this._logger?.debug('Request: %s', req.url);
         // Get requested file path
         const filePath = req.url as string;
         // Render the file contents with given path
@@ -119,6 +143,11 @@ export class MarkdownRenderServer extends MarkdownItRender {
     }
 
     private writeNotFound(res: http.ServerResponse): void {
+        this._logger?.warn(
+            'Response for url: %s, status code: %d',
+            res.req.url,
+            404
+        );
         res.statusCode = 404;
         res.appendHeader('Content-Type', 'text/plain');
         res.write('Not Found');
@@ -128,6 +157,13 @@ export class MarkdownRenderServer extends MarkdownItRender {
         res: http.ServerResponse,
         entity: RenderedEntity
     ): void {
+        this._logger?.debug(
+            'Response for url: %s, status code: %d',
+            res.req.url,
+            200
+        );
+        this._logger?.debug('content type: %s', entity.contentType);
+
         res.statusCode = 200;
         res.appendHeader('Content-Type', entity.contentType);
         res.write(entity.contents);

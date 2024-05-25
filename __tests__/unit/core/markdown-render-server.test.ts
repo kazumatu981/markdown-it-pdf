@@ -26,10 +26,13 @@ describe('CoreLibrary Unit Tests - MarkdownRenderServer', () => {
     describe('createInstance', () => {
         it('createInstance', async () => {
             mockingTestDir();
-            const server = await MarkdownRenderServer.createInstance({
-                rootDir: 'test',
-                externalUrls: ['https://hoo.bar/styles/test.css'],
-            });
+            const server = await MarkdownRenderServer.createInstance(
+                undefined,
+                {
+                    rootDir: 'test',
+                    externalUrls: ['https://hoo.bar/styles/test.css'],
+                }
+            );
             unmockingTestDir();
             expect(http.createServer).not.toHaveBeenCalled();
             expect(onFn).not.toHaveBeenCalled();
@@ -61,7 +64,10 @@ describe('CoreLibrary Unit Tests - MarkdownRenderServer', () => {
         describe("on omit option's port property of `createInstance`", () => {
             it('on omit `listen` port.', async () => {
                 mockingTestDir();
-                const server = await MarkdownRenderServer.createInstance({});
+                const server = await MarkdownRenderServer.createInstance(
+                    undefined,
+                    {}
+                );
                 await server.listen();
                 unmockingTestDir();
                 expect(listenFn).toBeCalledTimes(1);
@@ -73,7 +79,10 @@ describe('CoreLibrary Unit Tests - MarkdownRenderServer', () => {
             it('on set `listen` port.', async () => {
                 mockingTestDir();
                 mockingTestDir();
-                const server = await MarkdownRenderServer.createInstance({});
+                const server = await MarkdownRenderServer.createInstance(
+                    undefined,
+                    {}
+                );
                 await server.listen(3030);
                 unmockingTestDir();
                 expect(listenFn).toBeCalledTimes(1);
@@ -83,9 +92,12 @@ describe('CoreLibrary Unit Tests - MarkdownRenderServer', () => {
         describe("on set option's port property of `createInstance`", () => {
             it('on omit `listen` port.', async () => {
                 mockingTestDir();
-                const server = await MarkdownRenderServer.createInstance({
-                    port: 3100,
-                });
+                const server = await MarkdownRenderServer.createInstance(
+                    undefined,
+                    {
+                        port: 3100,
+                    }
+                );
                 await server.listen();
                 unmockingTestDir();
                 expect(listenFn).toBeCalledTimes(1);
@@ -94,9 +106,12 @@ describe('CoreLibrary Unit Tests - MarkdownRenderServer', () => {
             it('on set `listen` port.', async () => {
                 mockingTestDir();
                 mockingTestDir();
-                const server = await MarkdownRenderServer.createInstance({
-                    port: 3100,
-                });
+                const server = await MarkdownRenderServer.createInstance(
+                    undefined,
+                    {
+                        port: 3100,
+                    }
+                );
                 await server.listen(3030);
                 unmockingTestDir();
                 expect(listenFn).toBeCalledTimes(1);
@@ -107,9 +122,12 @@ describe('CoreLibrary Unit Tests - MarkdownRenderServer', () => {
         describe("should return server's port", () => {
             it("should return server's port", async () => {
                 mockingTestDir();
-                const server = await MarkdownRenderServer.createInstance({
-                    port: 3100,
-                });
+                const server = await MarkdownRenderServer.createInstance(
+                    undefined,
+                    {
+                        port: 3100,
+                    }
+                );
                 const port = await server.listen();
                 unmockingTestDir();
                 expect(server.listeningPort).toEqual(3100);
@@ -120,10 +138,13 @@ describe('CoreLibrary Unit Tests - MarkdownRenderServer', () => {
     describe('close', () => {
         it('close call the server close', async () => {
             mockingTestDir();
-            const server = await MarkdownRenderServer.createInstance({
-                rootDir: 'test',
-                externalUrls: ['https://hoo.bar/styles/test.css'],
-            });
+            const server = await MarkdownRenderServer.createInstance(
+                undefined,
+                {
+                    rootDir: 'test',
+                    externalUrls: ['https://hoo.bar/styles/test.css'],
+                }
+            );
             await server.listen();
             server.close();
             unmockingTestDir();
@@ -131,10 +152,13 @@ describe('CoreLibrary Unit Tests - MarkdownRenderServer', () => {
         });
         it('to do nothing on close, if the server is not listening', async () => {
             mockingTestDir();
-            const server = await MarkdownRenderServer.createInstance({
-                rootDir: 'test',
-                externalUrls: ['https://hoo.bar/styles/test.css'],
-            });
+            const server = await MarkdownRenderServer.createInstance(
+                undefined,
+                {
+                    rootDir: 'test',
+                    externalUrls: ['https://hoo.bar/styles/test.css'],
+                }
+            );
             server.close();
             unmockingTestDir();
             expect(closeFn).toBeCalledTimes(0);
