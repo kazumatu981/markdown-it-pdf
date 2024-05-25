@@ -1,7 +1,7 @@
 import { jest, expect, describe, it } from '@jest/globals';
 import { MarkdownRenderServer } from '../../src/core/markdown-render-server';
 import { printOnePage } from '../../src/core/puppeteer-pdf-printer';
-import { buildTreeOfFiles } from '../../src/core/path-resolver';
+import { buildTreeOfFiles } from '../../src/core/utils/path-resolver';
 import fsPromises from 'fs/promises';
 import http from 'http';
 import { readFromServer } from '../utils/http-util';
@@ -11,7 +11,7 @@ describe('render test', () => {
         await buildTreeOfFiles([`${__dirname}/out/test.pdf`]);
     });
     it('render to html on local server', async () => {
-        const server = await MarkdownRenderServer.createInstance({
+        const server = await MarkdownRenderServer.createInstance(undefined, {
             rootDir: `${__dirname}/src`,
             externalUrls: ['https://hoo.bar/styles/test.css'],
         });
@@ -40,7 +40,7 @@ describe('render test', () => {
         server.close();
     });
     it('render and print to pdf', async () => {
-        const server = await MarkdownRenderServer.createInstance({
+        const server = await MarkdownRenderServer.createInstance(undefined, {
             rootDir: `${__dirname}/src`,
             externalUrls: ['https://hoo.bar/styles/test.css'],
         });

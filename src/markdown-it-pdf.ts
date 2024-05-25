@@ -1,45 +1,62 @@
-import {
-    type MarkdownRenderServerOptions,
-    MarkdownRenderServer,
-} from './core/markdown-render-server';
-import {
-    type PuppeteerPDFOptions,
-    printManyPages,
-    printIntoMemory,
-} from './core/puppeteer-pdf-printer';
+import { MarkdownRenderServer } from './core/markdown-render-server';
+import { PuppeteerPDFPrinter } from './core/puppeteer-pdf-printer';
+
+import { Logger } from './common/logger';
+import type {
+    MarkdownItfRenderServerOptions,
+    MarkdownItPdfPrinterOptions,
+    PrinterOptions,
+} from './common/configure';
 
 import type MarkdownIt from 'markdown-it';
 
-export interface MarkdownItfRenderServerOptions
-    extends MarkdownRenderServerOptions {}
-export interface MarkdownItPdfPrinterOptions
-    extends MarkdownItfRenderServerOptions {
-    defaultPrinterOption?: PuppeteerPDFOptions;
-    outputDir?: string;
-}
-
 const defaultOutputDir = 'pdf';
+const defaultPrinterOption: PrinterOptions = {
+    margin: {
+        top: '12.7mm',
+        bottom: '12.7mm',
+        left: '12.7mm',
+        right: '12.7mm',
+    },
+};
 
 export abstract class MarkdownItPdf {
     protected _server: MarkdownRenderServer;
+    protected _logger?: Logger;
     protected _options?: MarkdownItfRenderServerOptions;
     public static async createRenderServer(
+        logger?: Logger,
         options?: MarkdownItfRenderServerOptions
     ): Promise<MarkdownItfRenderServer> {
-        const server = await MarkdownRenderServer.createInstance(options);
-        return new MarkdownItfRenderServer(server, options);
+        logger?.debug(
+            `createRenderServer() called with options: ${JSON.stringify(options)}`
+        );
+        const server = await MarkdownRenderServer.createInstance(
+            logger,
+            options
+        );
+        return new MarkdownItfRenderServer(server, logger, options);
     }
     public static async createPdfPrinter(
+        logger?: Logger,
         options?: MarkdownItPdfPrinterOptions
     ): Promise<MarkdownItPdfPrinter> {
-        const server = await MarkdownRenderServer.createInstance(options);
-        return new MarkdownItPdfPrinter(server, options);
+        logger?.debug(
+            `createPdfPrinter() called with options: ${JSON.stringify(options)}`
+        );
+        const server = await MarkdownRenderServer.createInstance(
+            logger,
+            options
+        );
+        return new MarkdownItPdfPrinter(server, logger, options);
     }
     protected constructor(
         server: MarkdownRenderServer,
+        logger?: Logger,
         options?: MarkdownItfRenderServerOptions
     ) {
         this._server = server;
+        this._logger = logger;
         this._options = options;
     }
 
@@ -70,64 +87,67 @@ class MarkdownItPdfPrinter extends MarkdownItPdf {
         }
         return candidate;
     }
-    public safeOptions(options?: PuppeteerPDFOptions): PuppeteerPDFOptions {
+    public safeOptions(options?: PrinterOptions): PrinterOptions {
         let candidate = options;
         if (!candidate) {
             candidate = (this._options as MarkdownItPdfPrinterOptions)
-                .defaultPrinterOption;
+                .printerOption;
             if (!candidate) {
-                candidate = {};
+                candidate = defaultPrinterOption;
             }
         }
         return candidate;
     }
     public async printAll(
         outputDir?: string,
-        options?: PuppeteerPDFOptions
-    ): Promise<void> {
+        options?: PrinterOptions
+    ): Promise<this> {
         await this._server.listen();
 
         const urls = this.availableMarkdownUrls;
 
-        await printManyPages(
+        await PuppeteerPDFPrinter.intoFiles(
             `http://localhost:${this._server.listeningPort}`,
-            urls,
             this.safeOutputDir(outputDir),
-            this.safeOptions(options)
-        );
+            this.safeOptions(options),
+            this._logger
+        ).print(urls);
 
         this._server.close();
+        return this;
     }
     public async print(
         url: string | string[],
         outputDir?: string,
-        options?: PuppeteerPDFOptions
-    ): Promise<void> {
+        options?: PrinterOptions
+    ): Promise<this> {
         await this._server.listen();
 
         if (!Array.isArray(url)) {
             url = [url];
         }
-        await printManyPages(
+
+        await PuppeteerPDFPrinter.intoFiles(
             `http://localhost:${this._server.listeningPort}`,
-            url,
             this.safeOutputDir(outputDir),
-            this.safeOptions(options)
-        );
+            this.safeOptions(options),
+            this._logger
+        ).print(url);
 
         this._server.close();
+        return this;
     }
     public async printIntoBuffer(
         url: string,
-        options?: PuppeteerPDFOptions
+        options?: PrinterOptions
     ): Promise<Buffer> {
         await this._server.listen();
 
-        const buffer = await printIntoMemory(
+        const buffer = await PuppeteerPDFPrinter.intoMemory(
             `http://localhost:${this._server.listeningPort}`,
-            url,
-            this.safeOptions(options)
-        );
+            this.safeOptions(options),
+            this._logger
+        ).print(url);
 
         this._server.close();
 

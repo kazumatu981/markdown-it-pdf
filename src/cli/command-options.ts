@@ -1,6 +1,8 @@
+import { LogLevel } from '../common/logger';
+
 export interface MarkdownItPdfCommandOptions {
     dir?: string;
     outputDir?: string;
-    port?: number;
     config?: string;
+    log?: LogLevel;
 }

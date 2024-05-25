@@ -5,6 +5,7 @@ import yargs from 'yargs';
 import serveModule from './cli/serve-module';
 import printModule from './cli/print-module';
 import { type MarkdownItPdfCommandOptions } from './cli/command-options';
+import { levelIndexes } from './common/logger';
 
 export default function markdownItPdfCli() {
     // CLI interface
@@ -19,6 +20,16 @@ export default function markdownItPdfCli() {
     yargs
         .scriptName('markdown-it-pdf')
         .usage('$0 <cmd> [options]')
+        .command<MarkdownItPdfCommandOptions>(serveModule)
+        .command<MarkdownItPdfCommandOptions>(printModule)
+        .option('log', {
+            alias: 'l',
+            describe: 'Log level',
+            type: 'string',
+            demandOption: false,
+            default: levelIndexes[2],
+            choices: levelIndexes,
+        })
         .option('config', {
             alias: 'c',
             describe: 'Configuration file',
@@ -26,34 +37,8 @@ export default function markdownItPdfCli() {
             demandOption: false,
             coerce: (config: string) => path.resolve(process.cwd(), config),
         })
-        .command<MarkdownItPdfCommandOptions>(serveModule)
-        .command<MarkdownItPdfCommandOptions>(printModule)
         .alias('h', 'help')
         .alias('v', 'version')
         .help()
         .parse();
-}
-
-function definePrintCommand(yargs: yargs.Argv<{}>): void {
-    yargs
-        .positional('dir', {
-            alias: 'd',
-            describe:
-                'The directory containing the markdown, css, and other resources files',
-            type: 'string',
-            demandOption: true,
-            default: process.cwd(),
-            coerce: (dir: string) => path.resolve(process.cwd(), dir),
-        })
-        .positional('outputDir', {
-            alias: 'o',
-            describe: 'Output directory',
-            type: 'string',
-            demandOption: true,
-            default: process.cwd(),
-            coerce: (dir: string) => path.resolve(process.cwd(), dir),
-        });
-}
-function runPrint(args: yargs.ArgumentsCamelCase<{}>) {
-    console.log('print start....');
 }

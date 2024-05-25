@@ -4,9 +4,9 @@ import {
     defaultContentsResolver,
     ContentsResolverFunction,
     DefaultExtensionMap,
-} from '../../../src/core/resolver-map';
+} from '../../../../src/core/maps/resolver-map';
 
-import { mockingTestDir, unmockingTestDir } from '../../utils/test-dir';
+import { mockingTestDir, unmockingTestDir } from '../../../utils/test-dir';
 
 describe('CoreLibrary Unit Tests - defaultContentsResolver', () => {
     it('should return the default contents resolver', async () => {
