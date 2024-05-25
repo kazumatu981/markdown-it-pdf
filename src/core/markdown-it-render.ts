@@ -40,6 +40,8 @@ export class MarkdownItRender extends MarkdownIt {
      * @return {string} The rendered HTML string.
      */
     public render(markdown: string): string {
+        this._logger?.debug(`render() called.`);
+        this._logger?.debug(`styles: %o`, this._styles);
         const htmlBody = super.render(markdown);
         const styleTags = MarkdownItRender.generateStyleTags(
             this._styles.internalUrls,
