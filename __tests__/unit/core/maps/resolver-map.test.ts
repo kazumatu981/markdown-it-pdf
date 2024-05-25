@@ -3,8 +3,8 @@ import {
     ResolverMap,
     defaultContentsResolver,
     ContentsResolverFunction,
-    DefaultExtensionMap,
 } from '../../../../src/core/maps/resolver-map';
+import { DefaultExtensionMap } from '../../../../src/core/maps/extension-map';
 
 import { mockingTestDir, unmockingTestDir } from '../../../utils/test-dir';
 

@@ -1,9 +1,6 @@
 import { findFiles, filePathToUrl } from '../utils/path-resolver';
-import {
-    type ResolverType,
-    type ResolverMap,
-    DefaultExtensionMap,
-} from './resolver-map';
+import { type ResolverType, type ResolverMap } from './resolver-map';
+import { DefaultExtensionMap } from './extension-map';
 import { type ContentsMapOptions } from '../../common/configure';
 import path from 'path';
 
