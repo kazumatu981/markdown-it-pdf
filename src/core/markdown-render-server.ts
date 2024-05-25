@@ -102,9 +102,19 @@ export class MarkdownRenderServer extends MarkdownItRender {
         this._server.on('request', this.serverListener.bind(this));
         return this._listeningPort;
     }
-    public close(): void {
+    public async close(): Promise<void> {
         this._listeningPort = undefined;
-        this._server?.close();
+        return new Promise((resolve, rejects) => {
+            this._server?.close((err) => {
+                if (err) {
+                    this._logger?.error('Can not close server');
+                    this._logger?.trace(err);
+                    rejects(err);
+                } else {
+                    resolve();
+                }
+            });
+        });
     }
 
     /**

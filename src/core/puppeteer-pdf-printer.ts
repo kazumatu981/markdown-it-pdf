@@ -92,7 +92,7 @@ class FilePrinter extends PuppeteerPDFPrinter {
         for (const url of urls) {
             // print page
             await PuppeteerPDFPrinter.goAndWait(browserAndPage, url.fullUrl);
-            browserAndPage.page.pdf({
+            await browserAndPage.page.pdf({
                 path: url.pathToPdf,
                 ...this._options,
             });
