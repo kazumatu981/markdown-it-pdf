@@ -1,7 +1,7 @@
 import MarkdownIt from 'markdown-it';
 import fsPromises from 'fs/promises';
-import { Logger } from '../common/logger';
-import { type Styles } from '../common/configure';
+import { Logger } from '../../common/logger';
+import { type Styles } from '../../common/configure';
 
 export class MarkdownItRender extends MarkdownIt {
     public _logger?: Logger;

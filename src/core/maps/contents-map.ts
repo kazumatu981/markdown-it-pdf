@@ -4,6 +4,17 @@ import { DefaultExtensionMap } from './extension-map';
 import { type ContentsMapOptions } from '../../common/configure';
 import path from 'path';
 
+//#region constants
+/**
+ * default contents map options
+ */
+const defaultContentsMapOptions = {
+    rootDir: './',
+    recursive: true,
+};
+//#endregion
+
+//#region types and interfaces
 export interface ContentsMapEntity {
     url: string;
     resolverType: ResolverType;
@@ -15,39 +26,45 @@ export interface RenderedEntity extends ContentsMapEntity {
     contents: string | Buffer;
 }
 
-export class ContentsMap extends Map<string, ContentsMapEntity> {
-    private _resolver: ResolverMap;
-    private _contentsRoot: string;
-    private _options?: ContentsMapOptions;
+//#endregion
 
+//#region main class
+export class ContentsMap extends Map<string, ContentsMapEntity> {
+    //#region private fields
+    private _resolver: ResolverMap;
+    private _options?: ContentsMapOptions;
+    //#endregion
+
+    //#region public static methods
     public static async createInstance(
         resolverMap: ResolverMap,
-        contentsRoot: string,
         options?: ContentsMapOptions
     ): Promise<ContentsMap> {
         // create the instance
-        const theInstance = new ContentsMap(resolverMap, contentsRoot, options);
+        const theInstance = new ContentsMap(resolverMap, options);
         await theInstance.refresh();
         return theInstance;
     }
+    //#endregion
 
+    //#region constructor
     private constructor(
         resolverMap: ResolverMap,
-        contentsRoot: string,
         options?: ContentsMapOptions
     ) {
         super();
         this._resolver = resolverMap;
-        this._contentsRoot = contentsRoot;
         this._options = options;
     }
+    //#endregion
 
+    //#region public methods
     public async refresh(): Promise<void> {
         this.clear();
 
         const contents = await findFiles<ContentsMapEntity>(
-            this._contentsRoot,
-            this._options?.recursive ?? true,
+            this._options?.rootDir ?? defaultContentsMapOptions.rootDir,
+            this._options?.recursive ?? defaultContentsMapOptions.recursive,
             DefaultExtensionMap.isSupported.bind(DefaultExtensionMap),
             this.generateContentMapEntity.bind(this)
         );
@@ -77,16 +94,23 @@ export class ContentsMap extends Map<string, ContentsMapEntity> {
         const contents = await contentResolver(entity.contentPath);
         return { ...entity, contents };
     }
+    //#endregion
 
+    //#region private methods
     private generateContentMapEntity(filePath: string): ContentsMapEntity {
         const resolver = DefaultExtensionMap.getTypeInfo(
             path.extname(filePath)
         );
         return {
-            url: filePathToUrl(this._contentsRoot, filePath),
+            url: filePathToUrl(
+                this._options?.rootDir ?? defaultContentsMapOptions.rootDir,
+                filePath
+            ),
             resolverType: resolver.resolverType,
             contentType: resolver.resolvedContentType ?? resolver.contentType,
             contentPath: filePath,
         };
     }
+    //#endregion
 }
+//#endregion

@@ -8,16 +8,13 @@ export interface Styles {
 }
 
 export interface ContentsMapOptions {
+    rootDir?: string;
     recursive?: boolean;
 }
 
 export interface Range {
     min?: number;
     max?: number;
-}
-export interface SafeRange {
-    min: number;
-    max: number;
 }
 export interface ServerPortOptions {
     retry?: number;
@@ -28,7 +25,6 @@ export interface MarkdownRenderServerOptions
     extends ContentsMapOptions,
         ServerPortOptions {
     port?: number;
-    rootDir?: string;
     externalUrls?: string[];
 }
 

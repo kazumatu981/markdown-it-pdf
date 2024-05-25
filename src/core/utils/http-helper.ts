@@ -1,16 +1,15 @@
 import http from 'http';
 import { Logger } from '../../common/logger';
-import type {
-    Range,
-    SafeRange,
-    ServerPortOptions,
-} from '../../common/configure';
+import type { Range, ServerPortOptions } from '../../common/configure';
 
-const privatePortRange: SafeRange = {
+//#region constants
+const privatePortRange = {
     min: 49152,
     max: 65535,
 };
+//#endregion
 
+//#region types and interfaces
 export interface ServerPort {
     /**
      * The port that the server is listening on.
@@ -21,34 +20,11 @@ export interface ServerPort {
      */
     httpServer: http.Server;
 }
+//#endregion
 
-/**
- * Generates a random number within a specified range.
- *
- * @param {Range | undefined} range - The range within which the random number
- * should be generated. If not specified, the function will use the default range
- * of 49152 to 65535.
- * @returns {number} A random number within the specified range.
- * @throws {Error} If the range is invalid (min > max).
- */
-function getRandom(range?: Range): number {
-    // Set the default range if not specified
-    const candidate = {
-        min: range?.min ?? privatePortRange.min,
-        max: range?.max ?? privatePortRange.max,
-    };
+//#region functions
 
-    // Check if the range is valid
-    if (candidate.min > candidate.max) {
-        throw new Error('Invalid range');
-    }
-
-    // Generate a random number within the range
-    return Math.floor(
-        Math.random() * (candidate.max - candidate.min) + candidate.min
-    );
-}
-
+//#region exported functions
 /**
  * Tries to listen on a given port. If the port is not specified, it tries to
  * listen on a random port within a specified range. If the specified port is
@@ -81,6 +57,35 @@ export async function tryToListen(
         }
     }
     return serverPort;
+}
+//#endregion
+
+//#region internal functions
+/**
+ * Generates a random number within a specified range.
+ *
+ * @param {Range | undefined} range - The range within which the random number
+ * should be generated. If not specified, the function will use the default range
+ * of 49152 to 65535.
+ * @returns {number} A random number within the specified range.
+ * @throws {Error} If the range is invalid (min > max).
+ */
+function getRandom(range?: Range): number {
+    // Set the default range if not specified
+    const candidate = {
+        min: range?.min ?? privatePortRange.min,
+        max: range?.max ?? privatePortRange.max,
+    };
+
+    // Check if the range is valid
+    if (candidate.min > candidate.max) {
+        throw new Error('Invalid range');
+    }
+
+    // Generate a random number within the range
+    return Math.floor(
+        Math.random() * (candidate.max - candidate.min) + candidate.min
+    );
 }
 
 /**
@@ -122,3 +127,6 @@ function tryToListenCore(
         });
     });
 }
+//#endregion
+
+//#endregion

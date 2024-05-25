@@ -3,7 +3,7 @@ import fsPromise from 'fs/promises';
 
 import { ContentsMap, RenderedEntity } from './maps/contents-map';
 import { ResolverMap } from './maps/resolver-map';
-import { MarkdownItRender } from './markdown-it-render';
+import { MarkdownItRender } from './render/markdown-it-render';
 import { tryToListen } from './utils/http-helper';
 import { Logger } from '../common/logger';
 import { type MarkdownRenderServerOptions } from '../common/configure';
@@ -47,7 +47,6 @@ export class MarkdownRenderServer extends MarkdownItRender {
         // create contents map
         const contentsMap = await ContentsMap.createInstance(
             resolverMap,
-            options?.rootDir ?? '.',
             options
         );
         logger?.debug('contentsUrls: %o', contentsMap.getEntityUrls());

@@ -3,7 +3,7 @@ import { mockLogger } from '../../../utils/mock-logger';
 
 import { tryToListen } from '../../../../src/core/utils/http-helper';
 
-describe('CoreLibrary Unit Tests - port util', () => {
+describe('CoreLibrary Unit Tests - http-helper', () => {
     afterEach(() => {
         jest.clearAllMocks();
     });

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`CoreLibrary Unit Tests - port util should return undefined if the port is already in use - with logger: on to have been duplicated port, logger debug 1`] = `
+exports[`CoreLibrary Unit Tests - http-helper should return undefined if the port is already in use - with logger: on to have been duplicated port, logger debug 1`] = `
 [MockFunction] {
   "calls": [
     [
@@ -41,11 +41,11 @@ exports[`CoreLibrary Unit Tests - port util should return undefined if the port 
 }
 `;
 
-exports[`CoreLibrary Unit Tests - port util should return undefined if the port is already in use - with logger: on to have been duplicated port, logger error 1`] = `[MockFunction]`;
+exports[`CoreLibrary Unit Tests - http-helper should return undefined if the port is already in use - with logger: on to have been duplicated port, logger error 1`] = `[MockFunction]`;
 
-exports[`CoreLibrary Unit Tests - port util should return undefined if the port is already in use - with logger: on to have been duplicated port, logger info 1`] = `[MockFunction]`;
+exports[`CoreLibrary Unit Tests - http-helper should return undefined if the port is already in use - with logger: on to have been duplicated port, logger info 1`] = `[MockFunction]`;
 
-exports[`CoreLibrary Unit Tests - port util should return undefined if the port is already in use - with logger: on to have been duplicated port, logger warn 1`] = `
+exports[`CoreLibrary Unit Tests - http-helper should return undefined if the port is already in use - with logger: on to have been duplicated port, logger warn 1`] = `
 [MockFunction] {
   "calls": [
     [
