@@ -1,6 +1,8 @@
 import { jest, describe, it, expect } from '@jest/globals';
 import { MarkdownItRender } from '../../../../src/core/render/markdown-it-render';
 
+import { mockLogger } from '../../../utils/mock-logger';
+
 import fsAsync from 'fs/promises';
 
 const MarkdownItSup = require('markdown-it-sup');
@@ -41,5 +43,13 @@ describe('CoreLibrary Unit Tests - MarkdownItRender', () => {
         markdownItRender.addExternalStyles(['https://hoo.bar/styles/test.css']);
         const result = markdownItRender.render('# test\n\nhello world');
         expect(result).toMatchSnapshot();
+    });
+    it('Render Test: with logger', async () => {
+        const markdownItRender = new MarkdownItRender();
+        markdownItRender._logger = mockLogger;
+        markdownItRender.addStyles(['./test.css']);
+        markdownItRender.addExternalStyles(['https://hoo.bar/styles/test.css']);
+        const result = markdownItRender.render('# test\n\nhello world');
+        expect(mockLogger.debug).toMatchSnapshot();
     });
 });

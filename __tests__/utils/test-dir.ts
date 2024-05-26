@@ -8,6 +8,7 @@ export function mockingTestDir() {
         test: {
             'test.md': '# test\n\nhello world',
             'sample.txt': 'hello world',
+            'sample.jpg': 'sample.jpg',
             sub: {
                 'test.md': '# test\n\nhello world',
                 'sample.txt': 'hello world',

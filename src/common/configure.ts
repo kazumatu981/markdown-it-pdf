@@ -45,8 +45,16 @@ export function readOptions<T>(
     let options: T | undefined = undefined;
     if (filePath && fs.existsSync(filePath)) {
         try {
-            const content = fs.readFileSync(filePath, 'utf-8');
-            options = JSON.parse(content) as T;
+            if (filePath.endsWith('.json')) {
+                options = readJsonOptions<T>(filePath);
+            } else if (filePath.endsWith('.js')) {
+                options = readJSOptions<T>(filePath);
+            } else {
+                logger?.warn(
+                    'Unsupported configuration file extension: %s, so using default options.',
+                    filePath
+                );
+            }
         } catch (_) {
             // nothing to do
             logger?.warn(
@@ -61,4 +69,14 @@ export function readOptions<T>(
         );
     }
     return options;
+}
+
+function readJsonOptions<T>(filePath: string): T | undefined {
+    const content = fs.readFileSync(filePath, 'utf-8');
+    return JSON.parse(content) as T;
+}
+
+function readJSOptions<T>(filePath: string): T | undefined {
+    const module = require(filePath);
+    return module.default as T;
 }

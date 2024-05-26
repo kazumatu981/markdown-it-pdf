@@ -96,9 +96,12 @@ export class MarkdownRenderServer extends MarkdownItRender {
         return this._listeningPort;
     }
     public async close(): Promise<void> {
+        if (this._server === undefined) {
+            return Promise.resolve();
+        }
         this._listeningPort = undefined;
         return new Promise((resolve, rejects) => {
-            this._server?.close((err) => {
+            (this._server as http.Server).close((err) => {
                 if (err) {
                     this._logger?.error('Can not close server');
                     this._logger?.trace(err);

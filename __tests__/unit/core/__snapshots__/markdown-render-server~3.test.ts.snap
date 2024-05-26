@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CoreLibrary Unit Tests - MarkdownRenderServer exception cases on close rejects on twice call close - with logger 1`] = `
+[MockFunction] {
+  "calls": [
+    [
+      "Can not close server",
+    ],
+  ],
+  "results": [
+    {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
