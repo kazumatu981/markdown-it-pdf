@@ -8,16 +8,13 @@ export interface Styles {
 }
 
 export interface ContentsMapOptions {
+    rootDir?: string;
     recursive?: boolean;
 }
 
 export interface Range {
     min?: number;
     max?: number;
-}
-export interface SafeRange {
-    min: number;
-    max: number;
 }
 export interface ServerPortOptions {
     retry?: number;
@@ -28,7 +25,6 @@ export interface MarkdownRenderServerOptions
     extends ContentsMapOptions,
         ServerPortOptions {
     port?: number;
-    rootDir?: string;
     externalUrls?: string[];
 }
 
@@ -49,8 +45,16 @@ export function readOptions<T>(
     let options: T | undefined = undefined;
     if (filePath && fs.existsSync(filePath)) {
         try {
-            const content = fs.readFileSync(filePath, 'utf-8');
-            options = JSON.parse(content) as T;
+            if (filePath.endsWith('.json')) {
+                options = readJsonOptions<T>(filePath);
+            } else if (filePath.endsWith('.js')) {
+                options = readJSOptions<T>(filePath);
+            } else {
+                logger?.warn(
+                    'Unsupported configuration file extension: %s, so using default options.',
+                    filePath
+                );
+            }
         } catch (_) {
             // nothing to do
             logger?.warn(
@@ -65,4 +69,14 @@ export function readOptions<T>(
         );
     }
     return options;
+}
+
+function readJsonOptions<T>(filePath: string): T | undefined {
+    const content = fs.readFileSync(filePath, 'utf-8');
+    return JSON.parse(content) as T;
+}
+
+function readJSOptions<T>(filePath: string): T | undefined {
+    const module = require(filePath);
+    return module.default as T;
 }

@@ -1,5 +1,157 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`CoreLibrary Unit Tests - MarkdownRenderServer fail to listen on retrying if port is already in use - with logger 1`] = `
+[MockFunction] {
+  "calls": [
+    [
+      "Can not listen on port %d",
+      undefined,
+    ],
+  ],
+  "results": [
+    {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
+exports[`CoreLibrary Unit Tests - MarkdownRenderServer serverListener can render jpg file: rendered jpeg file 1`] = `
+{
+  "body": "sample.jpg",
+  "contentType": "image/jpeg",
+  "statusCode": 200,
+}
+`;
+
+exports[`CoreLibrary Unit Tests - MarkdownRenderServer serverListener can render md file - with logger 1`] = `
+[MockFunction] {
+  "calls": [
+    [
+      "MarkdownRenderServer.createRenderServer() called with options: {"rootDir":"test"}",
+    ],
+    [
+      "contentsUrls: %o",
+      [
+        "/sample.jpg",
+        "/sample.txt",
+        "/test.css",
+        "/test.md",
+        "/sub/sample.txt",
+        "/sub/test.md",
+        "/sub2/sample.txt",
+        "/sub2/test.md",
+        "/sub2/sub/sample.txt",
+        "/sub2/sub/test.md",
+      ],
+    ],
+    [
+      "Try to Listen on port %d",
+      3001,
+    ],
+    [
+      "reserved port: %d",
+      3001,
+    ],
+    [
+      "Listening on port %d",
+      3001,
+    ],
+    [
+      "Request: %s",
+      "/test.md",
+    ],
+    [
+      "render() called.",
+    ],
+    [
+      "styles: %o",
+      {
+        "externalUrls": [],
+        "internalUrls": [
+          "/test.css",
+        ],
+      },
+    ],
+    [
+      "Response for url: %s, status code: %d",
+      "/test.md",
+      200,
+    ],
+    [
+      "content type: %s",
+      "text/html",
+    ],
+  ],
+  "results": [
+    {
+      "type": "return",
+      "value": undefined,
+    },
+    {
+      "type": "return",
+      "value": undefined,
+    },
+    {
+      "type": "return",
+      "value": undefined,
+    },
+    {
+      "type": "return",
+      "value": undefined,
+    },
+    {
+      "type": "return",
+      "value": undefined,
+    },
+    {
+      "type": "return",
+      "value": undefined,
+    },
+    {
+      "type": "return",
+      "value": undefined,
+    },
+    {
+      "type": "return",
+      "value": undefined,
+    },
+    {
+      "type": "return",
+      "value": undefined,
+    },
+    {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
+exports[`CoreLibrary Unit Tests - MarkdownRenderServer serverListener can render md file - with logger: rendered md file 1`] = `
+{
+  "body": "
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="/test.css">
+
+</head>
+<body>
+    <h1>test</h1>
+<p>hello world</p>
+
+</body>",
+  "contentType": "text/html",
+  "statusCode": 200,
+}
+`;
+
 exports[`CoreLibrary Unit Tests - MarkdownRenderServer serverListener can render md file: rendered md file 1`] = `
 {
   "body": "
@@ -36,6 +188,32 @@ exports[`CoreLibrary Unit Tests - MarkdownRenderServer serverListener can render
   "body": "hello world",
   "contentType": "text/plain",
   "statusCode": 200,
+}
+`;
+
+exports[`CoreLibrary Unit Tests - MarkdownRenderServer serverListener root dir is not found - with logger 1`] = `
+[MockFunction] {
+  "calls": [
+    [
+      "Response for url: %s, status code: %d",
+      "/",
+      404,
+    ],
+  ],
+  "results": [
+    {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
+exports[`CoreLibrary Unit Tests - MarkdownRenderServer serverListener root dir is not found - with logger: Root is Not Found 1`] = `
+{
+  "body": "Not Found",
+  "contentType": "text/plain",
+  "statusCode": 404,
 }
 `;
 

@@ -1,5 +1,7 @@
 import { jest, describe, it, expect } from '@jest/globals';
-import { MarkdownItRender } from '../../../src/core/markdown-it-render';
+import { MarkdownItRender } from '../../../../src/core/render/markdown-it-render';
+
+import { mockLogger } from '../../../utils/mock-logger';
 
 import fsAsync from 'fs/promises';
 
@@ -16,7 +18,7 @@ describe('CoreLibrary Unit Tests - MarkdownItRender', () => {
             fsAsync.readFile as jest.MockedFunction<typeof fsAsync.readFile>
         ).mockResolvedValueOnce('# test\n\nhello world');
         const markdownItRender = new MarkdownItRender();
-        const result = await markdownItRender.renderFromFileAsync('./test.md');
+        const result = await markdownItRender.renderFromFile('./test.md');
         expect(result).toMatchSnapshot();
     });
     it('Basic Render Test: Can render from string', async () => {
@@ -41,5 +43,13 @@ describe('CoreLibrary Unit Tests - MarkdownItRender', () => {
         markdownItRender.addExternalStyles(['https://hoo.bar/styles/test.css']);
         const result = markdownItRender.render('# test\n\nhello world');
         expect(result).toMatchSnapshot();
+    });
+    it('Render Test: with logger', async () => {
+        const markdownItRender = new MarkdownItRender();
+        markdownItRender._logger = mockLogger;
+        markdownItRender.addStyles(['./test.css']);
+        markdownItRender.addExternalStyles(['https://hoo.bar/styles/test.css']);
+        const result = markdownItRender.render('# test\n\nhello world');
+        expect(mockLogger.debug).toMatchSnapshot();
     });
 });
