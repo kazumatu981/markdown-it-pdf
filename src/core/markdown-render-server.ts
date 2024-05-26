@@ -2,11 +2,12 @@ import http from 'http';
 import fsPromise from 'fs/promises';
 
 import { ContentsMap, RenderedEntity } from './maps/contents-map';
-import { ResolverMap } from './maps/resolver-map';
+import { RenderMap } from './maps/render-map';
 import { MarkdownItRender } from './render/markdown-it-render';
 import { tryToListen } from './utils/http-helper';
 import { Logger } from '../common/logger';
 import { type MarkdownRenderServerOptions } from '../common/configure';
+import { utf8PlainTextRender } from './render/file-render';
 
 const defaultOptions: MarkdownRenderServerOptions = {
     rootDir: '.',
@@ -32,21 +33,14 @@ export class MarkdownRenderServer extends MarkdownItRender {
         theInstance._logger = logger;
 
         // create resolver map
-        const resolverMap = new ResolverMap();
-        resolverMap.set(
-            'markdown',
-            theInstance.renderFromFileAsync.bind(theInstance)
-        );
-        resolverMap.set('style', async (filePath) => {
-            return await fsPromise.readFile(filePath, 'utf-8');
-        });
-        resolverMap.set('plainText', async (filePath) => {
-            return await fsPromise.readFile(filePath, 'utf-8');
-        });
+        const renderMap = new RenderMap();
+        renderMap.set('markdown', theInstance);
+        renderMap.set('style', utf8PlainTextRender);
+        renderMap.set('plainText', utf8PlainTextRender);
 
         // create contents map
         const contentsMap = await ContentsMap.createInstance(
-            resolverMap,
+            renderMap,
             options
         );
         logger?.debug('contentsUrls: %o', contentsMap.getEntityUrls());

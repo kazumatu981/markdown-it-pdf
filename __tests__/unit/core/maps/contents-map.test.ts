@@ -1,13 +1,12 @@
 import { jest, describe, it, expect } from '@jest/globals';
 import { ContentsMap } from '../../../../src/core/maps/contents-map';
-import { ResolverMap } from '../../../../src/core/maps/resolver-map';
+import { RenderMap } from '../../../../src/core/maps/render-map';
 import { mockingTestDir, unmockingTestDir } from '../../../utils/test-dir';
-import { type ContentsResolverFunction } from '../../../../src/core/maps/resolver-map';
 
 describe('CoreLibrary Unit Tests - ContentsMap', () => {
     describe('createInstance', () => {
         it('should create an instance - recursive', async () => {
-            const resolverMap = new ResolverMap();
+            const resolverMap = new RenderMap();
             mockingTestDir();
             const contentsMap = await ContentsMap.createInstance(resolverMap, {
                 rootDir: 'test',
@@ -20,7 +19,7 @@ describe('CoreLibrary Unit Tests - ContentsMap', () => {
             unmockingTestDir();
         });
         it('should create an instance - not recursive', async () => {
-            const resolverMap = new ResolverMap();
+            const resolverMap = new RenderMap();
             mockingTestDir();
             const contentsMap = await ContentsMap.createInstance(resolverMap, {
                 rootDir: 'test',
@@ -33,7 +32,7 @@ describe('CoreLibrary Unit Tests - ContentsMap', () => {
             unmockingTestDir();
         });
         it('should create an instance - recursive on abbreviate recursive', async () => {
-            const resolverMap = new ResolverMap();
+            const resolverMap = new RenderMap();
             mockingTestDir();
             const contentsMap = await ContentsMap.createInstance(resolverMap, {
                 rootDir: 'test',
@@ -45,7 +44,7 @@ describe('CoreLibrary Unit Tests - ContentsMap', () => {
             unmockingTestDir();
         });
         it('should create an instance - recursive on abbreviate options', async () => {
-            const resolverMap = new ResolverMap();
+            const resolverMap = new RenderMap();
             mockingTestDir();
             const contentsMap = await ContentsMap.createInstance(resolverMap, {
                 rootDir: 'test',
@@ -59,7 +58,7 @@ describe('CoreLibrary Unit Tests - ContentsMap', () => {
     });
     describe('getEntityUrls() with markdown', () => {
         it('should return the markdown entry urls', async () => {
-            const resolverMap = new ResolverMap();
+            const resolverMap = new RenderMap();
             mockingTestDir();
             const contentsMap = await ContentsMap.createInstance(resolverMap, {
                 rootDir: 'test',
@@ -79,7 +78,7 @@ describe('CoreLibrary Unit Tests - ContentsMap', () => {
     });
     describe('get styleEntryUrls with style', () => {
         it('should return the style entry urls', async () => {
-            const resolverMap = new ResolverMap();
+            const resolverMap = new RenderMap();
             mockingTestDir();
             const contentsMap = await ContentsMap.createInstance(resolverMap, {
                 rootDir: 'test',
@@ -100,7 +99,7 @@ describe('CoreLibrary Unit Tests - ContentsMap', () => {
 
     describe('get all styleEntryUrls ', () => {
         it('should return the style entry urls', async () => {
-            const resolverMap = new ResolverMap();
+            const resolverMap = new RenderMap();
             mockingTestDir();
             const contentsMap = await ContentsMap.createInstance(resolverMap, {
                 rootDir: 'test',
@@ -115,14 +114,15 @@ describe('CoreLibrary Unit Tests - ContentsMap', () => {
 
     describe('render', () => {
         it('should render markdown', async () => {
-            const resolverMap = new ResolverMap();
+            const resolverMap = new RenderMap();
             const markdownFakeResolver = jest
                 .fn()
                 .mockResolvedValue('test body' as never);
-            resolverMap.set(
-                'markdown',
-                markdownFakeResolver as ContentsResolverFunction
-            );
+            resolverMap.set('markdown', {
+                renderFromFile: markdownFakeResolver as (
+                    fileName: string
+                ) => Promise<string>,
+            });
 
             mockingTestDir();
             const contentsMap = await ContentsMap.createInstance(resolverMap, {
@@ -130,13 +130,13 @@ describe('CoreLibrary Unit Tests - ContentsMap', () => {
             });
 
             const result = await contentsMap.render('/test.md');
-            expect(result?.resolverType).toEqual('markdown');
+            expect(result?.renderType).toEqual('markdown');
             expect(result?.contents).toEqual('test body');
 
             unmockingTestDir();
         });
         it('should return undefined on unknown url', async () => {
-            const resolverMap = new ResolverMap();
+            const resolverMap = new RenderMap();
 
             mockingTestDir();
             const contentsMap = await ContentsMap.createInstance(resolverMap, {

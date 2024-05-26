@@ -1,8 +1,7 @@
 import path from 'path';
-import { type ResolverType } from './resolver-map';
 
 interface ExtensionTypeInfo {
-    resolverType: ResolverType;
+    renderType: string;
     contentType: string;
     resolvedContentType?: string;
 }
@@ -34,7 +33,7 @@ export const DefaultExtensionMap: ExtensionMap = new ExtensionMap([
     [
         '.md',
         {
-            resolverType: 'markdown',
+            renderType: 'markdown',
             contentType: 'text/markdown',
             resolvedContentType: 'text/html',
         },
@@ -42,62 +41,62 @@ export const DefaultExtensionMap: ExtensionMap = new ExtensionMap([
     [
         '.css',
         {
-            resolverType: 'style',
+            renderType: 'style',
             contentType: 'text/css',
         },
     ],
     [
         '.txt',
         {
-            resolverType: 'plainText',
+            renderType: 'plainText',
             contentType: 'text/plain',
         },
     ],
     [
         '.png',
         {
-            resolverType: 'binary',
+            renderType: 'binary',
             contentType: 'image/png',
         },
     ],
     [
         '.jpg',
         {
-            resolverType: 'binary',
+            renderType: 'binary',
             contentType: 'image/jpeg',
         },
     ],
     [
         '.jpeg',
         {
-            resolverType: 'binary',
+            renderType: 'binary',
             contentType: 'image/jpeg',
         },
     ],
     [
         '.gif',
         {
-            resolverType: 'binary',
+            renderType: 'binary',
             contentType: 'image/gif',
         },
     ],
     [
         '.svg',
         {
-            resolverType: 'binary',
+            renderType: 'binary',
             contentType: 'image/svg+xml',
         },
     ],
     [
         '.pdf',
         {
-            resolverType: 'pdf',
+            renderType: 'pdf',
             contentType: 'application/pdf',
         },
     ],
 ]);
 
 const defaultTypeInfo: ExtensionTypeInfo = {
-    resolverType: 'binary',
+    renderType: 'binary',
     contentType: 'application/octet-stream',
 };

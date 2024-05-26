@@ -16,7 +16,7 @@ describe('CoreLibrary Unit Tests - MarkdownItRender', () => {
             fsAsync.readFile as jest.MockedFunction<typeof fsAsync.readFile>
         ).mockResolvedValueOnce('# test\n\nhello world');
         const markdownItRender = new MarkdownItRender();
-        const result = await markdownItRender.renderFromFileAsync('./test.md');
+        const result = await markdownItRender.renderFromFile('./test.md');
         expect(result).toMatchSnapshot();
     });
     it('Basic Render Test: Can render from string', async () => {

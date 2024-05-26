@@ -6,7 +6,7 @@ describe('CoreLibrary Unit Tests - ExtensionMap', () => {
         it('should return correct ExtensionTypeInfo for a valid extension name', () => {
             const extName = '.md';
             const expectedTypeInfo = {
-                resolverType: 'markdown',
+                renderType: 'markdown',
                 contentType: 'text/markdown',
                 resolvedContentType: 'text/html',
             };
@@ -17,7 +17,7 @@ describe('CoreLibrary Unit Tests - ExtensionMap', () => {
         it('should return default ExtensionTypeInfo for an extension name that does not exist in the extension map', () => {
             const extName = '.unknown';
             const expectedTypeInfo = {
-                resolverType: 'binary',
+                renderType: 'binary',
                 contentType: 'application/octet-stream',
             };
             const result = DefaultExtensionMap.getTypeInfo(extName);

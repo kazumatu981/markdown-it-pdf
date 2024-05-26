@@ -1,5 +1,5 @@
 import { findFiles, filePathToUrl } from '../utils/path-resolver';
-import { type ResolverType, type ResolverMap } from './resolver-map';
+import { type RenderMap } from './render-map';
 import { DefaultExtensionMap } from './extension-map';
 import { type ContentsMapOptions } from '../../common/configure';
 import path from 'path';
@@ -19,9 +19,21 @@ const defaultContentsMapOptions = {
  * An entity in the contents map
  */
 export interface ContentsMapEntity {
+    /**
+     * The URL of the entity
+     */
     url: string;
-    resolverType: ResolverType;
+    /**
+     * The resolver type of the entity
+     */
+    renderType: string;
+    /**
+     * The content type of the entity
+     */
     contentType: string;
+    /**
+     * The path to the content of the entity
+     */
     contentPath: string;
 }
 
@@ -29,6 +41,9 @@ export interface ContentsMapEntity {
  * An entity in the contents map that has been rendered
  */
 export interface RenderedEntity extends ContentsMapEntity {
+    /**
+     * The contents of the entity
+     */
     contents: string | Buffer;
 }
 
@@ -40,7 +55,7 @@ export interface RenderedEntity extends ContentsMapEntity {
  */
 export class ContentsMap extends Map<string, ContentsMapEntity> {
     //#region private fields
-    private _resolver: ResolverMap;
+    private _renderMap: RenderMap;
     private _options?: ContentsMapOptions;
     //#endregion
 
@@ -50,12 +65,12 @@ export class ContentsMap extends Map<string, ContentsMapEntity> {
      * Creates an instance of the ContentsMap class with the provided resolver map and options.
      * Then refreshes the contents of the map and returns the instance.
      *
-     * @param {ResolverMap} resolverMap - The resolver map used to resolve the URLs to the contents.
+     * @param {RenderMap} resolverMap - The resolver map used to resolve the URLs to the contents.
      * @param {ContentsMapOptions} [options] - The options for the contents map.
      * @return {Promise<ContentsMap>} A promise that resolves to the created instance of the ContentsMap class.
      */
     public static async createInstance(
-        resolverMap: ResolverMap,
+        resolverMap: RenderMap,
         options?: ContentsMapOptions
     ): Promise<ContentsMap> {
         // create the instance
@@ -75,18 +90,15 @@ export class ContentsMap extends Map<string, ContentsMapEntity> {
      * Creates a new instance of the ContentsMap class.
      *
      * @private
-     * @param {ResolverMap} resolverMap - The resolver map used to resolve the URLs to the resolver for the contents.
+     * @param {RenderMap} resolverMap - The resolver map used to resolve the URLs to the resolver for the contents.
      * @param {ContentsMapOptions} [options] - The options for the contents map.
      */
-    private constructor(
-        resolverMap: ResolverMap,
-        options?: ContentsMapOptions
-    ) {
+    private constructor(resolverMap: RenderMap, options?: ContentsMapOptions) {
         // Call the constructor of the parent class (Map)
         super();
 
         // Initialize the resolver map
-        this._resolver = resolverMap;
+        this._renderMap = resolverMap;
 
         // Initialize the options for the contents map
         this._options = options;
@@ -122,20 +134,21 @@ export class ContentsMap extends Map<string, ContentsMapEntity> {
     }
 
     /**
-     * Retrieves the URLs of all entities in the ContentsMap.
-     * If a resolverType is provided, it will filter the URLs by the specified resolverType.
-     * Otherwise, it will return all URLs.
+     * Returns an array of entity URLs based on the provided renderType.
+     * If renderType is not provided, all entity URLs are returned.
      *
-     * @param {ResolverType} [resolverType] - The resolverType to filter the URLs by.
-     * @return {string[]} An array of URLs.
+     * @param {string} renderType - The render type of the entities to retrieve.
+     * @return {string[]} An array of entity URLs that match the provided renderType,
+     * or all entity URLs if renderType is not provided.
      */
-    public getEntityUrls(resolverType?: ResolverType): string[] {
-        // If a resolverType is provided, filter the URLs by the specified resolverType.
-        // Otherwise, return all URLs.
-        return resolverType
+    public getEntityUrls(renderType?: string): string[] {
+        // If renderType is provided, filter the entity URLs based on the render type
+        return renderType
             ? [...this.keys()].filter((url) => {
+                  // Get the entity associated with the URL
                   const entity = this.get(url) as ContentsMapEntity;
-                  return entity.resolverType === resolverType;
+                  // Return true if the entity's render type matches the provided renderType
+                  return entity.renderType === renderType;
               })
             : [...this.keys()];
     }
@@ -157,11 +170,11 @@ export class ContentsMap extends Map<string, ContentsMapEntity> {
             return;
         }
 
-        // Get the resolver for the resolverType of the entity.
-        const contentResolver = this._resolver.getResolver(entity.resolverType);
+        // Get the render for the renderType of the entity.
+        const contentRender = this._renderMap.getRender(entity.renderType);
 
-        // Render the contents of the entity using the resolver.
-        const contents = await contentResolver(entity.contentPath);
+        // Render the contents of the entity using the render.
+        const contents = await contentRender.renderFromFile(entity.contentPath);
 
         // Return the rendered entity with the contents.
         return { ...entity, contents };
@@ -190,7 +203,7 @@ export class ContentsMap extends Map<string, ContentsMapEntity> {
                 filePath
             ),
             // Get the resolver type from the resolver information.
-            resolverType: resolver.resolverType,
+            renderType: resolver.renderType,
             // Get the content type from the resolver information.
             // If the resolved content type is available, use it instead.
             contentType: resolver.resolvedContentType ?? resolver.contentType,

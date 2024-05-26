@@ -2,8 +2,9 @@ import MarkdownIt from 'markdown-it';
 import fsPromises from 'fs/promises';
 import { Logger } from '../../common/logger';
 import { type Styles } from '../../common/configure';
+import { type FileRender } from './file-render';
 
-export class MarkdownItRender extends MarkdownIt {
+export class MarkdownItRender extends MarkdownIt implements FileRender {
     public _logger?: Logger;
 
     private _styles: Styles = {
@@ -57,9 +58,7 @@ export class MarkdownItRender extends MarkdownIt {
      * @param {string} markdownFilePath - The path to the markdown file.
      * @return {Promise<string>} A promise that resolves to the rendered HTML.
      */
-    public async renderFromFileAsync(
-        markdownFilePath: string
-    ): Promise<string> {
+    public async renderFromFile(markdownFilePath: string): Promise<string> {
         const markdown = await fsPromises.readFile(markdownFilePath, 'utf8');
         return this.render(markdown);
     }
