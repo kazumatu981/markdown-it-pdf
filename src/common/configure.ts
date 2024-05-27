@@ -30,10 +30,10 @@ export interface MarkdownRenderServerOptions
 
 export type PrinterOptions = Omit<PDFOptions, 'path'>;
 
-export interface MarkdownItfRenderServerOptions
+export interface MarkdownItPdfRenderServerOptions
     extends MarkdownRenderServerOptions {}
 export interface MarkdownItPdfPrinterOptions
-    extends MarkdownItfRenderServerOptions {
+    extends MarkdownItPdfRenderServerOptions {
     printerOption?: PrinterOptions;
     outputDir?: string;
 }

@@ -3,7 +3,7 @@ import { PuppeteerPDFPrinter } from './core/puppeteer-pdf-printer';
 
 import { Logger } from './common/logger';
 import type {
-    MarkdownItfRenderServerOptions,
+    MarkdownItPdfRenderServerOptions,
     MarkdownItPdfPrinterOptions,
     PrinterOptions,
 } from './common/configure';
@@ -23,10 +23,10 @@ const defaultPrinterOption: PrinterOptions = {
 export abstract class MarkdownItPdf {
     protected _server: MarkdownRenderServer;
     protected _logger?: Logger;
-    protected _options?: MarkdownItfRenderServerOptions;
+    protected _options?: MarkdownItPdfRenderServerOptions;
     public static async createRenderServer(
         logger?: Logger,
-        options?: MarkdownItfRenderServerOptions
+        options?: MarkdownItPdfRenderServerOptions
     ): Promise<MarkdownItfRenderServer> {
         logger?.debug(
             `createRenderServer() called with options: ${JSON.stringify(options)}`
@@ -53,7 +53,7 @@ export abstract class MarkdownItPdf {
     protected constructor(
         server: MarkdownRenderServer,
         logger?: Logger,
-        options?: MarkdownItfRenderServerOptions
+        options?: MarkdownItPdfRenderServerOptions
     ) {
         this._server = server;
         this._logger = logger;

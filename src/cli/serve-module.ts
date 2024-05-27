@@ -3,7 +3,7 @@ import { type MarkdownItPdfCommandOptions } from '../cli/command-options';
 import path from 'path';
 import {
     readOptions,
-    MarkdownItfRenderServerOptions,
+    MarkdownItPdfRenderServerOptions,
 } from '../common/configure';
 import { MarkdownItPdf } from '../markdown-it-pdf';
 import { ConsoleLogger } from '../common/logger';
@@ -36,7 +36,7 @@ export const handler = (args: MarkdownItPdfCommandOptions) => {
     const logger = new ConsoleLogger(args.log);
     logger.info('MarkdownItPDF Render Server is starting...');
 
-    const options = readOptions<MarkdownItfRenderServerOptions>(
+    const options = readOptions<MarkdownItPdfRenderServerOptions>(
         args.config,
         logger
     );
