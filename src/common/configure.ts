@@ -47,7 +47,7 @@ export function readOptions<T>(
         try {
             if (filePath.endsWith('.json')) {
                 options = readJsonOptions<T>(filePath);
-            } else if (filePath.endsWith('.js')) {
+            } else if (filePath.endsWith('.js') || filePath.endsWith('.cjs')) {
                 options = readJSOptions<T>(filePath);
             } else {
                 logger?.warn(
@@ -78,5 +78,5 @@ function readJsonOptions<T>(filePath: string): T | undefined {
 
 function readJSOptions<T>(filePath: string): T | undefined {
     const module = require(filePath);
-    return module.default as T;
+    return module as T;
 }
