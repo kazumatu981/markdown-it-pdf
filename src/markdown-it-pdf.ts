@@ -113,7 +113,7 @@ class MarkdownItPdfPrinter extends MarkdownItPdf {
             this._logger
         ).print(urls);
 
-        this._server.close();
+        await this._server.close();
         return this;
     }
     public async print(
@@ -134,7 +134,7 @@ class MarkdownItPdfPrinter extends MarkdownItPdf {
             this._logger
         ).print(url);
 
-        this._server.close();
+        await this._server.close();
         return this;
     }
     public async printIntoBuffer(
@@ -149,7 +149,7 @@ class MarkdownItPdfPrinter extends MarkdownItPdf {
             this._logger
         ).print(url);
 
-        this._server.close();
+        await this._server.close();
 
         return buffer;
     }
@@ -159,7 +159,7 @@ class MarkdownItfRenderServer extends MarkdownItPdf {
     public listen(port?: number): Promise<number> {
         return this._server.listen(port);
     }
-    public close(): void {
-        this._server.close();
+    public close(): Promise<void> {
+        return this._server.close();
     }
 }

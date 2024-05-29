@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`yargs module unit tests - print-module handler 1`] = `
+[MockFunction] {
+  "calls": [
+    [
+      "MarkdownItPDF Printer is starting...",
+    ],
+    [
+      "Configuration file not found: %s, so using default options.",
+      undefined,
+    ],
+    [
+      "ready to print.",
+    ],
+    [
+      "%d files printed",
+      4,
+    ],
+  ],
+  "results": [
+    {
+      "type": "return",
+      "value": undefined,
+    },
+    {
+      "type": "return",
+      "value": undefined,
+    },
+    {
+      "type": "return",
+      "value": undefined,
+    },
+    {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;

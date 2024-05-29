@@ -37,7 +37,7 @@ export const builder: (
 };
 
 // exports.handler: a function which will be passed the parsed argv.
-export const handler = (args: MarkdownItPdfCommandOptions) => {
+export const handler = async (args: MarkdownItPdfCommandOptions) => {
     const logger = new ConsoleLogger(args.log);
     logger.info('MarkdownItPDF Printer is starting...');
 
@@ -45,29 +45,27 @@ export const handler = (args: MarkdownItPdfCommandOptions) => {
         args.config,
         logger
     );
-    MarkdownItPdf.createPdfPrinter(logger, {
-        rootDir: args.dir,
-        outputDir: args.outputDir,
-        ...options,
-    })
-        .then((printer) => {
-            logger.info('ready to print.');
-            return printer.printAll();
-        })
-        .then((printer) => {
-            // success
-            logger.info(
-                '%d files printed',
-                printer.availableMarkdownUrls.length
-            );
-            logger.debug("printed files's ids:");
-            logger.debug(printer.availableMarkdownUrls);
-        })
-        .catch((error: Error) => {
-            // error
+    try {
+        const printer = await MarkdownItPdf.createPdfPrinter(logger, {
+            rootDir: args.dir,
+            outputDir: args.outputDir,
+            ...options,
+        });
+        logger.info('ready to print.');
+        await printer.printAll();
+        // success
+        logger.info('%d files printed', printer.availableMarkdownUrls.length);
+        logger.debug("printed files's ids:");
+        logger.debug(printer.availableMarkdownUrls);
+    } catch (error) {
+        // error
+        if (error instanceof Error) {
             logger.error('Error Occurred on printing: %s', error.message);
             logger.debug(error.stack);
-        });
+        } else {
+            logger.error('Error Occurred on printing: %o', error);
+        }
+    }
 };
 
 // exports.deprecated: a boolean (or string) to show deprecation notice.
