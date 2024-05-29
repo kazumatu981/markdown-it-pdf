@@ -1,32 +1,68 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`yargs module unit tests - print-module builder 1`] = `
+[
+  "dir",
+  "outputDir",
+]
+`;
+
 exports[`yargs module unit tests - print-module handler 1`] = `
-[MockFunction] {
-  "calls": [
-    [
-      "MarkdownItPDF Printer is starting...",
-    ],
-    [
-      "Configuration file not found: %s, so using default options.",
-      undefined,
-    ],
-    [
-      "ready to print.",
-    ],
+[
+  "MarkdownItPDF Printer is starting...",
+  "Configuration file not found: %s, so using default options.",
+  "ready to print.",
+  "%d files printed",
+]
+`;
+
+exports[`yargs module unit tests - print-module handler 2`] = `
+[
+  "createPdfPrinter() called with options: {"rootDir":"test","outputDir":"pdf"}",
+  "MarkdownRenderServer.createRenderServer() called with options: {"rootDir":"test","outputDir":"pdf"}",
+  "contentsUrls: %o",
+  "Try to Listen on port random mode",
+  "reserved port: %d",
+  "Listening on port %d",
+  "Request: %s",
+  "render() called.",
+  "styles: %o",
+  "Response for url: %s, status code: %d",
+  "content type: %s",
+  "Request: %s",
+  "Response for url: %s, status code: %d",
+  "content type: %s",
+  "Request: %s",
+  "Request: %s",
+  "render() called.",
+  "styles: %o",
+  "Response for url: %s, status code: %d",
+  "content type: %s",
+  "Request: %s",
+  "Response for url: %s, status code: %d",
+  "content type: %s",
+  "Request: %s",
+  "render() called.",
+  "styles: %o",
+  "Response for url: %s, status code: %d",
+  "content type: %s",
+  "Request: %s",
+  "Response for url: %s, status code: %d",
+  "content type: %s",
+  "Request: %s",
+  "render() called.",
+  "styles: %o",
+  "Response for url: %s, status code: %d",
+  "content type: %s",
+  "Request: %s",
+  "Response for url: %s, status code: %d",
+  "content type: %s",
+  "printed files's ids:",
+  [
+    "/test.md",
+    "/sub/test.md",
+    "/sub2/test.md",
+    "/sub2/sub/test.md",
   ],
-  "results": [
-    {
-      "type": "return",
-      "value": undefined,
-    },
-    {
-      "type": "return",
-      "value": undefined,
-    },
-    {
-      "type": "return",
-      "value": undefined,
-    },
-  ],
-}
+]
 `;

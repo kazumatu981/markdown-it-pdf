@@ -2,6 +2,7 @@ import { type Argv } from 'yargs';
 import path from 'path';
 import { type MarkdownItPdfCommandOptions } from './command-options';
 import { readOptions, MarkdownItPdfPrinterOptions } from '../common/configure';
+import { resolveFromCwd } from '../core/utils/path-resolver';
 import { MarkdownItPdf } from '../markdown-it-pdf';
 import { ConsoleLogger } from '../common/logger';
 // exports.command: string (or array of strings) that executes this command when given on the command line, first string may contain positional args
@@ -24,7 +25,7 @@ export const builder: (
             type: 'string',
             demandOption: true,
             default: process.cwd(),
-            coerce: (dir: string) => path.resolve(process.cwd(), dir),
+            coerce: resolveFromCwd,
         })
         .positional('outputDir', {
             alias: 'o',
@@ -32,12 +33,14 @@ export const builder: (
             type: 'string',
             demandOption: true,
             default: process.cwd(),
-            coerce: (dir: string) => path.resolve(process.cwd(), dir),
+            coerce: resolveFromCwd,
         });
 };
 
 // exports.handler: a function which will be passed the parsed argv.
-export const handler = async (args: MarkdownItPdfCommandOptions) => {
+export const handler: (
+    args: MarkdownItPdfCommandOptions
+) => Promise<void> = async (args: MarkdownItPdfCommandOptions) => {
     const logger = new ConsoleLogger(args.log);
     logger.info('MarkdownItPDF Printer is starting...');
 
@@ -65,6 +68,7 @@ export const handler = async (args: MarkdownItPdfCommandOptions) => {
         } else {
             logger.error('Error Occurred on printing: %o', error);
         }
+        throw error;
     }
 };
 
