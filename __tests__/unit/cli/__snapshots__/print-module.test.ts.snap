@@ -13,16 +13,8 @@ exports[`yargs module unit tests - print-module handler 1`] = `
     [
       "ready to print.",
     ],
-    [
-      "%d files printed",
-      4,
-    ],
   ],
   "results": [
-    {
-      "type": "return",
-      "value": undefined,
-    },
     {
       "type": "return",
       "value": undefined,

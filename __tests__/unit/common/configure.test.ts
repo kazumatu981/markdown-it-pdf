@@ -1,4 +1,4 @@
-import { jest, describe, it, expect } from '@jest/globals';
+import { jest, describe, it, expect, afterEach } from '@jest/globals';
 
 import {
     readOptions,
@@ -6,7 +6,6 @@ import {
 } from '../../../src/common/configure';
 
 import { mockLogger } from '../../utils/mock-logger';
-import { afterEach } from 'node:test';
 
 function testConfigure(config?: MarkdownItPdfPrinterOptions) {
     expect(config).toBeDefined();
