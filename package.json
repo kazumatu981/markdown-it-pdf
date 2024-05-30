@@ -11,7 +11,8 @@
         "test-watch": "jest --watch",
         "test:unit": "jest --config=unit.jest.config.js",
         "test:render": "jest -u --runInBand --config=render.jest.config.js",
-        "test:update-snap": "npm test -- -u"
+        "test:update-snap": "jest  -u",
+        "test:detect-leaks": "jest --detectOpenHandles"
     },
     "keywords": [],
     "author": "",

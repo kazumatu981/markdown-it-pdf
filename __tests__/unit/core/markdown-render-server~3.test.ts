@@ -1,15 +1,9 @@
 import { jest, describe, expect, it } from '@jest/globals';
-
 import { MarkdownRenderServer } from '../../../src/core/markdown-render-server';
-import { mockingTestDir, unmockingTestDir } from '../../utils/test-dir';
 import { mockLogger } from '../../utils/mock-logger';
-import { afterEach } from 'node:test';
 
 describe('CoreLibrary Unit Tests - MarkdownRenderServer', () => {
     describe('exception cases on close', () => {
-        afterEach(() => {
-            jest.clearAllMocks();
-        });
         it('close on not listening server', async () => {
             const server = new MarkdownRenderServer();
             await expect(server.close()).resolves.toBeUndefined();

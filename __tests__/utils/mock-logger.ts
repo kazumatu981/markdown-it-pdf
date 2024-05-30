@@ -8,3 +8,11 @@ export const mockLogger: Logger = {
     warn: jest.fn(),
     error: jest.fn(),
 };
+
+export function resetMockLogger() {
+    (mockLogger.trace as jest.Mock).mockReset();
+    (mockLogger.debug as jest.Mock).mockReset();
+    (mockLogger.info as jest.Mock).mockReset();
+    (mockLogger.warn as jest.Mock).mockReset();
+    (mockLogger.error as jest.Mock).mockReset();
+}

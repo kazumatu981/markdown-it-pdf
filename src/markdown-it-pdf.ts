@@ -3,7 +3,7 @@ import { PuppeteerPDFPrinter } from './core/puppeteer-pdf-printer';
 
 import { Logger } from './common/logger';
 import type {
-    MarkdownItfRenderServerOptions,
+    MarkdownItPdfRenderServerOptions,
     MarkdownItPdfPrinterOptions,
     PrinterOptions,
 } from './common/configure';
@@ -23,10 +23,10 @@ const defaultPrinterOption: PrinterOptions = {
 export abstract class MarkdownItPdf {
     protected _server: MarkdownRenderServer;
     protected _logger?: Logger;
-    protected _options?: MarkdownItfRenderServerOptions;
+    protected _options?: MarkdownItPdfRenderServerOptions;
     public static async createRenderServer(
         logger?: Logger,
-        options?: MarkdownItfRenderServerOptions
+        options?: MarkdownItPdfRenderServerOptions
     ): Promise<MarkdownItfRenderServer> {
         logger?.debug(
             `createRenderServer() called with options: ${JSON.stringify(options)}`
@@ -53,7 +53,7 @@ export abstract class MarkdownItPdf {
     protected constructor(
         server: MarkdownRenderServer,
         logger?: Logger,
-        options?: MarkdownItfRenderServerOptions
+        options?: MarkdownItPdfRenderServerOptions
     ) {
         this._server = server;
         this._logger = logger;
@@ -113,7 +113,7 @@ class MarkdownItPdfPrinter extends MarkdownItPdf {
             this._logger
         ).print(urls);
 
-        this._server.close();
+        await this._server.close();
         return this;
     }
     public async print(
@@ -134,7 +134,7 @@ class MarkdownItPdfPrinter extends MarkdownItPdf {
             this._logger
         ).print(url);
 
-        this._server.close();
+        await this._server.close();
         return this;
     }
     public async printIntoBuffer(
@@ -149,17 +149,17 @@ class MarkdownItPdfPrinter extends MarkdownItPdf {
             this._logger
         ).print(url);
 
-        this._server.close();
+        await this._server.close();
 
         return buffer;
     }
 }
 
-class MarkdownItfRenderServer extends MarkdownItPdf {
+export class MarkdownItfRenderServer extends MarkdownItPdf {
     public listen(port?: number): Promise<number> {
         return this._server.listen(port);
     }
-    public close(): void {
-        this._server.close();
+    public close(): Promise<void> {
+        return this._server.close();
     }
 }
