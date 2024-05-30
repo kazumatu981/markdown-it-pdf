@@ -4,12 +4,13 @@ import {
     filePathToUrl,
     normalizePath,
     buildTreeOfFiles,
+    resolveFromCwd,
 } from '../../../../src/core/utils/path-resolver';
 import { mockingTestDir, unmockingTestDir } from '../../../utils/test-dir';
 import fsPromise from 'fs/promises';
 import path from 'path';
 
-describe('CoreLibrary Unit Tests - PathResolver', () => {
+describe('CoreLibrary Unit Tests - findFiles', () => {
     it('Basic Test: Can find markdown files: recursive mode', async () => {
         mockingTestDir();
         const markdownFiles = await findFiles(
@@ -133,5 +134,11 @@ describe('CoreLibrary Unit Tests - buildTreeOfFiles', () => {
         expect(children).toContain('sub');
 
         unmockingTestDir();
+    });
+});
+
+describe('CoreLibrary Unit Tests - resolveFromCwd', () => {
+    it('should no error throws when resolving from cwd', () => {
+        expect(() => resolveFromCwd('test.md')).not.toThrow();
     });
 });
