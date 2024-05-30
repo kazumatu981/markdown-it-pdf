@@ -2,11 +2,6 @@ import fs from 'fs';
 import { type Logger } from './logger';
 import { type PDFOptions } from 'puppeteer';
 
-export interface Styles {
-    internalUrls: string[];
-    externalUrls: string[];
-}
-
 export interface ContentsMapOptions {
     rootDir?: string;
     recursive?: boolean;
