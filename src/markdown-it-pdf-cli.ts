@@ -6,6 +6,7 @@ import serveModule from './cli/serve-module';
 import printModule from './cli/print-module';
 import { type MarkdownItPdfCommandOptions } from './cli/command-options';
 import { levelIndexes } from './common/logger';
+import { resolveFromCwd } from './core/utils/path-resolver';
 
 export default function markdownItPdfCli() {
     // CLI interface
@@ -14,14 +15,13 @@ export default function markdownItPdfCli() {
     //  options:
     //      -h, --help            output usage information
     //      -v, --version         output the version number
-    //      -p, --port <port>     Port to listen on
+    //      -l, --log <Log Level> Log level
     //      -c, --config <file>   Configuration file
 
     yargs
         .scriptName('markdown-it-pdf')
         .usage('$0 <cmd> [options]')
-        .command<MarkdownItPdfCommandOptions>(serveModule)
-        .command<MarkdownItPdfCommandOptions>(printModule)
+        .command<MarkdownItPdfCommandOptions>([serveModule, printModule])
         .option('log', {
             alias: 'l',
             describe: 'Log level',
@@ -35,7 +35,7 @@ export default function markdownItPdfCli() {
             describe: 'Configuration file',
             type: 'string',
             demandOption: false,
-            coerce: (config: string) => path.resolve(process.cwd(), config),
+            coerce: resolveFromCwd,
         })
         .alias('h', 'help')
         .alias('v', 'version')

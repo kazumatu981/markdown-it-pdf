@@ -62,12 +62,11 @@ export const handler: (
         logger.debug(printer.availableMarkdownUrls);
     } catch (error) {
         // error
-        if (error instanceof Error) {
-            logger.error('Error Occurred on printing: %s', error.message);
-            logger.debug(error.stack);
-        } else {
-            logger.error('Error Occurred on printing: %o', error);
-        }
+        logger.error(
+            'Error Occurred on printing: %s',
+            (error as Error).message
+        );
+        logger.debug((error as Error).stack);
         throw error;
     }
 };

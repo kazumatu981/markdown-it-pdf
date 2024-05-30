@@ -5,8 +5,11 @@ import {
     readOptions,
     MarkdownItPdfRenderServerOptions,
 } from '../common/configure';
+import { resolveFromCwd } from '../core/utils/path-resolver';
+
 import { MarkdownItPdf } from '../markdown-it-pdf';
 import { ConsoleLogger } from '../common/logger';
+import { MarkdownItfRenderServer } from '../../src/markdown-it-pdf';
 
 // exports.command: string (or array of strings) that executes this command when given on the command line, first string may contain positional args
 export const command: string = 'serve [dir]';
@@ -27,12 +30,20 @@ export const builder: (
         type: 'string',
         demandOption: true,
         default: process.cwd(),
-        coerce: (dir: string) => path.resolve(process.cwd(), dir),
+        coerce: resolveFromCwd,
     });
 };
 
+export let server: MarkdownItfRenderServer | undefined;
+
+export async function stopServer(): Promise<void> {
+    await server?.close();
+}
+
 // exports.handler: a function which will be passed the parsed argv.
-export const handler = (args: MarkdownItPdfCommandOptions) => {
+export const handler: (
+    args: MarkdownItPdfCommandOptions
+) => Promise<void> = async (args: MarkdownItPdfCommandOptions) => {
     const logger = new ConsoleLogger(args.log);
     logger.info('MarkdownItPDF Render Server is starting...');
 
@@ -40,29 +51,43 @@ export const handler = (args: MarkdownItPdfCommandOptions) => {
         args.config,
         logger
     );
-    MarkdownItPdf.createRenderServer(logger, {
-        rootDir: args.dir,
-        ...options,
-    })
-        .then((server) => {
-            logger.info('ready to serve.');
-            return server.listen();
-        })
-        .then((port) => {
-            // success
-            logger.info('server started at http://localhost:%d', port);
-        })
-        .catch((error: Error) => {
-            // error
-            logger.error(
-                'Error Occurred while starting server: %s',
-                error.message
-            );
-            logger.debug(error.stack);
+    try {
+        server = await MarkdownItPdf.createRenderServer(logger, {
+            rootDir: args.dir,
+            ...options,
         });
+
+        const port = await server.listen();
+        // success
+        logger.info('server started at http://localhost:%d', port);
+
+        // register SIGINT handler
+        process.on('SIGINT', async () => {
+            // safe stop.....close server!!!
+            logger.info('Stopping server...');
+            await stopServer();
+            process.exit(0);
+        });
+    } catch (error) {
+        // error
+        logger.error(
+            'Error Occurred while starting server: %s',
+            (error as Error).message
+        );
+        logger.debug((error as Error).stack);
+        throw error;
+    }
 };
 
 // exports.deprecated: a boolean (or string) to show deprecation notice.
 export const deprecated: boolean | string = false;
 
-export default { command, aliases, describe, builder, handler, deprecated };
+export default {
+    command,
+    aliases,
+    describe,
+    builder,
+    handler,
+    deprecated,
+    stopServer,
+};

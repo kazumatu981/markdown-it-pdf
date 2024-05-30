@@ -7,6 +7,12 @@ exports[`yargs module unit tests - print-module builder 1`] = `
 ]
 `;
 
+exports[`yargs module unit tests - print-module handler - on error 1`] = `
+[
+  "Error Occurred on printing: %s",
+]
+`;
+
 exports[`yargs module unit tests - print-module handler 1`] = `
 [
   "MarkdownItPDF Printer is starting...",

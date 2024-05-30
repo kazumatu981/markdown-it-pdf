@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`yargs module unit tests - print-module builder 1`] = `
+[
+  "dir",
+]
+`;
+
+exports[`yargs module unit tests - print-module handler - on error 1`] = `
+[
+  "Error Occurred while starting server: %s",
+]
+`;
+
+exports[`yargs module unit tests - print-module handler 1`] = `
+[
+  "MarkdownItPDF Render Server is starting...",
+  "Configuration file not found: %s, so using default options.",
+  "server started at http://localhost:%d",
+]
+`;
+
+exports[`yargs module unit tests - print-module handler 2`] = `
+[
+  "createRenderServer() called with options: {"rootDir":"test"}",
+  "MarkdownRenderServer.createRenderServer() called with options: {"rootDir":"test"}",
+  "contentsUrls: %o",
+  "Try to Listen on port random mode",
+  "reserved port: %d",
+  "Listening on port %d",
+]
+`;

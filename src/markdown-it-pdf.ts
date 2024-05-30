@@ -155,7 +155,7 @@ class MarkdownItPdfPrinter extends MarkdownItPdf {
     }
 }
 
-class MarkdownItfRenderServer extends MarkdownItPdf {
+export class MarkdownItfRenderServer extends MarkdownItPdf {
     public listen(port?: number): Promise<number> {
         return this._server.listen(port);
     }
