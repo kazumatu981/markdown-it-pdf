@@ -9,18 +9,6 @@ type TransformFunction<T> = (filePath: string) => T;
 //#region functions
 
 /**
- * Resolves a file path relative to the current working directory.
- *
- * @param {string} filePath - The file path to resolve.
- * @returns {string} The resolved file path.
- */
-export function resolveFromCwd(filePath: string): string {
-    // Resolve the given file path relative to the current working directory.
-    // The resolved file path is returned.
-    return path.resolve(process.cwd(), filePath);
-}
-
-/**
  * Finds files in a given directory and returns an array of transformed results.
  *
  * @param {string} rootDir - The root directory to start the search from.
@@ -103,4 +91,17 @@ export async function buildTreeOfFiles(files: string[]): Promise<void> {
         ).then(() => resolve());
     });
 }
+
+/**
+ * Resolves a file path relative to the current working directory.
+ *
+ * @param {string} filePath - The file path to resolve.
+ * @returns {string} The resolved file path.
+ */
+export function resolveFromCwd(filePath: string): string {
+    // Resolve the given file path relative to the current working directory.
+    // The resolved file path is returned.
+    return path.resolve(process.cwd(), filePath);
+}
+
 //#endregion
