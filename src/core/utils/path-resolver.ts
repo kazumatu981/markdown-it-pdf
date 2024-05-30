@@ -1,8 +1,12 @@
 import path from 'path';
 import fsPromises from 'fs/promises';
 
+//#region types and interfaces
 type IsMatchFunction = (filePath: string) => boolean;
 type TransformFunction<T> = (filePath: string) => T;
+//#endregion
+
+//#region functions
 
 /**
  * Finds files in a given directory and returns an array of transformed results.
@@ -36,6 +40,7 @@ export async function findFiles<T>(
     }
     return fileElements;
 }
+
 /**
  * Converts a file path to a URL relative to the root directory.
  *
@@ -86,3 +91,17 @@ export async function buildTreeOfFiles(files: string[]): Promise<void> {
         ).then(() => resolve());
     });
 }
+
+/**
+ * Resolves a file path relative to the current working directory.
+ *
+ * @param {string} filePath - The file path to resolve.
+ * @returns {string} The resolved file path.
+ */
+export function resolveFromCwd(filePath: string): string {
+    // Resolve the given file path relative to the current working directory.
+    // The resolved file path is returned.
+    return path.resolve(process.cwd(), filePath);
+}
+
+//#endregion

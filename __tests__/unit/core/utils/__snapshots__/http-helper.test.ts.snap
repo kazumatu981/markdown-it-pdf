@@ -1,0 +1,63 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CoreLibrary Unit Tests - http-helper should return undefined if the port is already in use - with logger: on to have been duplicated port, logger debug 1`] = `
+[MockFunction] {
+  "calls": [
+    [
+      "Try to Listen on port %d",
+      3000,
+    ],
+    [
+      "reserved port: %d",
+      3000,
+    ],
+    [
+      "Try to Listen on port %d",
+      3000,
+    ],
+    [
+      "listen error: %s",
+      "listen EADDRINUSE: address already in use :::3000",
+    ],
+  ],
+  "results": [
+    {
+      "type": "return",
+      "value": undefined,
+    },
+    {
+      "type": "return",
+      "value": undefined,
+    },
+    {
+      "type": "return",
+      "value": undefined,
+    },
+    {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
+exports[`CoreLibrary Unit Tests - http-helper should return undefined if the port is already in use - with logger: on to have been duplicated port, logger error 1`] = `[MockFunction]`;
+
+exports[`CoreLibrary Unit Tests - http-helper should return undefined if the port is already in use - with logger: on to have been duplicated port, logger info 1`] = `[MockFunction]`;
+
+exports[`CoreLibrary Unit Tests - http-helper should return undefined if the port is already in use - with logger: on to have been duplicated port, logger warn 1`] = `
+[MockFunction] {
+  "calls": [
+    [
+      "port %d may be used.",
+      3000,
+    ],
+  ],
+  "results": [
+    {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;

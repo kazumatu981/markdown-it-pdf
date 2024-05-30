@@ -2,6 +2,7 @@ import { type Argv } from 'yargs';
 import path from 'path';
 import { type MarkdownItPdfCommandOptions } from './command-options';
 import { readOptions, MarkdownItPdfPrinterOptions } from '../common/configure';
+import { resolveFromCwd } from '../core/utils/path-resolver';
 import { MarkdownItPdf } from '../markdown-it-pdf';
 import { ConsoleLogger } from '../common/logger';
 // exports.command: string (or array of strings) that executes this command when given on the command line, first string may contain positional args
@@ -24,7 +25,7 @@ export const builder: (
             type: 'string',
             demandOption: true,
             default: process.cwd(),
-            coerce: (dir: string) => path.resolve(process.cwd(), dir),
+            coerce: resolveFromCwd,
         })
         .positional('outputDir', {
             alias: 'o',
@@ -32,12 +33,14 @@ export const builder: (
             type: 'string',
             demandOption: true,
             default: process.cwd(),
-            coerce: (dir: string) => path.resolve(process.cwd(), dir),
+            coerce: resolveFromCwd,
         });
 };
 
 // exports.handler: a function which will be passed the parsed argv.
-export const handler = (args: MarkdownItPdfCommandOptions) => {
+export const handler: (
+    args: MarkdownItPdfCommandOptions
+) => Promise<void> = async (args: MarkdownItPdfCommandOptions) => {
     const logger = new ConsoleLogger(args.log);
     logger.info('MarkdownItPDF Printer is starting...');
 
@@ -45,29 +48,27 @@ export const handler = (args: MarkdownItPdfCommandOptions) => {
         args.config,
         logger
     );
-    MarkdownItPdf.createPdfPrinter(logger, {
-        rootDir: args.dir,
-        outputDir: args.outputDir,
-        ...options,
-    })
-        .then((printer) => {
-            logger.info('ready to print.');
-            return printer.printAll();
-        })
-        .then((printer) => {
-            // success
-            logger.info(
-                '%d files printed',
-                printer.availableMarkdownUrls.length
-            );
-            logger.debug("printed files's ids:");
-            logger.debug(printer.availableMarkdownUrls);
-        })
-        .catch((error: Error) => {
-            // error
-            logger.error('Error Occurred on printing: %s', error.message);
-            logger.debug(error.stack);
+    try {
+        const printer = await MarkdownItPdf.createPdfPrinter(logger, {
+            rootDir: args.dir,
+            outputDir: args.outputDir,
+            ...options,
         });
+        logger.info('ready to print.');
+        await printer.printAll();
+        // success
+        logger.info('%d files printed', printer.availableMarkdownUrls.length);
+        logger.debug("printed files's ids:");
+        logger.debug(printer.availableMarkdownUrls);
+    } catch (error) {
+        // error
+        logger.error(
+            'Error Occurred on printing: %s',
+            (error as Error).message
+        );
+        logger.debug((error as Error).stack);
+        throw error;
+    }
 };
 
 // exports.deprecated: a boolean (or string) to show deprecation notice.
