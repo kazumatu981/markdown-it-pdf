@@ -5,9 +5,8 @@ import { type FileRender } from './file-render';
 
 export class MarkdownItRender extends MarkdownIt implements FileRender {
     public _logger?: Logger;
-
-    internalUrls: Array<string> = [];
-    externalUrls: Array<string> = [];
+    private internalUrls: Array<string> = [];
+    private externalUrls: Array<string> = [];
 
     /**
      * Adds the given URLs to the list of internal styles for this instance.
