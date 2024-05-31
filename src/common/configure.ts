@@ -1,11 +1,7 @@
 import fs from 'fs';
 import { type Logger } from './logger';
 import { type PDFOptions } from 'puppeteer';
-
-export interface ContentsMapOptions {
-    rootDir?: string;
-    recursive?: boolean;
-}
+import { type ContentsMapOptions } from '../core/maps/contents-map';
 
 export interface Range {
     min?: number;
