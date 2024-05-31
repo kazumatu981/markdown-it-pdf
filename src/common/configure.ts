@@ -2,15 +2,7 @@ import fs from 'fs';
 import { type Logger } from './logger';
 import { type PDFOptions } from 'puppeteer';
 import { type ContentsMapOptions } from '../core/maps/contents-map';
-
-export interface Range {
-    min?: number;
-    max?: number;
-}
-export interface ServerPortOptions {
-    retry?: number;
-    range?: Range;
-}
+import { type ServerPortOptions } from '../core/utils/http-helper';
 
 export interface MarkdownRenderServerOptions
     extends ContentsMapOptions,
