@@ -19,71 +19,70 @@ describe('Unit Tests - readOptions', () => {
     afterEach(() => {
         jest.restoreAllMocks();
     });
-    it('configure is described in json file', () => {
-        testConfigure(
-            readOptions<MarkdownItPdfPrinterOptions>(
-                __dirname + '/__data__/config.json'
-            )
+    it('configure is described in json file', async () => {
+        const config = await readOptions<MarkdownItPdfPrinterOptions>(
+            __dirname + '/__data__/config.json'
         );
+        testConfigure(config);
     });
-    it('configure is described in node js standard file', () => {
-        testConfigure(
-            readOptions<MarkdownItPdfPrinterOptions>(
-                __dirname + '/__data__/config.js'
-            )
+    it('configure is described in node js standard file', async () => {
+        const config = await readOptions<MarkdownItPdfPrinterOptions>(
+            __dirname + '/__data__/config.js'
         );
+
+        testConfigure(config);
     });
-    it('configure is described in common js file', () => {
-        testConfigure(
-            readOptions<MarkdownItPdfPrinterOptions>(
-                __dirname + '/__data__/config.cjs'
-            )
+    it('configure is described in common js file', async () => {
+        const config = await readOptions<MarkdownItPdfPrinterOptions>(
+            __dirname + '/__data__/config.cjs'
         );
+
+        testConfigure(config);
     });
-    it('configure is described in es file (unsupported).', () => {
-        const config = readOptions<MarkdownItPdfPrinterOptions>(
+    it('configure is described in es file (unsupported).', async () => {
+        const config = await readOptions<MarkdownItPdfPrinterOptions>(
             __dirname + '/__data__/config.mjs'
         );
         expect(config).toBeUndefined();
     });
-    it('configure is described in typescript file (unsupported).', () => {
-        const config = readOptions<MarkdownItPdfPrinterOptions>(
+    it('configure is described in typescript file (unsupported).', async () => {
+        const config = await readOptions<MarkdownItPdfPrinterOptions>(
             __dirname + '/__data__/config.ts'
         );
         expect(config).toBeUndefined();
     });
-    it('configure is described in typescript file (unsupported). - with logger', () => {
-        const config = readOptions<MarkdownItPdfPrinterOptions>(
+    it('configure is described in typescript file (unsupported). - with logger', async () => {
+        const config = await readOptions<MarkdownItPdfPrinterOptions>(
             __dirname + '/__data__/config.ts',
             mockLogger
         );
         expect(mockLogger.warn).toBeCalled();
     });
-    it('collapse configure file (on error)', () => {
-        const config = readOptions<MarkdownItPdfPrinterOptions>(
+    it('collapse configure file (on error)', async () => {
+        const config = await readOptions<MarkdownItPdfPrinterOptions>(
             __dirname + '/__data__/collapse_config.js'
         );
         expect(config).toBeUndefined();
     });
-    it('collapse configure file (on error) - with logger', () => {
-        const config = readOptions<MarkdownItPdfPrinterOptions>(
+    it('collapse configure file (on error) - with logger', async () => {
+        const config = await readOptions<MarkdownItPdfPrinterOptions>(
             __dirname + '/__data__/collapse_config.js',
             mockLogger
         );
         expect(mockLogger.warn).toBeCalled();
     });
-    it('filePath not exists', () => {
-        const config = readOptions<MarkdownItPdfPrinterOptions>(
+    it('filePath not exists', async () => {
+        const config = await readOptions<MarkdownItPdfPrinterOptions>(
             __dirname + '/__data__/config1.json'
         );
         expect(config).toBeUndefined();
     });
-    it('filePath as undefined', () => {
-        const config = readOptions<MarkdownItPdfPrinterOptions>();
+    it('filePath as undefined', async () => {
+        const config = await readOptions<MarkdownItPdfPrinterOptions>();
         expect(config).toBeUndefined();
     });
-    it('filePath as undefined - with logger', () => {
-        const config = readOptions<MarkdownItPdfPrinterOptions>(
+    it('filePath as undefined - with logger', async () => {
+        const config = await readOptions<MarkdownItPdfPrinterOptions>(
             undefined,
             mockLogger
         );

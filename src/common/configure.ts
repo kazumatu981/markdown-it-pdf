@@ -1,8 +1,9 @@
+import fsPromises from 'fs/promises';
 import fs from 'fs';
 import { type Logger } from './logger';
-import { type PDFOptions } from 'puppeteer';
 import { type ContentsMapOptions } from '../core/maps/contents-map';
 import { type ServerPortOptions } from '../core/utils/http-helper';
+import { type PrinterOptions } from '../core/puppeteer-pdf-printer';
 
 export interface MarkdownRenderServerOptions
     extends ContentsMapOptions,
@@ -10,8 +11,6 @@ export interface MarkdownRenderServerOptions
     port?: number;
     externalUrls?: string[];
 }
-
-export type PrinterOptions = Omit<PDFOptions, 'path'>;
 
 export interface MarkdownItPdfRenderServerOptions
     extends MarkdownRenderServerOptions {}
@@ -21,15 +20,20 @@ export interface MarkdownItPdfPrinterOptions
     outputDir?: string;
 }
 
-export function readOptions<T>(
+export async function readOptions<T>(
     filePath?: string,
     logger?: Logger
-): T | undefined {
+): Promise<T | undefined> {
     let options: T | undefined = undefined;
-    if (filePath && fs.existsSync(filePath)) {
+    if (filePath) {
         try {
+            // check if the file exists
+            await fsPromises.access(
+                filePath,
+                fs.constants.R_OK | fs.constants.F_OK
+            );
             if (filePath.endsWith('.json')) {
-                options = readJsonOptions<T>(filePath);
+                options = await readJsonOptions<T>(filePath);
             } else if (filePath.endsWith('.js') || filePath.endsWith('.cjs')) {
                 options = readJSOptions<T>(filePath);
             } else {
@@ -47,15 +51,14 @@ export function readOptions<T>(
         }
     } else {
         logger?.info(
-            'Configuration file not found: %s, so using default options.',
-            filePath
+            'Arguments for configure are empty, so using default options.'
         );
     }
     return options;
 }
 
-function readJsonOptions<T>(filePath: string): T | undefined {
-    const content = fs.readFileSync(filePath, 'utf-8');
+async function  readJsonOptions<T>(filePath: string): Promise<T | undefined> {
+    const content = await fsPromises.readFile(filePath, 'utf-8');
     return JSON.parse(content) as T;
 }
 

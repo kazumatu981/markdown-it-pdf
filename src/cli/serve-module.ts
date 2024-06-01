@@ -47,7 +47,7 @@ export const handler: (
     const logger = new ConsoleLogger(args.log);
     logger.info('MarkdownItPDF Render Server is starting...');
 
-    const options = readOptions<MarkdownItPdfRenderServerOptions>(
+    const options = await readOptions<MarkdownItPdfRenderServerOptions>(
         args.config,
         logger
     );

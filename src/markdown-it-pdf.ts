@@ -1,17 +1,19 @@
 import { MarkdownRenderServer } from './core/markdown-render-server';
-import { PuppeteerPDFPrinter } from './core/puppeteer-pdf-printer';
+import {
+    PuppeteerPDFPrinter,
+    type PrinterOptions,
+} from './core/puppeteer-pdf-printer';
 
 import { Logger } from './common/logger';
 import type {
     MarkdownItPdfRenderServerOptions,
     MarkdownItPdfPrinterOptions,
-    PrinterOptions,
 } from './common/configure';
 
 import type MarkdownIt from 'markdown-it';
 
 const defaultOutputDir = 'pdf';
-const defaultPrinterOption: PrinterOptions = {
+const defaultPrinterOption = {
     margin: {
         top: '12.7mm',
         bottom: '12.7mm',

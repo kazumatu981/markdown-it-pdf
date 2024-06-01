@@ -15,7 +15,7 @@ exports[`yargs module unit tests - print-module handler - on error 1`] = `
 exports[`yargs module unit tests - print-module handler 1`] = `
 [
   "MarkdownItPDF Render Server is starting...",
-  "Configuration file not found: %s, so using default options.",
+  "Arguments for configure are empty, so using default options.",
   "server started at http://localhost:%d",
 ]
 `;

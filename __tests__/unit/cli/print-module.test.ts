@@ -27,9 +27,11 @@ describe('yargs module unit tests - print-module', () => {
 
     it('handler', async () => {
         mockingTestDir();
+
         await printModule.handler({
             dir: 'test',
             outputDir: 'pdf',
+            config: 'test/config.json',
         });
         unmockingTestDir();
 

@@ -44,11 +44,11 @@ export const handler: (
     const logger = new ConsoleLogger(args.log);
     logger.info('MarkdownItPDF Printer is starting...');
 
-    const options = readOptions<MarkdownItPdfPrinterOptions>(
-        args.config,
-        logger
-    );
     try {
+        const options = await readOptions<MarkdownItPdfPrinterOptions>(
+            args.config,
+            logger
+        );
         const printer = await MarkdownItPdf.createPdfPrinter(logger, {
             rootDir: args.dir,
             outputDir: args.outputDir,
