@@ -3,6 +3,11 @@ import fsPromises from 'fs/promises';
 import { Logger } from '../../common/logger';
 import { type FileRender } from './file-render';
 
+// TODO support Highlight.js
+// TODO support Template engine
+/**
+ * The implementation of the render function for markdown files.
+ */
 export class MarkdownItRender extends MarkdownIt implements FileRender {
     public _logger?: Logger;
     private internalUrls: Array<string> = [];

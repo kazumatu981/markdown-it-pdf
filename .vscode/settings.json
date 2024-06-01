@@ -4,5 +4,10 @@
     "editor.formatOnSave": true,
     "cSpell.globRoot": "${workspaceFolder:src}",
     "cSpell.spellCheckOnlyWorkspaceFiles": true,
-    "cSpell.userWords": ["unmocking", "endregion"],
+    "cSpell.userWords": [
+        "unmocking",
+        "endregion"
+    ],
+    "todo-tree.general.tagGroups": {},
+    "todo-tree.general.showActivityBarBadge": true,
 }
