@@ -1,6 +1,5 @@
 import http from 'http';
-import { Logger } from '../../common/logger';
-import type { Range, ServerPortOptions } from '../../common/configure';
+import { type Logger } from '../../common';
 
 //#region constants
 const privatePortRange = {
@@ -20,6 +19,35 @@ export interface ServerPort {
      */
     httpServer: http.Server;
 }
+
+/**
+ * The range of ports to search for
+ */
+export interface Range {
+    /**
+     * The minimum port to search for
+     */
+    min?: number;
+    /**
+     * The maximum port to search for
+     */
+    max?: number;
+}
+
+/**
+ * Options for listening on a port
+ */
+export interface ServerPortOptions {
+    /**
+     * The number of times to retry if the port is in use
+     */
+    retry?: number;
+    /**
+     * The range of ports to search for
+     */
+    range?: Range;
+}
+
 //#endregion
 
 //#region functions

@@ -1,22 +1,22 @@
 import { jest, expect, describe, it } from '@jest/globals';
-import { MarkdownRenderServer } from '../../src/core/markdown-render-server';
-import { PuppeteerPDFPrinter } from '../../src/core/puppeteer-pdf-printer';
-import { buildTreeOfFiles } from '../../src/core/utils/path-resolver';
-import fsPromises from 'fs/promises';
-import http from 'http';
+
+import { buildTreeOfFiles } from '../../src/core/utils';
 import { readFromServer } from '../utils/http-util';
+import { MarkdownItPdf } from '../../src/markdown-it-pdf';
+import { ConsoleLogger } from '../../src/common';
 
 describe('render test', () => {
+    const logger = new ConsoleLogger('info');
     beforeAll(async () => {
         await buildTreeOfFiles([`${__dirname}/out/test.pdf`]);
     });
     it('render to html on local server', async () => {
-        const server = await MarkdownRenderServer.createInstance(undefined, {
+        const renderServer = await MarkdownItPdf.createRenderServer(logger, {
             rootDir: `${__dirname}/src`,
-            externalUrls: ['https://hoo.bar/styles/test.css'],
+            port: 3000,
         });
 
-        await server.listen(3000);
+        await renderServer.listen();
 
         const htmlData = await readFromServer('http://localhost:3000/test.md');
         expect(htmlData).toMatchSnapshot('html file');
@@ -37,23 +37,14 @@ describe('render test', () => {
         );
         expect(notFoundData).toMatchSnapshot('Not Found');
 
-        await server.close();
+        await renderServer.close();
     });
     it('render and print to pdf', async () => {
-        const server = await MarkdownRenderServer.createInstance(undefined, {
+        const printer = await MarkdownItPdf.createPdfPrinter(logger, {
             rootDir: `${__dirname}/src`,
-            externalUrls: ['https://hoo.bar/styles/test.css'],
+            port: 3001,
         });
 
-        await server.listen(3001);
-
-        await PuppeteerPDFPrinter.intoFiles(
-            'http://localhost:3001',
-            `${__dirname}/out`
-        ).print(['/test.md']);
-
-        await server.close();
+        await printer.printAll(`${__dirname}/out`);
     });
 });
-
-describe('test as http server', () => {});

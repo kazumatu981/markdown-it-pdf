@@ -1,15 +1,14 @@
-import { type Argv } from 'yargs';
-import { type MarkdownItPdfCommandOptions } from '../cli/command-options';
 import path from 'path';
-import {
-    readOptions,
-    MarkdownItPdfRenderServerOptions,
-} from '../common/configure';
-import { resolveFromCwd } from '../core/utils/path-resolver';
+import { type Argv } from 'yargs';
 
-import { MarkdownItPdf } from '../markdown-it-pdf';
-import { ConsoleLogger } from '../common/logger';
-import { MarkdownItfRenderServer } from '../../src/markdown-it-pdf';
+import { type MarkdownItPdfCommandOptions } from './command-options';
+import { readOptions, ConsoleLogger } from '../common';
+import { resolveFromCwd } from '../core/utils';
+import {
+    type MarkdownItPdfRenderServerOptions,
+    MarkdownItfRenderServer,
+    MarkdownItPdf,
+} from '../';
 
 // exports.command: string (or array of strings) that executes this command when given on the command line, first string may contain positional args
 export const command: string = 'serve [dir]';
@@ -47,7 +46,7 @@ export const handler: (
     const logger = new ConsoleLogger(args.log);
     logger.info('MarkdownItPDF Render Server is starting...');
 
-    const options = readOptions<MarkdownItPdfRenderServerOptions>(
+    const options = await readOptions<MarkdownItPdfRenderServerOptions>(
         args.config,
         logger
     );

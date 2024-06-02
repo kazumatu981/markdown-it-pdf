@@ -1,17 +1,26 @@
-import { MarkdownRenderServer } from './core/markdown-render-server';
-import { PuppeteerPDFPrinter } from './core/puppeteer-pdf-printer';
+import {
+    type MarkdownRenderServerOptions,
+    MarkdownRenderServer,
+} from './core/markdown-render-server';
+import {
+    PuppeteerPDFPrinter,
+    type PrinterOptions,
+} from './core/puppeteer-pdf-printer';
 
 import { Logger } from './common/logger';
-import type {
-    MarkdownItPdfRenderServerOptions,
-    MarkdownItPdfPrinterOptions,
-    PrinterOptions,
-} from './common/configure';
-
 import type MarkdownIt from 'markdown-it';
 
+export interface MarkdownItPdfRenderServerOptions
+    extends MarkdownRenderServerOptions {}
+
+export interface MarkdownItPdfPrinterOptions
+    extends MarkdownRenderServerOptions,
+        PrinterOptions {
+    outputDir?: string;
+}
+
 const defaultOutputDir = 'pdf';
-const defaultPrinterOption: PrinterOptions = {
+const defaultPrinterOption = {
     margin: {
         top: '12.7mm',
         bottom: '12.7mm',
@@ -90,8 +99,7 @@ class MarkdownItPdfPrinter extends MarkdownItPdf {
     public safeOptions(options?: PrinterOptions): PrinterOptions {
         let candidate = options;
         if (!candidate) {
-            candidate = (this._options as MarkdownItPdfPrinterOptions)
-                .printerOption;
+            candidate = this._options as MarkdownItPdfPrinterOptions;
             if (!candidate) {
                 candidate = defaultPrinterOption;
             }

@@ -103,14 +103,9 @@ exports[`CoreLibrary Unit Tests - MarkdownItRender Render Test: with logger 1`] 
     ],
     [
       "styles: %o",
-      {
-        "externalUrls": [
-          "https://hoo.bar/styles/test.css",
-        ],
-        "internalUrls": [
-          "./test.css",
-        ],
-      },
+      [
+        "./test.css",
+      ],
     ],
   ],
   "results": [

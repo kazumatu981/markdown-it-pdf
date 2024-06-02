@@ -16,7 +16,6 @@ exports[`yargs module unit tests - print-module handler - on error 1`] = `
 exports[`yargs module unit tests - print-module handler 1`] = `
 [
   "MarkdownItPDF Printer is starting...",
-  "Configuration file not found: %s, so using default options.",
   "ready to print.",
   "%d files printed",
 ]
@@ -24,12 +23,13 @@ exports[`yargs module unit tests - print-module handler 1`] = `
 
 exports[`yargs module unit tests - print-module handler 2`] = `
 [
-  "createPdfPrinter() called with options: {"rootDir":"test","outputDir":"pdf"}",
-  "MarkdownRenderServer.createRenderServer() called with options: {"rootDir":"test","outputDir":"pdf"}",
+  "createPdfPrinter() called with options: {"rootDir":"test","outputDir":"pdf","port":3001}",
+  "MarkdownRenderServer.createRenderServer() called with options: {"rootDir":"test","outputDir":"pdf","port":3001}",
   "contentsUrls: %o",
-  "Try to Listen on port random mode",
+  "Try to Listen on port %d",
   "reserved port: %d",
   "Listening on port %d",
+  "Launched Puppeteer.",
   "Request: %s",
   "render() called.",
   "styles: %o",
@@ -39,6 +39,7 @@ exports[`yargs module unit tests - print-module handler 2`] = `
   "Response for url: %s, status code: %d",
   "content type: %s",
   "Request: %s",
+  "Printed http://localhost:3001/test.md to pdf\\test.md.pdf.",
   "Request: %s",
   "render() called.",
   "styles: %o",
@@ -47,6 +48,7 @@ exports[`yargs module unit tests - print-module handler 2`] = `
   "Request: %s",
   "Response for url: %s, status code: %d",
   "content type: %s",
+  "Printed http://localhost:3001/sub/test.md to pdf\\sub\\test.md.pdf.",
   "Request: %s",
   "render() called.",
   "styles: %o",
@@ -55,6 +57,7 @@ exports[`yargs module unit tests - print-module handler 2`] = `
   "Request: %s",
   "Response for url: %s, status code: %d",
   "content type: %s",
+  "Printed http://localhost:3001/sub2/test.md to pdf\\sub2\\test.md.pdf.",
   "Request: %s",
   "render() called.",
   "styles: %o",
@@ -63,6 +66,8 @@ exports[`yargs module unit tests - print-module handler 2`] = `
   "Request: %s",
   "Response for url: %s, status code: %d",
   "content type: %s",
+  "Printed http://localhost:3001/sub2/sub/test.md to pdf\\sub2\\sub\\test.md.pdf.",
+  "Closed Puppeteer.",
   "printed files's ids:",
   [
     "/test.md",

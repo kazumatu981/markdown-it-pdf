@@ -2,6 +2,7 @@
 
 import path from 'path';
 import yargs from 'yargs';
+import { type Argv } from 'yargs';
 import serveModule from './cli/serve-module';
 import printModule from './cli/print-module';
 import { type MarkdownItPdfCommandOptions } from './cli/command-options';
@@ -19,26 +20,29 @@ export default function markdownItPdfCli() {
     //      -c, --config <file>   Configuration file
 
     yargs
-        .scriptName('markdown-it-pdf')
-        .usage('$0 <cmd> [options]')
         .command<MarkdownItPdfCommandOptions>([serveModule, printModule])
-        .option('log', {
-            alias: 'l',
-            describe: 'Log level',
-            type: 'string',
-            demandOption: false,
-            default: levelIndexes[2],
-            choices: levelIndexes,
+        .options({
+            log: {
+                alias: 'l',
+                describe: 'Log level',
+                type: 'string',
+                demandOption: false,
+                default: levelIndexes[2],
+                choices: levelIndexes,
+            },
+            config: {
+                alias: 'c',
+                describe: 'Configuration file',
+                type: 'string',
+                demandOption: false,
+                coerce: resolveFromCwd,
+            },
         })
-        .option('config', {
-            alias: 'c',
-            describe: 'Configuration file',
-            type: 'string',
-            demandOption: false,
-            coerce: resolveFromCwd,
-        })
+        .help()
+        .version()
         .alias('h', 'help')
         .alias('v', 'version')
-        .help()
+        .scriptName('markdown-it-pdf')
+        .usage('$0 <cmd> [options]')
         .parse();
 }

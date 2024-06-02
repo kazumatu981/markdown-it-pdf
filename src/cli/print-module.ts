@@ -1,10 +1,11 @@
 import { type Argv } from 'yargs';
 import path from 'path';
 import { type MarkdownItPdfCommandOptions } from './command-options';
-import { readOptions, MarkdownItPdfPrinterOptions } from '../common/configure';
-import { resolveFromCwd } from '../core/utils/path-resolver';
-import { MarkdownItPdf } from '../markdown-it-pdf';
-import { ConsoleLogger } from '../common/logger';
+import { readOptions } from '../common/configure';
+import { resolveFromCwd } from '../core/utils';
+import { type MarkdownItPdfPrinterOptions, MarkdownItPdf } from '../';
+import { ConsoleLogger } from '../common';
+
 // exports.command: string (or array of strings) that executes this command when given on the command line, first string may contain positional args
 export const command: string = 'print [dir] [outputDir]';
 // exports.aliases: array of strings (or a single string) representing aliases of exports.command, positional args defined in an alias are ignored
@@ -44,11 +45,11 @@ export const handler: (
     const logger = new ConsoleLogger(args.log);
     logger.info('MarkdownItPDF Printer is starting...');
 
-    const options = readOptions<MarkdownItPdfPrinterOptions>(
-        args.config,
-        logger
-    );
     try {
+        const options = await readOptions<MarkdownItPdfPrinterOptions>(
+            args.config,
+            logger
+        );
         const printer = await MarkdownItPdf.createPdfPrinter(logger, {
             rootDir: args.dir,
             outputDir: args.outputDir,

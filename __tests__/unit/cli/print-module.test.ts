@@ -1,5 +1,4 @@
 import { jest, expect, describe, it } from '@jest/globals';
-import { ConsoleLogger } from '../../../src/common/logger';
 import { mockLogger, resetMockLogger } from '../../utils/mock-logger';
 import { getFirstArgsOf } from '../../utils/mock-utils';
 import printModule from '../../../src/cli/print-module';
@@ -27,9 +26,11 @@ describe('yargs module unit tests - print-module', () => {
 
     it('handler', async () => {
         mockingTestDir();
+
         await printModule.handler({
             dir: 'test',
             outputDir: 'pdf',
+            config: 'test/config.json',
         });
         unmockingTestDir();
 
