@@ -1,13 +1,24 @@
 import http from 'http';
 import fsPromise from 'fs/promises';
 
-import { ContentsMap, RenderedEntity } from './maps/contents-map';
+import {
+    type ContentsMapOptions,
+    type RenderedEntity,
+    ContentsMap,
+} from './maps/contents-map';
 import { RenderMap } from './maps/render-map';
 import { MarkdownItRender } from './render/markdown-it-render';
-import { tryToListen } from './utils/http-helper';
+import { type ServerPortOptions, tryToListen } from './utils/http-helper';
 import { Logger } from '../common/logger';
-import { type MarkdownRenderServerOptions } from '../common/configure';
+
 import { utf8PlainTextRender } from './render/file-render';
+
+export interface MarkdownRenderServerOptions
+    extends ContentsMapOptions,
+        ServerPortOptions {
+    port?: number;
+    externalUrls?: string[];
+}
 
 const defaultOptions: MarkdownRenderServerOptions = {
     rootDir: '.',

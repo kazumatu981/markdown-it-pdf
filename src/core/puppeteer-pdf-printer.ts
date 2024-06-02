@@ -17,12 +17,9 @@ export const defaultPrinterOption: PDFOptions = {
 };
 //#endregion
 //#region types and interfaces
+
 export type PrinterOptions = Omit<PDFOptions, 'path'>;
 
-interface BrowserAndPage {
-    browser: Browser;
-    page: Page;
-}
 //#endregion
 
 //#region main classes

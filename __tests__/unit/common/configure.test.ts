@@ -1,9 +1,8 @@
 import { jest, describe, it, expect, afterEach } from '@jest/globals';
 
-import {
-    readOptions,
-    type MarkdownItPdfPrinterOptions,
-} from '../../../src/common/configure';
+import { readOptions } from '../../../src/common/configure';
+
+import { type MarkdownItPdfPrinterOptions } from '../../../src/markdown-it-pdf';
 
 import { mockLogger } from '../../utils/mock-logger';
 
@@ -11,8 +10,8 @@ function testConfigure(config?: MarkdownItPdfPrinterOptions) {
     expect(config).toBeDefined();
     expect(config?.rootDir).toBeDefined();
     expect(config?.rootDir).toEqual('./test');
-    expect(config?.printerOption?.margin?.top).toBeDefined();
-    expect(config?.printerOption?.margin?.top).toEqual('12.7mm');
+    expect(config?.margin?.top).toBeDefined();
+    expect(config?.margin?.top).toEqual('12.7mm');
 }
 
 describe('Unit Tests - readOptions', () => {

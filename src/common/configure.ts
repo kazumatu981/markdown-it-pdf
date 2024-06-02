@@ -1,24 +1,6 @@
 import fsPromises from 'fs/promises';
 import fs from 'fs';
 import { type Logger } from './logger';
-import { type ContentsMapOptions } from '../core/maps/contents-map';
-import { type ServerPortOptions } from '../core/utils/http-helper';
-import { type PrinterOptions } from '../core/puppeteer-pdf-printer';
-
-export interface MarkdownRenderServerOptions
-    extends ContentsMapOptions,
-        ServerPortOptions {
-    port?: number;
-    externalUrls?: string[];
-}
-
-export interface MarkdownItPdfRenderServerOptions
-    extends MarkdownRenderServerOptions {}
-export interface MarkdownItPdfPrinterOptions
-    extends MarkdownItPdfRenderServerOptions {
-    printerOption?: PrinterOptions;
-    outputDir?: string;
-}
 
 export async function readOptions<T>(
     filePath?: string,
@@ -57,7 +39,7 @@ export async function readOptions<T>(
     return options;
 }
 
-async function  readJsonOptions<T>(filePath: string): Promise<T | undefined> {
+async function readJsonOptions<T>(filePath: string): Promise<T | undefined> {
     const content = await fsPromises.readFile(filePath, 'utf-8');
     return JSON.parse(content) as T;
 }

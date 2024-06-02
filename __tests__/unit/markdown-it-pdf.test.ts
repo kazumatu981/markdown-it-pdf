@@ -152,9 +152,7 @@ describe('Unit Tests - MarkdownItPdf', () => {
                     {
                         rootDir: 'test',
                         recursive: true,
-                        printerOption: {
-                            format: 'a4',
-                        },
+                        format: 'a4',
                     }
                 );
                 const buffer = await printer.printIntoBuffer('test.md');
