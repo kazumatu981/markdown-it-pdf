@@ -1,16 +1,17 @@
 import MarkdownIt from 'markdown-it';
 import fsPromises from 'fs/promises';
-import { Logger } from '../../common/logger';
-import { type Styles } from '../../common/configure';
+import { type Logger } from '../../common';
 import { type FileRender } from './file-render';
 
+// TODO support Highlight.js
+// TODO support Template engine
+/**
+ * The implementation of the render function for markdown files.
+ */
 export class MarkdownItRender extends MarkdownIt implements FileRender {
     public _logger?: Logger;
-
-    private _styles: Styles = {
-        internalUrls: [],
-        externalUrls: [],
-    };
+    private internalUrls: Array<string> = [];
+    private externalUrls: Array<string> = [];
 
     /**
      * Adds the given URLs to the list of internal styles for this instance.
@@ -19,7 +20,7 @@ export class MarkdownItRender extends MarkdownIt implements FileRender {
      * @return {this} - Returns the current instance for method chaining.
      */
     public addStyles(urls: string[]): this {
-        this._styles.internalUrls.push(...urls);
+        this.internalUrls.push(...urls);
         return this;
     }
 
@@ -30,7 +31,7 @@ export class MarkdownItRender extends MarkdownIt implements FileRender {
      * @return {this} - Returns the current instance for method chaining.
      */
     public addExternalStyles(urls: string[]): this {
-        this._styles.externalUrls.push(...urls);
+        this.externalUrls.push(...urls);
         return this;
     }
 
@@ -42,11 +43,11 @@ export class MarkdownItRender extends MarkdownIt implements FileRender {
      */
     public render(markdown: string): string {
         this._logger?.debug(`render() called.`);
-        this._logger?.debug(`styles: %o`, this._styles);
+        this._logger?.debug(`styles: %o`, this.internalUrls);
         const htmlBody = super.render(markdown);
         const styleTags = MarkdownItRender.generateStyleTags(
-            this._styles.internalUrls,
-            this._styles.externalUrls
+            this.internalUrls,
+            this.externalUrls
         );
         return MarkdownItRender.htmlTemplate
             .replace(MarkdownItRender.styles, styleTags)

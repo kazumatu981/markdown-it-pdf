@@ -21,6 +21,9 @@ export function mockingTestDir() {
                     'sample.txt': 'hello world',
                 },
             },
+            'config.json': JSON.stringify({
+                port: 3001,
+            }),
             'test.css': 'h1 { color: red; }',
         },
     });

@@ -105,7 +105,6 @@ describe('CoreLibrary Unit Tests - MarkdownRenderServer', () => {
             });
             it('on set `listen` port.', async () => {
                 mockingTestDir();
-                mockingTestDir();
                 const server = await MarkdownRenderServer.createInstance(
                     undefined,
                     {

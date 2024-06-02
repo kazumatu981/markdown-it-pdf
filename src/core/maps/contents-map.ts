@@ -1,7 +1,6 @@
 import { findFiles, filePathToUrl } from '../utils/path-resolver';
 import { type RenderMap } from './render-map';
 import { DefaultExtensionMap } from './extension-map';
-import { type ContentsMapOptions } from '../../common/configure';
 import path from 'path';
 
 //#region constants
@@ -15,6 +14,7 @@ const defaultContentsMapOptions = {
 //#endregion
 
 //#region types and interfaces
+
 /**
  * An entity in the contents map
  */
@@ -45,6 +45,20 @@ export interface RenderedEntity extends ContentsMapEntity {
      * The contents of the entity
      */
     contents: string | Buffer;
+}
+
+/**
+ * Options for the contents map
+ */
+export interface ContentsMapOptions {
+    /**
+     * The root directory to search for files.
+     */
+    rootDir?: string;
+    /**
+     * Whether to recursively search for files.
+     */
+    recursive?: boolean;
 }
 
 //#endregion

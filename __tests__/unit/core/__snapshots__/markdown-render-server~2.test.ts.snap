@@ -67,12 +67,9 @@ exports[`CoreLibrary Unit Tests - MarkdownRenderServer serverListener can render
     ],
     [
       "styles: %o",
-      {
-        "externalUrls": [],
-        "internalUrls": [
-          "/test.css",
-        ],
-      },
+      [
+        "/test.css",
+      ],
     ],
     [
       "Response for url: %s, status code: %d",

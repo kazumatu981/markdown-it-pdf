@@ -1,20 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`CoreLibrary Unit Tests - PathResolver Basic Test: Can find markdown files: not recursive mode 1`] = `
-[
-  "test\\test.md",
-]
-`;
-
-exports[`CoreLibrary Unit Tests - PathResolver Basic Test: Can find markdown files: recursive mode 1`] = `
-[
-  "test\\test.md",
-  "test\\sub\\test.md",
-  "test\\sub2\\test.md",
-  "test\\sub2\\sub\\test.md",
-]
-`;
-
 exports[`CoreLibrary Unit Tests - findFiles Basic Test: Can find markdown files: not recursive mode 1`] = `
 [
   "test\\test.md",
