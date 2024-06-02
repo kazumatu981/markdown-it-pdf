@@ -1,6 +1,6 @@
 import MarkdownIt from 'markdown-it';
 import fsPromises from 'fs/promises';
-import { Logger } from '../../common/logger';
+import { type Logger } from '../../common';
 import { type FileRender } from './file-render';
 
 // TODO support Highlight.js

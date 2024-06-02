@@ -1,17 +1,14 @@
 import http from 'http';
-import fsPromise from 'fs/promises';
 
 import {
     type ContentsMapOptions,
     type RenderedEntity,
+    RenderMap,
     ContentsMap,
-} from './maps/contents-map';
-import { RenderMap } from './maps/render-map';
-import { MarkdownItRender } from './render/markdown-it-render';
-import { type ServerPortOptions, tryToListen } from './utils/http-helper';
-import { Logger } from '../common/logger';
-
-import { utf8PlainTextRender } from './render/file-render';
+} from './maps';
+import { MarkdownItRender, utf8PlainTextRender } from './render';
+import { type ServerPortOptions, tryToListen } from './utils';
+import { type Logger } from '../common';
 
 export interface MarkdownRenderServerOptions
     extends ContentsMapOptions,

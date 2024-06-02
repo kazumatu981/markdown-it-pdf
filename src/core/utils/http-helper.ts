@@ -1,5 +1,5 @@
 import http from 'http';
-import { Logger } from '../../common/logger';
+import { type Logger } from '../../common';
 
 //#region constants
 const privatePortRange = {

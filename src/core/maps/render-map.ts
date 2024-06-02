@@ -1,4 +1,4 @@
-import { type FileRender, defaultRender } from '../render/file-render';
+import { type FileRender, defaultRender } from '../render';
 
 /**
  * The render map. It's a map of render types to the render functions.
