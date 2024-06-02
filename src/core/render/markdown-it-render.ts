@@ -4,7 +4,9 @@ import { type Logger } from '../../common';
 import { type FileRender } from './file-render';
 
 // TODO support Highlight.js
-// TODO support Template engine
+// TODO support Template engine.
+// TODO support user custom plugins on options.
+
 /**
  * The implementation of the render function for markdown files.
  */
