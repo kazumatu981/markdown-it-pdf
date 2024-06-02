@@ -1,11 +1,18 @@
-import MarkdownIt from 'markdown-it';
-import fsPromises from 'fs/promises';
 import { type Logger } from '../../common';
 import { type FileRender } from './file-render';
+import { defaultTemplate } from './defaultTemplate';
 
+import MarkdownIt from 'markdown-it';
+import fsPromises from 'fs/promises';
+import Handlebars from 'handlebars';
 // TODO support Highlight.js
 // TODO support Template engine.
 // TODO support user custom plugins on options.
+
+interface RenderedPageModel {
+    styles: string[];
+    body: string;
+}
 
 /**
  * The implementation of the render function for markdown files.
@@ -14,6 +21,9 @@ export class MarkdownItRender extends MarkdownIt implements FileRender {
     public _logger?: Logger;
     private internalUrls: Array<string> = [];
     private externalUrls: Array<string> = [];
+    private template: string = defaultTemplate;
+    private templateEngine: Handlebars.TemplateDelegate<RenderedPageModel> =
+        Handlebars.compile(defaultTemplate);
 
     /**
      * Adds the given URLs to the list of internal styles for this instance.
@@ -38,22 +48,61 @@ export class MarkdownItRender extends MarkdownIt implements FileRender {
     }
 
     /**
+     * Loads the template from the given file path.
+     *
+     * @param {string} templatePath - The path to the template file.
+     * @return {Promise<this>} - A promise that resolves to the current instance.
+     */
+    public async loadTemplateFrom(templatePath?: string): Promise<this> {
+        // Read the template file as a string.
+        if (templatePath) {
+            this.template = await fsPromises.readFile(templatePath, 'utf8');
+        } else {
+            this.template = defaultTemplate;
+        }
+        this.templateEngine = Handlebars.compile<RenderedPageModel>(
+            this.template
+        );
+
+        // Log the loaded template.
+        this._logger?.debug(`template: %o`, this.template);
+
+        // Return the current instance.
+        return this;
+    }
+
+    private getModel(markdown: string): RenderedPageModel {
+        this._logger?.debug(`getModel() called.`);
+        this._logger?.debug(`styles: %o`, this.internalUrls);
+        this._logger?.debug(`styles: %o`, this.externalUrls);
+
+        const styles = [...this.internalUrls, ...this.externalUrls];
+        const body = super.render(markdown);
+        return { styles, body };
+    }
+
+    /**
      * Renders the given markdown string into HTML.
      *
      * @param {string} markdown - The markdown string to render.
      * @return {string} The rendered HTML string.
      */
     public render(markdown: string): string {
-        this._logger?.debug(`render() called.`);
-        this._logger?.debug(`styles: %o`, this.internalUrls);
-        const htmlBody = super.render(markdown);
-        const styleTags = MarkdownItRender.generateStyleTags(
-            this.internalUrls,
-            this.externalUrls
-        );
-        return MarkdownItRender.htmlTemplate
-            .replace(MarkdownItRender.styles, styleTags)
-            .replace(MarkdownItRender.contents, htmlBody);
+        const model = this.getModel(markdown);
+        return (
+            this
+                .templateEngine as Handlebars.TemplateDelegate<RenderedPageModel>
+        )(model);
+        // this._logger?.debug(`render() called.`);
+        // this._logger?.debug(`styles: %o`, this.internalUrls);
+        // const htmlBody = super.render(markdown);
+        // const styleTags = MarkdownItRender.generateStyleTags(
+        //     this.internalUrls,
+        //     this.externalUrls
+        // );
+        // return MarkdownItRender.htmlTemplate
+        //     .replace(MarkdownItRender.styles, styleTags)
+        //     .replace(MarkdownItRender.contents, htmlBody);
     }
     /**
      * Asynchronously renders a markdown file to HTML.

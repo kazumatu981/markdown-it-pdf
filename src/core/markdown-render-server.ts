@@ -1,5 +1,5 @@
 import http from 'http';
-
+import path from 'path';
 import {
     type ContentsMapOptions,
     type RenderedEntity,
@@ -15,11 +15,11 @@ export interface MarkdownRenderServerOptions
         ServerPortOptions {
     port?: number;
     externalUrls?: string[];
+    templatePath?: string;
 }
 
-const defaultOptions: MarkdownRenderServerOptions = {
+const defaultOptions = {
     rootDir: '.',
-    externalUrls: [],
 };
 export class MarkdownRenderServer extends MarkdownItRender {
     private _options?: MarkdownRenderServerOptions;
@@ -39,6 +39,9 @@ export class MarkdownRenderServer extends MarkdownItRender {
         const theInstance = new MarkdownRenderServer();
         theInstance._options = options;
         theInstance._logger = logger;
+        await theInstance.loadTemplateFrom(
+            options?.templatePath
+        );
 
         // create resolver map
         const renderMap = new RenderMap();
