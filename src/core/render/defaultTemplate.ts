@@ -1,4 +1,4 @@
-export const defaultTemplate = `
+export const defaultTemplateSource = `
 <!doctype html>
 <html>
     <head>

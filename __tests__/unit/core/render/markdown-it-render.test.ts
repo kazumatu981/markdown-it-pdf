@@ -83,6 +83,6 @@ describe('CoreLibrary Unit Tests - MarkdownItRender', () => {
         const result =
             await markdownItRender.loadTemplateFrom('./template.html');
 
-        expect(result['template']).toMatchSnapshot();
+        expect(result['templateSource']).toMatchSnapshot();
     });
 });
