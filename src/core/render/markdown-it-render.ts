@@ -8,9 +8,15 @@ import Handlebars from 'handlebars';
 // TODO support Highlight.js
 // TODO support user custom plugins on options.
 
+export interface HljsConfig {
+    js: string;
+    css: string;
+}
+
 interface RenderedPageModel {
     styles: string[];
     body: string;
+    hljs?: HljsConfig | false;
 }
 
 /**
@@ -23,6 +29,7 @@ export class MarkdownItRender extends MarkdownIt implements FileRender {
     private templateSource: string = defaultTemplateSource;
     private templateEngine: Handlebars.TemplateDelegate<RenderedPageModel> =
         Handlebars.compile(defaultTemplateSource);
+    private hljs: HljsConfig | undefined;
 
     /**
      * Adds the given URLs to the list of internal styles for this instance.
@@ -43,6 +50,15 @@ export class MarkdownItRender extends MarkdownIt implements FileRender {
      */
     public addExternalStyles(urls: string[]): this {
         this.externalUrls.push(...urls);
+        return this;
+    }
+
+    public configureHljs(hljs: HljsConfig | false): this {
+        if (hljs === false) {
+            this.hljs = undefined;
+        } else {
+            this.hljs = hljs;
+        }
         return this;
     }
 
@@ -80,7 +96,7 @@ export class MarkdownItRender extends MarkdownIt implements FileRender {
 
         const styles = [...this.internalUrls, ...this.externalUrls];
         const body = super.render(markdown);
-        return { styles, body };
+        return { styles, body, hljs: this.hljs };
     }
 
     /**
