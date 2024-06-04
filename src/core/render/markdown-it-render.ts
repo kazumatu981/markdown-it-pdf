@@ -5,7 +5,6 @@ import { defaultTemplateSource } from './defaultTemplate';
 import MarkdownIt from 'markdown-it';
 import fsPromises from 'fs/promises';
 import Handlebars from 'handlebars';
-// TODO support Highlight.js
 // TODO support user custom plugins on options.
 
 export interface HljsConfig {
