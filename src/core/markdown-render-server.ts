@@ -6,21 +6,30 @@ import {
     RenderMap,
     ContentsMap,
 } from './maps';
-import { MarkdownItRender, utf8PlainTextRender } from './render';
+import {
+    MarkdownItRender,
+    utf8PlainTextRender,
+    type HljsConfig,
+} from './render';
 import { type ServerPortOptions, tryToListen } from './utils';
 import { type Logger } from '../common';
-
 export interface MarkdownRenderServerOptions
     extends ContentsMapOptions,
         ServerPortOptions {
     port?: number;
     externalUrls?: string[];
     templatePath?: string;
+    hljs?: HljsConfig | false;
 }
 
 const defaultOptions = {
     rootDir: '.',
+    hljs: {
+        js: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js',
+        css: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css',
+    },
 };
+
 export class MarkdownRenderServer extends MarkdownItRender {
     private _options?: MarkdownRenderServerOptions;
     private _server?: http.Server;
@@ -37,10 +46,13 @@ export class MarkdownRenderServer extends MarkdownItRender {
 
         // create this instance
         const theInstance = new MarkdownRenderServer();
+
+        // FIXME configure options
         theInstance._options = options;
         theInstance._logger = logger;
-        await theInstance.loadTemplateFrom(
-            options?.templatePath
+        await theInstance.loadTemplateFrom(options?.templatePath);
+        theInstance.configureHljs(
+            options?.hljs === undefined ? defaultOptions.hljs : options?.hljs
         );
 
         // create resolver map

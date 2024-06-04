@@ -2,16 +2,20 @@
 
 exports[`render test render to html on local server: MD file on sub directory 1`] = `
 {
-  "body": "<!doctype html>
+  "body": "
+<!doctype html>
 <html>
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
         <title>Document</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css" />
         <link rel="stylesheet" type="text/css" href="/test.css" />
     </head>
     <body>
+        <script>hljs.highlightAll();</script>
         <h1>こんにちは世界</h1>
 <p><em>Hello</em></p>
 
@@ -45,19 +49,32 @@ exports[`render test render to html on local server: css file 1`] = `
 
 exports[`render test render to html on local server: html file 1`] = `
 {
-  "body": "<!doctype html>
+  "body": "
+<!doctype html>
 <html>
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
         <title>Document</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css" />
         <link rel="stylesheet" type="text/css" href="/test.css" />
     </head>
     <body>
+        <script>hljs.highlightAll();</script>
         <h1>markdown-it-pdf</h1>
 <h2>abstract</h2>
 <h2>function</h2>
+<pre><code class="language-TypeScript">import { MarkdownItPdf } from 'markdown-it-pdf';
+
+const printer = await MarkdownItPdf.createPdfPrinter(logger, {
+    rootDir: \`\${__dirname}/src\`,
+    port: 3001,
+});
+
+await printer.printAll(\`\${__dirname}/out\`);
+</code></pre>
 <h2>refer to</h2>
 <ul>
 <li><a href="https://www.npmjs.com/package/markdown-it">markdown-it</a></li>
