@@ -3,7 +3,46 @@
 This library has many configuration options.
 Here we will explain these options.
 
+These options are explained below.
+
+ You can specify them in a JavaScript or JSON file that is specified using the `--config` option of the CLI, or as arguments when using the API.
+
 ## File format
+
+The configuration file must be a JavaScript or JSON file.
+This file is specified using the `--config` option of the CLI.
+
+example(js):
+
+```javascript
+module.export = {
+    rootDir: './markdown',
+    recursive: true,
+    margin: {
+        top: '12.7mm',
+        bottom: '12.7mm',
+        left: '12.7mm',
+        right: '12.7mm'
+    }
+}
+```
+
+example(json):
+
+
+```json
+{
+    "rootDir": "./markdown",
+    "recursive": true,
+    "margin": {
+        "top": "12.7mm",
+        "bottom": "12.7mm",
+        "left": "12.7mm",
+        "right": "12.7mm"
+    }
+}
+```
+
 
 > **remark** This library **NOT** support `module` like JS file.
 > So you have to write configure common.js style JavaScript file. 
@@ -11,6 +50,9 @@ Here we will explain these options.
 ## Configuration options
 
 ### Contents options
+
+These options describe the contents to be rendered.
+These options are used when searching for files.
 
 | Name | Type | Description | Default |
 | -- | --| -- | -- |
@@ -20,11 +62,16 @@ Here we will explain these options.
 
 ### Server OPtion
 
+These options describe setting for the server.
+These options are used when launching the server and to start listening from self, other processes or machines.
+
 | Name | Type | Description | Default |
 | -- | --| -- | -- |
 | port | Number | The port number to be used. | `3000` |
 | retry | Number | The number of retries. | `10` |
 | range | Range | The range of ports to be used. | `{ min: 49152, max: 65535 }` |
+
+if the `port` is undefined, 
 
 #### Range
 
