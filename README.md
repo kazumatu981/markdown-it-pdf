@@ -78,7 +78,6 @@ Create configuration file (named `markdown-it-pdf-config.json`) on root director
 
 ```json
 {
-    "rootDir": "./test",
     "recursive": true,
     "externalUrls": ["https://hoo.bar/styles/test.css"],
     "margin": {
@@ -86,8 +85,7 @@ Create configuration file (named `markdown-it-pdf-config.json`) on root director
         "bottom": "12.7mm",
         "left": "12.7mm",
         "right": "12.7mm"
-    },
-    "outputDir": "pdf"
+    }
 }
 ```
 
