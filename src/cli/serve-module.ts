@@ -5,7 +5,7 @@ import { type MarkdownItPdfCommandOptions } from './command-options';
 import { readOptions, ConsoleLogger } from '../common';
 import { resolveFromCwd } from '../core/utils';
 import {
-    type MarkdownItPdfRenderServerOptions,
+    type ServerOptions,
     MarkdownItfRenderServer,
     MarkdownItPdf,
 } from '../';
@@ -46,15 +46,15 @@ export const handler: (
     const logger = new ConsoleLogger(args.log);
     logger.info('MarkdownItPDF Render Server is starting...');
 
-    const options = await readOptions<MarkdownItPdfRenderServerOptions>(
-        args.config,
-        logger
-    );
+    const options = await readOptions<ServerOptions>(args.config, logger);
     try {
-        server = await MarkdownItPdf.createRenderServer(logger, {
-            rootDir: args.dir,
-            ...options,
-        });
+        server = await MarkdownItPdf.createRenderServer(
+            {
+                rootDir: args.dir,
+                ...options,
+            },
+            logger
+        );
 
         const port = await server.listen();
         // success
