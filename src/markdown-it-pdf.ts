@@ -1,21 +1,20 @@
 import {
-    type MarkdownRenderServerOptions,
+    type RenderServerOptions,
     MarkdownRenderServer,
 } from './core/markdown-render-server';
 import {
     PuppeteerPDFPrinter,
-    type PrinterOptions,
+    type PuppeteerPrinterOptions,
 } from './core/puppeteer-pdf-printer';
 
 import { Logger } from './common/logger';
 import type MarkdownIt from 'markdown-it';
 
-export interface MarkdownItPdfRenderServerOptions
-    extends MarkdownRenderServerOptions {}
+export interface ServerOptions extends RenderServerOptions {}
 
-export interface MarkdownItPdfPrinterOptions
-    extends MarkdownRenderServerOptions,
-        PrinterOptions {
+export interface PrinterOptions
+    extends RenderServerOptions,
+        PuppeteerPrinterOptions {
     outputDir?: string;
 }
 
@@ -32,10 +31,10 @@ const defaultPrinterOption = {
 export abstract class MarkdownItPdf {
     protected _server: MarkdownRenderServer;
     protected _logger?: Logger;
-    protected _options?: MarkdownItPdfRenderServerOptions;
+    protected _options?: ServerOptions;
     public static async createRenderServer(
-        logger?: Logger,
-        options?: MarkdownItPdfRenderServerOptions
+        options?: ServerOptions,
+        logger?: Logger
     ): Promise<MarkdownItfRenderServer> {
         logger?.debug(
             `createRenderServer() called with options: ${JSON.stringify(options)}`
@@ -47,8 +46,8 @@ export abstract class MarkdownItPdf {
         return new MarkdownItfRenderServer(server, logger, options);
     }
     public static async createPdfPrinter(
-        logger?: Logger,
-        options?: MarkdownItPdfPrinterOptions
+        options?: PrinterOptions,
+        logger?: Logger
     ): Promise<MarkdownItPdfPrinter> {
         logger?.debug(
             `createPdfPrinter() called with options: ${JSON.stringify(options)}`
@@ -62,7 +61,7 @@ export abstract class MarkdownItPdf {
     protected constructor(
         server: MarkdownRenderServer,
         logger?: Logger,
-        options?: MarkdownItPdfRenderServerOptions
+        options?: ServerOptions
     ) {
         this._server = server;
         this._logger = logger;
@@ -88,18 +87,19 @@ class MarkdownItPdfPrinter extends MarkdownItPdf {
     public safeOutputDir(outputDir?: string): string {
         let candidate = outputDir;
         if (!candidate) {
-            candidate = (this._options as MarkdownItPdfPrinterOptions)
-                .outputDir;
+            candidate = (this._options as PrinterOptions).outputDir;
             if (!candidate) {
                 candidate = defaultOutputDir;
             }
         }
         return candidate;
     }
-    public safeOptions(options?: PrinterOptions): PrinterOptions {
+    public safeOptions(
+        options?: PuppeteerPrinterOptions
+    ): PuppeteerPrinterOptions {
         let candidate = options;
         if (!candidate) {
-            candidate = this._options as MarkdownItPdfPrinterOptions;
+            candidate = this._options as PrinterOptions;
             if (!candidate) {
                 candidate = defaultPrinterOption;
             }
@@ -108,7 +108,7 @@ class MarkdownItPdfPrinter extends MarkdownItPdf {
     }
     public async printAll(
         outputDir?: string,
-        options?: PrinterOptions
+        options?: PuppeteerPrinterOptions
     ): Promise<this> {
         await this._server.listen();
 
@@ -127,7 +127,7 @@ class MarkdownItPdfPrinter extends MarkdownItPdf {
     public async print(
         url: string | string[],
         outputDir?: string,
-        options?: PrinterOptions
+        options?: PuppeteerPrinterOptions
     ): Promise<this> {
         await this._server.listen();
 
@@ -147,7 +147,7 @@ class MarkdownItPdfPrinter extends MarkdownItPdf {
     }
     public async printIntoBuffer(
         url: string,
-        options?: PrinterOptions
+        options?: PuppeteerPrinterOptions
     ): Promise<Buffer> {
         await this._server.listen();
 

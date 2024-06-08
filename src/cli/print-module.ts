@@ -3,7 +3,7 @@ import path from 'path';
 import { type MarkdownItPdfCommandOptions } from './command-options';
 import { readOptions } from '../common/configure';
 import { resolveFromCwd } from '../core/utils';
-import { type MarkdownItPdfPrinterOptions, MarkdownItPdf } from '../';
+import { type PrinterOptions, MarkdownItPdf } from '../';
 import { ConsoleLogger } from '../common';
 
 // exports.command: string (or array of strings) that executes this command when given on the command line, first string may contain positional args
@@ -46,15 +46,15 @@ export const handler: (
     logger.info('MarkdownItPDF Printer is starting...');
 
     try {
-        const options = await readOptions<MarkdownItPdfPrinterOptions>(
-            args.config,
+        const options = await readOptions<PrinterOptions>(args.config, logger);
+        const printer = await MarkdownItPdf.createPdfPrinter(
+            {
+                rootDir: args.dir,
+                outputDir: args.outputDir,
+                ...options,
+            },
             logger
         );
-        const printer = await MarkdownItPdf.createPdfPrinter(logger, {
-            rootDir: args.dir,
-            outputDir: args.outputDir,
-            ...options,
-        });
         logger.info('ready to print.');
         await printer.printAll();
         // success
