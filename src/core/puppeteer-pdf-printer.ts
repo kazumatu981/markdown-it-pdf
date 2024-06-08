@@ -18,7 +18,7 @@ export const defaultPrinterOption: PDFOptions = {
 //#endregion
 //#region types and interfaces
 
-export type PrinterOptions = Omit<PDFOptions, 'path'>;
+export type PuppeteerPrinterOptions = Omit<PDFOptions, 'path'>;
 
 //#endregion
 
@@ -43,9 +43,9 @@ export abstract class PuppeteerPDFPrinter<
     protected _outputDir?: string;
     /**
      * The options to configure the printer.
-     * @type {PrinterOptions | undefined}
+     * @type {PuppeteerPrinterOptions | undefined}
      */
-    protected _options?: PrinterOptions;
+    protected _options?: PuppeteerPrinterOptions;
     /**
      * The logger to use.
      * @type {Logger | undefined}
@@ -57,13 +57,13 @@ export abstract class PuppeteerPDFPrinter<
      *
      * @param {string} siteUrl - The base URL of the site to print.
      * @param {string} [outputDir] - The directory where the PDFs will be saved.
-     * @param {PrinterOptions} [options] - The options to configure the printer.
+     * @param {PuppeteerPrinterOptions} [options] - The options to configure the printer.
      * @param {Logger} [logger] - The logger to use.
      */
     protected constructor(
         siteUrl: string,
         outputDir?: string,
-        options?: PrinterOptions,
+        options?: PuppeteerPrinterOptions,
         logger?: Logger
     ) {
         this._siteUrl = siteUrl;
@@ -77,14 +77,14 @@ export abstract class PuppeteerPDFPrinter<
      *
      * @param {string} siteUrl - The base URL of the site to print.
      * @param {string} outputDir - The directory where the PDFs will be saved.
-     * @param {PrinterOptions} [options] - The options to configure the printer.
+     * @param {PuppeteerPrinterOptions} [options] - The options to configure the printer.
      * @param {Logger} [logger] - The logger to use.
      * @return {FilePrinter} The newly created Printer.
      */
     public static intoFiles(
         siteUrl: string,
         outputDir: string,
-        options?: PrinterOptions,
+        options?: PuppeteerPrinterOptions,
         logger?: Logger
     ): FilePrinter {
         // Create a new FilePrinter with the provided arguments
@@ -95,13 +95,13 @@ export abstract class PuppeteerPDFPrinter<
      * Creates a new Printer that prints the PDFs into memory.
      *
      * @param {string} siteUrl - The base URL of the site to print.
-     * @param {PrinterOptions} [options] - The options to configure the printer.
+     * @param {PuppeteerPrinterOptions} [options] - The options to configure the printer.
      * @param {Logger} [logger] - The logger to use.
      * @return {MemoryPrinter} The newly created Printer.
      */
     public static intoMemory(
         siteUrl: string,
-        options?: PrinterOptions,
+        options?: PuppeteerPrinterOptions,
         logger?: Logger
     ): MemoryPrinter {
         // Create a new Printer that prints the PDFs into memory.
@@ -179,12 +179,12 @@ class VirtualBrowser {
      * Prints the page as a PDF and returns the result.
      *
      * @param {string} filePath - The path to save the PDF to. If not specified, the PDF is returned as a buffer.
-     * @param {PrinterOptions} options - Additional options for the PDF.
+     * @param {PuppeteerPrinterOptions} options - Additional options for the PDF.
      * @returns {Promise<Buffer | void>} The PDF as a buffer, or void if filePath is specified.
      */
     public async print<T = Buffer | void>(
         filePath?: string,
-        options?: PrinterOptions
+        options?: PuppeteerPrinterOptions
     ): Promise<T> {
         // Use Puppeteer's page.pdf method to print the page as a PDF.
         // If filePath is specified, the PDF is saved to that file. Otherwise, the PDF is returned as a buffer.

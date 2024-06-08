@@ -13,7 +13,7 @@ import {
 } from './render';
 import { type ServerPortOptions, tryToListen } from './utils';
 import { type Logger } from '../common';
-export interface MarkdownRenderServerOptions
+export interface RenderServerOptions
     extends ContentsMapOptions,
         ServerPortOptions {
     port?: number;
@@ -31,14 +31,14 @@ const defaultOptions = {
 };
 
 export class MarkdownRenderServer extends MarkdownItRender {
-    private _options?: MarkdownRenderServerOptions;
+    private _options?: RenderServerOptions;
     private _server?: http.Server;
     private _contentsMap?: ContentsMap;
     private _listeningPort?: number;
 
     public static async createInstance(
         logger?: Logger,
-        options?: MarkdownRenderServerOptions
+        options?: RenderServerOptions
     ): Promise<MarkdownRenderServer> {
         logger?.debug(
             `MarkdownRenderServer.createRenderServer() called with options: ${JSON.stringify(options)}`
