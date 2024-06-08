@@ -68,11 +68,11 @@ You can select the rendering method as follows:
 
 |Method| Summary |
 |---|---|
-| Command Line Interface | You can generate PDF files in bulk by using the CLI. |
-| HTTP Server | You can start an HTTP server on `localhost` to distribute HTML files generated from Markdown. |
+| CLI Printer | You can generate PDF files in bulk by using the CLI. |
+| CLI Server | You can start an HTTP server on `localhost` to distribute HTML files generated from Markdown. |
 | Node.js API | You can embed it in your own application and convert Markdown to PDF. |
 
-### **[step3] on CLI/Server:** Configure
+### **[step3][CLI]** Configure
 
 Create configuration file (named `markdown-it-pdf-config.json`) on root directory like bellow:
 
@@ -91,21 +91,43 @@ Create configuration file (named `markdown-it-pdf-config.json`) on root director
 
 See more information on [this article - About Configurations](docs/about_configuration.md).
 
-### **[step4] on CLI/Server:** Execute
+### [step4][CLI] Execute
 
-#### Command Line Interface: Convert multiple Markdown files to PDFs
+This tool include Command Line Interface which launches the server and prints the output them pages to the files as PDF.
+
+#### Printer: Convert multiple Markdown files to PDFs
 
 ```bash
 markdown-it-pdf print src pdf --config markdown-it-pdf-config.json
 ```
 
-#### HTTP Server: Start the HTTP server to distribute HTML
+If you want to print(convert) markdown files into PDF files, then you use `print` command.
+First option is the root directory of the markdown files.
+Second option is the output directory of the PDF files.
+
+#### Server: Start the HTTP server to distribute HTML
 
 ```bash
 markdown-it-pdf serve src --config markdown-it-pdf-config.json
 ```
 
-### **[step3] on Node.js API:** Create Application
+If you want to start the HTTP server to distribute HTML, then you use `serve` command.
+For example if you want to print yourself, want to share your MD files with others, or want to debug before writing `CSS` files, then you use `serve` command.
+
+The first option is the root directory of the markdown files.
+
+#### Other options for the CLI
+
+|Option| Alias | Summary |
+|---|---|---|
+| --config | -c | Specify the configuration file path. |
+| --log | -l | Specify the log level. `trace`, `debug`,`info`,`warn`,`error`,`silent`|
+| --help | -h | Show help. |
+| --version | -v | Show version. |
+
+### [step3][API] Create Application
 
 
-#### Node.js API: Embed into your service(app)
+#### Embed into your service(app)
+
+See more information on [this article - About APIs](docs/about_apis.md).
