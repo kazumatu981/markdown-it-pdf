@@ -4,11 +4,11 @@ import { DefaultExtensionMap } from './extension-map';
 import path from 'path';
 
 //#region constants
+const defaultRootDir = './';
 /**
  * default contents map options
  */
 const defaultContentsMapOptions = {
-    rootDir: './',
     recursive: true,
 };
 //#endregion
@@ -52,10 +52,6 @@ export interface RenderedEntity extends ContentsMapEntity {
  */
 export interface ContentsMapOptions {
     /**
-     * The root directory to search for files.
-     */
-    rootDir?: string;
-    /**
      * Whether to recursively search for files.
      */
     recursive?: boolean;
@@ -69,6 +65,7 @@ export interface ContentsMapOptions {
  */
 export class ContentsMap extends Map<string, ContentsMapEntity> {
     //#region private fields
+    private _rootDir: string;
     private _renderMap: RenderMap;
     private _options?: ContentsMapOptions;
     //#endregion
@@ -85,10 +82,11 @@ export class ContentsMap extends Map<string, ContentsMapEntity> {
      */
     public static async createInstance(
         resolverMap: RenderMap,
+        rootDir?: string,
         options?: ContentsMapOptions
     ): Promise<ContentsMap> {
         // create the instance
-        const theInstance = new ContentsMap(resolverMap, options);
+        const theInstance = new ContentsMap(resolverMap, rootDir, options);
 
         // refresh the contents of the map
         await theInstance.refresh();
@@ -107,12 +105,19 @@ export class ContentsMap extends Map<string, ContentsMapEntity> {
      * @param {RenderMap} resolverMap - The resolver map used to resolve the URLs to the resolver for the contents.
      * @param {ContentsMapOptions} [options] - The options for the contents map.
      */
-    private constructor(resolverMap: RenderMap, options?: ContentsMapOptions) {
+    private constructor(
+        resolverMap: RenderMap,
+        rootDir?: string,
+        options?: ContentsMapOptions
+    ) {
         // Call the constructor of the parent class (Map)
         super();
 
         // Initialize the resolver map
         this._renderMap = resolverMap;
+
+        // Initialize the root directory
+        this._rootDir = rootDir ?? defaultRootDir;
 
         // Initialize the options for the contents map
         this._options = options;
@@ -135,7 +140,7 @@ export class ContentsMap extends Map<string, ContentsMapEntity> {
 
         // Find the contents of the root directory using the provided options
         const contents = await findFiles<ContentsMapEntity>(
-            this._options?.rootDir ?? defaultContentsMapOptions.rootDir,
+            this._rootDir,
             this._options?.recursive ?? defaultContentsMapOptions.recursive,
             DefaultExtensionMap.isSupported.bind(DefaultExtensionMap),
             this.generateContentMapEntity.bind(this)
@@ -212,10 +217,7 @@ export class ContentsMap extends Map<string, ContentsMapEntity> {
         // Generate the content map entity with the provided information.
         return {
             // Generate the URL for the file path.
-            url: filePathToUrl(
-                this._options?.rootDir ?? defaultContentsMapOptions.rootDir,
-                filePath
-            ),
+            url: filePathToUrl(this._rootDir, filePath),
             // Get the resolver type from the resolver information.
             renderType: resolver.renderType,
             // Get the content type from the resolver information.

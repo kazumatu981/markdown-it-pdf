@@ -10,62 +10,108 @@ import {
 import { Logger } from './common/logger';
 import type MarkdownIt from 'markdown-it';
 
-export interface ServerOptions extends RenderServerOptions {}
+export namespace MarkdownItPdf {
+    export interface ServerOptions extends RenderServerOptions {}
 
-export interface PrinterOptions
-    extends RenderServerOptions,
-        PuppeteerPrinterOptions {
-    outputDir?: string;
-}
+    export interface PrinterOptions
+        extends RenderServerOptions,
+            PuppeteerPrinterOptions {}
 
-const defaultOutputDir = 'pdf';
-const defaultPrinterOption = {
-    margin: {
-        top: '12.7mm',
-        bottom: '12.7mm',
-        left: '12.7mm',
-        right: '12.7mm',
-    },
-};
+    export type Options = ServerOptions | PrinterOptions;
 
-export abstract class MarkdownItPdf {
-    protected _server: MarkdownRenderServer;
-    protected _logger?: Logger;
-    protected _options?: ServerOptions;
-    public static async createRenderServer(
+    export async function createServer(
+        rootDir?: string,
         options?: ServerOptions,
         logger?: Logger
-    ): Promise<MarkdownItfRenderServer> {
-        logger?.debug(
-            `createRenderServer() called with options: ${JSON.stringify(options)}`
+    ): Promise<MarkdownItPdf.Server> {
+        return MarkdownItRenderServer.createInstance(
+            rootDir,
+            undefined,
+            options,
+            logger
         );
-        const server = await MarkdownRenderServer.createInstance(
-            logger,
-            options
-        );
-        return new MarkdownItfRenderServer(server, logger, options);
     }
-    public static async createPdfPrinter(
+    export async function createPrinter(
+        rootDir?: string,
+        outputDir?: string,
         options?: PrinterOptions,
         logger?: Logger
-    ): Promise<MarkdownItPdfPrinter> {
+    ): Promise<MarkdownItPdf.Printer> {
+        return MarkdownItPdfPrinter.createInstance(
+            rootDir,
+            outputDir,
+            options,
+            logger
+        );
+    }
+    export interface MarkdownItPdf {
+        use(plugin: MarkdownIt.PluginSimple): this;
+        use<T = any>(
+            plugin: MarkdownIt.PluginWithOptions<T>,
+            options?: T
+        ): this;
+        use(plugin: MarkdownIt.PluginWithParams, ...params: any[]): this;
+        get availableMarkdownUrls(): string[];
+    }
+    export interface Server extends MarkdownItPdf {
+        listen(): Promise<number>;
+        close(): Promise<void>;
+    }
+    export interface Printer extends MarkdownItPdf {
+        printAll(
+            outputDir?: string,
+            options?: PuppeteerPrinterOptions
+        ): Promise<this>;
+        print(
+            url: string | string[],
+            outputDir?: string,
+            options?: PuppeteerPrinterOptions
+        ): Promise<this>;
+        printIntoBuffer(
+            url: string,
+            options?: PuppeteerPrinterOptions
+        ): Promise<Buffer>;
+    }
+}
+
+abstract class MarkdownItPdfBase<U = MarkdownItPdf.Options>
+    implements MarkdownItPdf.MarkdownItPdf
+{
+    protected _server: MarkdownRenderServer;
+    protected _logger?: Logger;
+    protected _options?: U;
+
+    public static async createInstance<T extends MarkdownItPdfBase>(
+        this: new (
+            server: MarkdownRenderServer,
+            outputDir?: string,
+            options?: MarkdownItPdf.Options,
+            logger?: Logger
+        ) => T,
+        rootDir?: string,
+        outputDir?: string,
+        options?: MarkdownItPdf.Options,
+        logger?: Logger
+    ) {
         logger?.debug(
-            `createPdfPrinter() called with options: ${JSON.stringify(options)}`
+            `createInstance called with options: ${JSON.stringify(options)}`
         );
+
         const server = await MarkdownRenderServer.createInstance(
-            logger,
-            options
+            rootDir,
+            options,
+            logger
         );
-        return new MarkdownItPdfPrinter(server, logger, options);
+        return new this(server, outputDir, options, logger);
     }
     protected constructor(
         server: MarkdownRenderServer,
-        logger?: Logger,
-        options?: ServerOptions
+        options?: MarkdownItPdf.ServerOptions,
+        logger?: Logger
     ) {
         this._server = server;
         this._logger = logger;
-        this._options = options;
+        this._options = options as U;
     }
 
     public use(plugin: MarkdownIt.PluginSimple): this;
@@ -83,52 +129,37 @@ export abstract class MarkdownItPdf {
     }
 }
 
-class MarkdownItPdfPrinter extends MarkdownItPdf {
-    public safeOutputDir(outputDir?: string): string {
-        let candidate = outputDir;
-        if (!candidate) {
-            candidate = (this._options as PrinterOptions).outputDir;
-            if (!candidate) {
-                candidate = defaultOutputDir;
-            }
-        }
-        return candidate;
-    }
-    public safeOptions(
-        options?: PuppeteerPrinterOptions
-    ): PuppeteerPrinterOptions {
-        let candidate = options;
-        if (!candidate) {
-            candidate = this._options as PrinterOptions;
-            if (!candidate) {
-                candidate = defaultPrinterOption;
-            }
-        }
-        return candidate;
-    }
-    public async printAll(
+class MarkdownItPdfPrinter
+    extends MarkdownItPdfBase<MarkdownItPdf.PrinterOptions>
+    implements MarkdownItPdf.Printer
+{
+    private _outputDir?: string;
+    public constructor(
+        server: MarkdownRenderServer,
         outputDir?: string,
-        options?: PuppeteerPrinterOptions
-    ): Promise<this> {
+        options?: MarkdownItPdf.PrinterOptions,
+        logger?: Logger
+    ) {
+        super(server, options, logger);
+        this._outputDir = outputDir;
+    }
+
+    public async printAll(): Promise<this> {
         await this._server.listen();
 
         const urls = this.availableMarkdownUrls;
 
         await PuppeteerPDFPrinter.intoFiles(
             `http://localhost:${this._server.listeningPort}`,
-            this.safeOutputDir(outputDir),
-            this.safeOptions(options),
+            this._outputDir,
+            this._options,
             this._logger
         ).print(urls);
 
         await this._server.close();
         return this;
     }
-    public async print(
-        url: string | string[],
-        outputDir?: string,
-        options?: PuppeteerPrinterOptions
-    ): Promise<this> {
+    public async print(url: string | string[]): Promise<this> {
         await this._server.listen();
 
         if (!Array.isArray(url)) {
@@ -137,23 +168,20 @@ class MarkdownItPdfPrinter extends MarkdownItPdf {
 
         await PuppeteerPDFPrinter.intoFiles(
             `http://localhost:${this._server.listeningPort}`,
-            this.safeOutputDir(outputDir),
-            this.safeOptions(options),
+            this._outputDir,
+            this._options,
             this._logger
         ).print(url);
 
         await this._server.close();
         return this;
     }
-    public async printIntoBuffer(
-        url: string,
-        options?: PuppeteerPrinterOptions
-    ): Promise<Buffer> {
+    public async printIntoBuffer(url: string): Promise<Buffer> {
         await this._server.listen();
 
         const buffer = await PuppeteerPDFPrinter.intoMemory(
             `http://localhost:${this._server.listeningPort}`,
-            this.safeOptions(options),
+            this._options,
             this._logger
         ).print(url);
 
@@ -163,7 +191,18 @@ class MarkdownItPdfPrinter extends MarkdownItPdf {
     }
 }
 
-export class MarkdownItfRenderServer extends MarkdownItPdf {
+class MarkdownItRenderServer
+    extends MarkdownItPdfBase<MarkdownItPdf.ServerOptions>
+    implements MarkdownItPdf.Server
+{
+    public constructor(
+        server: MarkdownRenderServer,
+        _?: string,
+        options?: MarkdownItPdf.ServerOptions,
+        logger?: Logger
+    ) {
+        super(server, options, logger);
+    }
     public listen(port?: number): Promise<number> {
         return this._server.listen(port);
     }

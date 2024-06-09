@@ -22,8 +22,8 @@ exports[`yargs module unit tests - print-module handler 1`] = `
 
 exports[`yargs module unit tests - print-module handler 2`] = `
 [
-  "createRenderServer() called with options: {"rootDir":"test"}",
-  "MarkdownRenderServer.createRenderServer() called with options: {"rootDir":"test"}",
+  "createInstance called with options: {}",
+  "MarkdownRenderServer.createRenderServer() called with options: {}",
   "template: %o",
   "contentsUrls: %o",
   "Try to Listen on port random mode",

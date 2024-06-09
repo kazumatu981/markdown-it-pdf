@@ -37,8 +37,9 @@ export class MarkdownRenderServer extends MarkdownItRender {
     private _listeningPort?: number;
 
     public static async createInstance(
-        logger?: Logger,
-        options?: RenderServerOptions
+        rootDir?: string,
+        options?: RenderServerOptions,
+        logger?: Logger
     ): Promise<MarkdownRenderServer> {
         logger?.debug(
             `MarkdownRenderServer.createRenderServer() called with options: ${JSON.stringify(options)}`
@@ -64,6 +65,7 @@ export class MarkdownRenderServer extends MarkdownItRender {
         // create contents map
         const contentsMap = await ContentsMap.createInstance(
             renderMap,
+            rootDir,
             options
         );
         logger?.debug('contentsUrls: %o', contentsMap.getEntityUrls());

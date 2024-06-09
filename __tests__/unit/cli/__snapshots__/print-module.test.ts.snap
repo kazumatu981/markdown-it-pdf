@@ -23,8 +23,8 @@ exports[`yargs module unit tests - print-module handler 1`] = `
 
 exports[`yargs module unit tests - print-module handler 2`] = `
 [
-  "createPdfPrinter() called with options: {"rootDir":"test","outputDir":"pdf","port":3001}",
-  "MarkdownRenderServer.createRenderServer() called with options: {"rootDir":"test","outputDir":"pdf","port":3001}",
+  "createInstance called with options: {"port":3001}",
+  "MarkdownRenderServer.createRenderServer() called with options: {"port":3001}",
   "template: %o",
   "contentsUrls: %o",
   "Try to Listen on port %d",

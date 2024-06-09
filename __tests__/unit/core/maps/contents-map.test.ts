@@ -8,10 +8,13 @@ describe('CoreLibrary Unit Tests - ContentsMap', () => {
         it('should create an instance - recursive', async () => {
             const resolverMap = new RenderMap();
             mockingTestDir();
-            const contentsMap = await ContentsMap.createInstance(resolverMap, {
-                rootDir: 'test',
-                recursive: true,
-            });
+            const contentsMap = await ContentsMap.createInstance(
+                resolverMap,
+                'test',
+                {
+                    recursive: true,
+                }
+            );
             expect(contentsMap).toBeTruthy();
             expect(contentsMap.keys()).toContain('/test.md');
             expect(contentsMap.keys()).toContain('/sample.txt');
@@ -21,10 +24,13 @@ describe('CoreLibrary Unit Tests - ContentsMap', () => {
         it('should create an instance - not recursive', async () => {
             const resolverMap = new RenderMap();
             mockingTestDir();
-            const contentsMap = await ContentsMap.createInstance(resolverMap, {
-                rootDir: 'test',
-                recursive: false,
-            });
+            const contentsMap = await ContentsMap.createInstance(
+                resolverMap,
+                'test',
+                {
+                    recursive: false,
+                }
+            );
             expect(contentsMap).toBeTruthy();
             expect(contentsMap.keys()).toContain('/test.md');
             expect(contentsMap.keys()).toContain('/sample.txt');
@@ -34,9 +40,10 @@ describe('CoreLibrary Unit Tests - ContentsMap', () => {
         it('should create an instance - recursive on abbreviate recursive', async () => {
             const resolverMap = new RenderMap();
             mockingTestDir();
-            const contentsMap = await ContentsMap.createInstance(resolverMap, {
-                rootDir: 'test',
-            });
+            const contentsMap = await ContentsMap.createInstance(
+                resolverMap,
+                'test'
+            );
             expect(contentsMap).toBeTruthy();
             expect(contentsMap.keys()).toContain('/test.md');
             expect(contentsMap.keys()).toContain('/sample.txt');
@@ -46,9 +53,10 @@ describe('CoreLibrary Unit Tests - ContentsMap', () => {
         it('should create an instance - recursive on abbreviate options', async () => {
             const resolverMap = new RenderMap();
             mockingTestDir();
-            const contentsMap = await ContentsMap.createInstance(resolverMap, {
-                rootDir: 'test',
-            });
+            const contentsMap = await ContentsMap.createInstance(
+                resolverMap,
+                'test'
+            );
             expect(contentsMap).toBeTruthy();
             expect(contentsMap.keys()).toContain('/test.md');
             expect(contentsMap.keys()).toContain('/sample.txt');
@@ -60,9 +68,10 @@ describe('CoreLibrary Unit Tests - ContentsMap', () => {
         it('should return the markdown entry urls', async () => {
             const resolverMap = new RenderMap();
             mockingTestDir();
-            const contentsMap = await ContentsMap.createInstance(resolverMap, {
-                rootDir: 'test',
-            });
+            const contentsMap = await ContentsMap.createInstance(
+                resolverMap,
+                'test'
+            );
             expect(contentsMap.getEntityUrls('markdown')).toContain('/test.md');
             expect(contentsMap.getEntityUrls('markdown')).toContain(
                 '/sub/test.md'
@@ -80,9 +89,11 @@ describe('CoreLibrary Unit Tests - ContentsMap', () => {
         it('should return the style entry urls', async () => {
             const resolverMap = new RenderMap();
             mockingTestDir();
-            const contentsMap = await ContentsMap.createInstance(resolverMap, {
-                rootDir: 'test',
-            });
+            const contentsMap = await ContentsMap.createInstance(
+                resolverMap,
+                'test',
+                {}
+            );
             expect(contentsMap.getEntityUrls('style')).not.toContain(
                 '/test.md'
             );
@@ -101,9 +112,11 @@ describe('CoreLibrary Unit Tests - ContentsMap', () => {
         it('should return the style entry urls', async () => {
             const resolverMap = new RenderMap();
             mockingTestDir();
-            const contentsMap = await ContentsMap.createInstance(resolverMap, {
-                rootDir: 'test',
-            });
+            const contentsMap = await ContentsMap.createInstance(
+                resolverMap,
+                'test',
+                {}
+            );
             expect(contentsMap.getEntityUrls()).toContain('/test.md');
             expect(contentsMap.getEntityUrls()).toContain('/sub/test.md');
             expect(contentsMap.getEntityUrls()).toContain('/sample.txt');
@@ -125,9 +138,11 @@ describe('CoreLibrary Unit Tests - ContentsMap', () => {
             });
 
             mockingTestDir();
-            const contentsMap = await ContentsMap.createInstance(resolverMap, {
-                rootDir: 'test',
-            });
+            const contentsMap = await ContentsMap.createInstance(
+                resolverMap,
+                'test',
+                {}
+            );
 
             const result = await contentsMap.render('/test.md');
             expect(result?.renderType).toEqual('markdown');
@@ -139,9 +154,11 @@ describe('CoreLibrary Unit Tests - ContentsMap', () => {
             const resolverMap = new RenderMap();
 
             mockingTestDir();
-            const contentsMap = await ContentsMap.createInstance(resolverMap, {
-                rootDir: 'test',
-            });
+            const contentsMap = await ContentsMap.createInstance(
+                resolverMap,
+                'test',
+                {}
+            );
 
             const result = await contentsMap.render('/unknown.md');
             expect(result).toBeUndefined();

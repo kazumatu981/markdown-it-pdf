@@ -4,11 +4,7 @@ import { type Argv } from 'yargs';
 import { type MarkdownItPdfCommandOptions } from './command-options';
 import { readOptions, ConsoleLogger } from '../common';
 import { resolveFromCwd } from '../core/utils';
-import {
-    type ServerOptions,
-    MarkdownItfRenderServer,
-    MarkdownItPdf,
-} from '../';
+import { MarkdownItPdf } from '../';
 
 // exports.command: string (or array of strings) that executes this command when given on the command line, first string may contain positional args
 export const command: string = 'serve [dir]';
@@ -33,7 +29,7 @@ export const builder: (
     });
 };
 
-export let server: MarkdownItfRenderServer | undefined;
+export let server: MarkdownItPdf.Server | undefined;
 
 export async function stopServer(): Promise<void> {
     await server?.close();
@@ -46,17 +42,20 @@ export const handler: (
     const logger = new ConsoleLogger(args.log);
     logger.info('MarkdownItPDF Render Server is starting...');
 
-    const options = await readOptions<ServerOptions>(args.config, logger);
+    const options = await readOptions<MarkdownItPdf.ServerOptions>(
+        args.config,
+        logger
+    );
     try {
-        server = await MarkdownItPdf.createRenderServer(
+        server = await MarkdownItPdf.createServer(
+            args.dir,
             {
-                rootDir: args.dir,
                 ...options,
             },
             logger
         );
 
-        const port = await server.listen();
+        const port = await server?.listen();
         // success
         logger.info('server started at http://localhost:%d', port);
 

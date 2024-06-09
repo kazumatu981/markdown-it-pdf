@@ -6,6 +6,8 @@ import { type PDFOptions } from 'puppeteer';
 import { Logger } from '../common/logger';
 
 //#region constants
+export const defaultOutputDir = 'pdf';
+
 export const defaultPrinterOption: PDFOptions = {
     format: 'A4',
     margin: {
@@ -83,7 +85,7 @@ export abstract class PuppeteerPDFPrinter<
      */
     public static intoFiles(
         siteUrl: string,
-        outputDir: string,
+        outputDir?: string,
         options?: PuppeteerPrinterOptions,
         logger?: Logger
     ): FilePrinter {
@@ -222,13 +224,11 @@ class FilePrinter extends PuppeteerPDFPrinter<string[], void> {
      */
     public async print(targetUrls: string[]): Promise<void> {
         // Build folder tree for the PDF files.
-        await buildTreeOfFiles(
-            targetUrls.map((page) => path.join(this._outputDir as string, page))
-        );
+        await buildTreeOfFiles(targetUrls.map(this.safeOutputPath.bind(this)));
 
         // Resolve URLs of the pages to print.
         const urls = targetUrls.map((page) => ({
-            pathToPdf: `${path.join(this._outputDir as string, page)}.pdf`,
+            pathToPdf: `${this.safeOutputPath(page)}.pdf`,
             fullUrl: `${this._siteUrl}${page}`,
         }));
 
@@ -246,6 +246,10 @@ class FilePrinter extends PuppeteerPDFPrinter<string[], void> {
         // Close the page and browser.
         await browser.close();
         this._logger?.debug(`Closed Puppeteer.`);
+    }
+
+    private safeOutputPath(filePath: string): string {
+        return path.join(this._outputDir ?? defaultOutputDir, filePath);
     }
 }
 

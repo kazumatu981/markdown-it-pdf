@@ -26,13 +26,9 @@ describe('CoreLibrary Unit Tests - MarkdownRenderServer', () => {
     describe('createInstance', () => {
         it('createInstance', async () => {
             mockingTestDir();
-            const server = await MarkdownRenderServer.createInstance(
-                undefined,
-                {
-                    rootDir: 'test',
-                    externalUrls: ['https://hoo.bar/styles/test.css'],
-                }
-            );
+            const server = await MarkdownRenderServer.createInstance('test', {
+                externalUrls: ['https://hoo.bar/styles/test.css'],
+            });
             unmockingTestDir();
             expect(http.createServer).not.toHaveBeenCalled();
             expect(onFn).not.toHaveBeenCalled();
@@ -137,13 +133,9 @@ describe('CoreLibrary Unit Tests - MarkdownRenderServer', () => {
     describe('close', () => {
         it('close call the server close', async () => {
             mockingTestDir();
-            const server = await MarkdownRenderServer.createInstance(
-                undefined,
-                {
-                    rootDir: 'test',
-                    externalUrls: ['https://hoo.bar/styles/test.css'],
-                }
-            );
+            const server = await MarkdownRenderServer.createInstance('test', {
+                externalUrls: ['https://hoo.bar/styles/test.css'],
+            });
             await server.listen();
             server.close();
             unmockingTestDir();
@@ -151,13 +143,9 @@ describe('CoreLibrary Unit Tests - MarkdownRenderServer', () => {
         });
         it('to do nothing on close, if the server is not listening', async () => {
             mockingTestDir();
-            const server = await MarkdownRenderServer.createInstance(
-                undefined,
-                {
-                    rootDir: 'test',
-                    externalUrls: ['https://hoo.bar/styles/test.css'],
-                }
-            );
+            const server = await MarkdownRenderServer.createInstance('test', {
+                externalUrls: ['https://hoo.bar/styles/test.css'],
+            });
             server.close();
             unmockingTestDir();
             expect(closeFn).toBeCalledTimes(0);
