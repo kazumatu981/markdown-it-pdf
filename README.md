@@ -70,7 +70,7 @@ You can select the rendering method as follows:
 |---|---|
 | CLI Printer | You can generate PDF files in bulk by using the CLI. |
 | CLI Server | You can start an HTTP server on `localhost` to distribute HTML files generated from Markdown. |
-| Node.js API | You can embed it in your own application and convert Markdown to PDF. |
+| Node.js API | You can extend this library by using [`markdown-it-plugin`s](https://www.npmjs.com/search?q=keywords:markdown-it-plugin), or embed it in your own application and convert Markdown to PDF. |
 
 ### **[step3][CLI]** Configure
 
@@ -126,6 +126,7 @@ The first option is the root directory of the markdown files.
 | --version | -v | Show version. |
 
 ### [step3][API] Create Application
+
 
 
 #### Embed into your service(app)
