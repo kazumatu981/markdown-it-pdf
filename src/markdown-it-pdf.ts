@@ -12,6 +12,13 @@ import type MarkdownIt from 'markdown-it';
 
 export { Logger };
 
+/**
+ * @namespace MarkdownItPdf
+ * @public
+ * @description
+ * MarkdownItPdf is a PDF renderer using [MarkdownIt](https://github.com/markdown-it/markdown-it)
+ * and [Puppeteer](https://github.com/GoogleChrome/puppeteer).
+ */
 export namespace MarkdownItPdf {
     export interface ServerOptions extends RenderServerOptions {}
 
@@ -20,6 +27,28 @@ export namespace MarkdownItPdf {
             PuppeteerPrinterOptions {}
 
     //#region main functions
+    /**
+     * Create a new instance for the server which is used to render Markdown to HTML.
+     *
+     * Example:
+     *
+     * ```typescript
+     * const markdownIt
+     * const server = await MarkdownItPdf.createServer('src', {
+     *     port: 3000,
+     *     templatePath: 'template.html',
+     *     hljs: {
+     *         js: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js',
+     *         css: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css',
+     *     });
+     * await server.listen();
+     * ```
+     *
+     * @param rootDir {string | undefined} The root directory to start the search Markdown files from.
+     * @param options {ServerOptions | undefined} The options to configure the server.
+     * @param logger {Logger | undefined} The logger to use.
+     * @returns {Promise<MarkdownItPdf.Server>} A new instance of MarkdownItPdf.Server.
+     */
     export async function createServer(
         rootDir?: string,
         options?: ServerOptions,
@@ -32,6 +61,29 @@ export namespace MarkdownItPdf {
             logger
         );
     }
+
+    /**
+     * Create a new instance for the printer which is used to render Markdown to PDF.
+     *
+     * Example:
+     *
+     * ```typescript
+     * const printer = await MarkdownItPdf.createPrinter('src', 'pdf', {
+     *     port: 3000,
+     *     templatePath: 'template.html',
+     *     hljs: {
+     *         js: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js',
+     *         css: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css',
+     *     });
+     * await printer.printAll();
+     * ```
+     *
+     * @param rootDir {string | undefined} The root directory to start the search Markdown files from.
+     * @param outputDir {string | undefined} The directory where the PDFs will be saved.
+     * @param options {PrinterOptions | undefined} The options to configure the printer.
+     * @param logger {Logger | undefined} The logger to use.
+     * @returns {Promise<MarkdownItPdf.Printer>} A new instance of MarkdownItPdf.Printer.
+     */
     export async function createPrinter(
         rootDir?: string,
         outputDir?: string,
@@ -64,19 +116,9 @@ export namespace MarkdownItPdf {
         close(): Promise<void>;
     }
     export interface Printer extends MarkdownItPdf {
-        printAll(
-            outputDir?: string,
-            options?: PuppeteerPrinterOptions
-        ): Promise<this>;
-        print(
-            url: string | string[],
-            outputDir?: string,
-            options?: PuppeteerPrinterOptions
-        ): Promise<this>;
-        printIntoBuffer(
-            url: string,
-            options?: PuppeteerPrinterOptions
-        ): Promise<Buffer>;
+        printAll(): Promise<this>;
+        print(url: string | string[]): Promise<this>;
+        printIntoBuffer(url: string): Promise<Buffer>;
     }
     //#endregion
 }
