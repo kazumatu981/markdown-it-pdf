@@ -3,7 +3,7 @@ import path from 'path';
 import { type MarkdownItPdfCommandOptions } from './command-options';
 import { readOptions } from '../common/configure';
 import { resolveFromCwd } from '../core/utils';
-import { type PrinterOptions, MarkdownItPdf } from '../';
+import { MarkdownItPdf } from '../';
 import { ConsoleLogger } from '../common';
 
 // exports.command: string (or array of strings) that executes this command when given on the command line, first string may contain positional args
@@ -46,11 +46,14 @@ export const handler: (
     logger.info('MarkdownItPDF Printer is starting...');
 
     try {
-        const options = await readOptions<PrinterOptions>(args.config, logger);
-        const printer = await MarkdownItPdf.createPdfPrinter(
+        const options = await readOptions<MarkdownItPdf.PrinterOptions>(
+            args.config,
+            logger
+        );
+        const printer = await MarkdownItPdf.createPrinter(
+            args.dir,
+            args.outputDir,
             {
-                rootDir: args.dir,
-                outputDir: args.outputDir,
                 ...options,
             },
             logger
@@ -58,9 +61,9 @@ export const handler: (
         logger.info('ready to print.');
         await printer.printAll();
         // success
-        logger.info('%d files printed', printer.availableMarkdownUrls.length);
+        logger.info('%d files printed', printer.availableMarkdownPaths.length);
         logger.debug("printed files's ids:");
-        logger.debug(printer.availableMarkdownUrls);
+        logger.debug(printer.availableMarkdownPaths);
     } catch (error) {
         // error
         logger.error(

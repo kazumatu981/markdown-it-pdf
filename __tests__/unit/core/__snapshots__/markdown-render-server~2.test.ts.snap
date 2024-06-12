@@ -29,7 +29,7 @@ exports[`CoreLibrary Unit Tests - MarkdownRenderServer serverListener can render
 [MockFunction] {
   "calls": [
     [
-      "MarkdownRenderServer.createRenderServer() called with options: {"rootDir":"test"}",
+      "MarkdownRenderServer.createRenderServer() called with options: {}",
     ],
     [
       "template: %o",

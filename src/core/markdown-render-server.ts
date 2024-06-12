@@ -37,8 +37,9 @@ export class MarkdownRenderServer extends MarkdownItRender {
     private _listeningPort?: number;
 
     public static async createInstance(
-        logger?: Logger,
-        options?: RenderServerOptions
+        rootDir?: string,
+        options?: RenderServerOptions,
+        logger?: Logger
     ): Promise<MarkdownRenderServer> {
         logger?.debug(
             `MarkdownRenderServer.createRenderServer() called with options: ${JSON.stringify(options)}`
@@ -64,27 +65,32 @@ export class MarkdownRenderServer extends MarkdownItRender {
         // create contents map
         const contentsMap = await ContentsMap.createInstance(
             renderMap,
+            rootDir,
             options
         );
-        logger?.debug('contentsUrls: %o', contentsMap.getEntityUrls());
+        logger?.debug('contentsUrls: %o', contentsMap.getEntityPaths());
 
         // set contents map
         theInstance.contentsMap = contentsMap;
 
         // set style urls
-        theInstance.addStyles(theInstance.availableStyleUrls);
+        theInstance.addStyles(theInstance.availableStylePaths);
         theInstance.addExternalStyles(options?.externalUrls ?? []);
 
         // return the instance
         return theInstance;
     }
 
-    public get availableMarkdownUrls(): string[] {
-        return this.contentsMap.getEntityUrls('markdown');
+    public get availableMarkdownPaths(): string[] {
+        return this.contentsMap.getEntityPaths('markdown');
     }
 
-    public get availableStyleUrls(): string[] {
-        return this.contentsMap.getEntityUrls('style');
+    public get availableStylePaths(): string[] {
+        return this.contentsMap.getEntityPaths('style');
+    }
+
+    public get myUrl(): string {
+        return `http://localhost:${this._listeningPort}`;
     }
 
     private set contentsMap(contentsMap: ContentsMap) {
@@ -97,6 +103,7 @@ export class MarkdownRenderServer extends MarkdownItRender {
     public get listeningPort(): number | undefined {
         return this._listeningPort;
     }
+    
     public async listen(port?: number): Promise<number> {
         const portCandidate = port ?? this._options?.port;
         const serverPort = await tryToListen(
@@ -161,6 +168,8 @@ export class MarkdownRenderServer extends MarkdownItRender {
         });
     }
 
+    
+    //#region private methods
     private writeNotFound(res: http.ServerResponse): void {
         this._logger?.warn(
             'Response for url: %s, status code: %d',
@@ -188,4 +197,5 @@ export class MarkdownRenderServer extends MarkdownItRender {
         res.write(entity.contents);
         res.end();
     }
+    //#endregion
 }

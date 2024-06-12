@@ -12,12 +12,7 @@ describe('CoreLibrary Unit Tests - MarkdownRenderServer', () => {
         });
         it('can render md file', async () => {
             mockingTestDir();
-            const server = await MarkdownRenderServer.createInstance(
-                undefined,
-                {
-                    rootDir: 'test',
-                }
-            );
+            const server = await MarkdownRenderServer.createInstance('test');
 
             const port = await server.listen();
 
@@ -34,10 +29,9 @@ describe('CoreLibrary Unit Tests - MarkdownRenderServer', () => {
         it('can render md file - with logger', async () => {
             mockingTestDir();
             const server = await MarkdownRenderServer.createInstance(
-                mockLogger,
-                {
-                    rootDir: 'test',
-                }
+                'test',
+                {},
+                mockLogger
             );
 
             const port = await server.listen(3001);
@@ -55,12 +49,7 @@ describe('CoreLibrary Unit Tests - MarkdownRenderServer', () => {
         });
         it('can render style file', async () => {
             mockingTestDir();
-            const server = await MarkdownRenderServer.createInstance(
-                undefined,
-                {
-                    rootDir: 'test',
-                }
-            );
+            const server = await MarkdownRenderServer.createInstance('test');
 
             const port = await server.listen();
 
@@ -76,12 +65,7 @@ describe('CoreLibrary Unit Tests - MarkdownRenderServer', () => {
         });
         it('can render txt file', async () => {
             mockingTestDir();
-            const server = await MarkdownRenderServer.createInstance(
-                undefined,
-                {
-                    rootDir: 'test',
-                }
-            );
+            const server = await MarkdownRenderServer.createInstance('test');
 
             const port = await server.listen();
 
@@ -97,12 +81,7 @@ describe('CoreLibrary Unit Tests - MarkdownRenderServer', () => {
         });
         it('can render jpg file', async () => {
             mockingTestDir();
-            const server = await MarkdownRenderServer.createInstance(
-                undefined,
-                {
-                    rootDir: 'test',
-                }
-            );
+            const server = await MarkdownRenderServer.createInstance('test');
 
             const port = await server.listen();
 
@@ -118,12 +97,7 @@ describe('CoreLibrary Unit Tests - MarkdownRenderServer', () => {
         });
         it('root dir is not found', async () => {
             mockingTestDir();
-            const server = await MarkdownRenderServer.createInstance(
-                undefined,
-                {
-                    rootDir: 'test',
-                }
-            );
+            const server = await MarkdownRenderServer.createInstance('test');
 
             const port = await server.listen();
 
@@ -138,10 +112,9 @@ describe('CoreLibrary Unit Tests - MarkdownRenderServer', () => {
         it('root dir is not found - with logger', async () => {
             mockingTestDir();
             const server = await MarkdownRenderServer.createInstance(
-                mockLogger,
-                {
-                    rootDir: 'test',
-                }
+                'test',
+                {},
+                mockLogger
             );
 
             const port = await server.listen(3002);
@@ -163,20 +136,11 @@ describe('CoreLibrary Unit Tests - MarkdownRenderServer', () => {
         });
         it('if port is already in use', async () => {
             mockingTestDir();
-            const server0 = await MarkdownRenderServer.createInstance(
-                undefined,
-                {
-                    rootDir: 'test',
-                }
-            );
-            const server1 = await MarkdownRenderServer.createInstance(
-                undefined,
-                {
-                    rootDir: 'test',
-                    retry: 1,
-                    range: { min: 3500, max: 3500 },
-                }
-            );
+            const server0 = await MarkdownRenderServer.createInstance('test');
+            const server1 = await MarkdownRenderServer.createInstance('test', {
+                retry: 1,
+                range: { min: 3500, max: 3500 },
+            });
 
             const port0 = await server0.listen(3500);
             await expect(async () => {
@@ -187,19 +151,14 @@ describe('CoreLibrary Unit Tests - MarkdownRenderServer', () => {
         });
         it('if port is already in use - with logger', async () => {
             mockingTestDir();
-            const server0 = await MarkdownRenderServer.createInstance(
-                undefined,
-                {
-                    rootDir: 'test',
-                }
-            );
+            const server0 = await MarkdownRenderServer.createInstance('test');
             const server1 = await MarkdownRenderServer.createInstance(
-                mockLogger,
+                'test',
                 {
-                    rootDir: 'test',
                     retry: 1,
                     range: { min: 3500, max: 3500 },
-                }
+                },
+                mockLogger
             );
 
             const port0 = await server0.listen(3500);
