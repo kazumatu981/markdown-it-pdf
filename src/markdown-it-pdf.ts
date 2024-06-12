@@ -10,6 +10,8 @@ import {
 import { Logger } from './common/logger';
 import type MarkdownIt from 'markdown-it';
 
+export { Logger };
+
 export namespace MarkdownItPdf {
     export interface ServerOptions extends RenderServerOptions {}
 
@@ -17,8 +19,7 @@ export namespace MarkdownItPdf {
         extends RenderServerOptions,
             PuppeteerPrinterOptions {}
 
-    export type Options = ServerOptions | PrinterOptions;
-
+    //#region main functions
     export async function createServer(
         rootDir?: string,
         options?: ServerOptions,
@@ -44,6 +45,9 @@ export namespace MarkdownItPdf {
             logger
         );
     }
+    //#endregion
+
+    //#region exported interfaces
     export interface MarkdownItPdf {
         use(plugin: MarkdownIt.PluginSimple): this;
         use<T = any>(
@@ -52,6 +56,8 @@ export namespace MarkdownItPdf {
         ): this;
         use(plugin: MarkdownIt.PluginWithParams, ...params: any[]): this;
         get availableMarkdownUrls(): string[];
+        get availableMarkdownPaths(): string[];
+        get myUrl(): string;
     }
     export interface Server extends MarkdownItPdf {
         listen(): Promise<number>;
@@ -72,9 +78,12 @@ export namespace MarkdownItPdf {
             options?: PuppeteerPrinterOptions
         ): Promise<Buffer>;
     }
+    //#endregion
 }
 
-abstract class MarkdownItPdfBase<U = MarkdownItPdf.Options>
+type Options = MarkdownItPdf.ServerOptions | MarkdownItPdf.PrinterOptions;
+
+abstract class MarkdownItPdfBase<U = Options>
     implements MarkdownItPdf.MarkdownItPdf
 {
     protected _server: MarkdownRenderServer;
@@ -85,12 +94,12 @@ abstract class MarkdownItPdfBase<U = MarkdownItPdf.Options>
         this: new (
             server: MarkdownRenderServer,
             outputDir?: string,
-            options?: MarkdownItPdf.Options,
+            options?: Options,
             logger?: Logger
         ) => T,
         rootDir?: string,
         outputDir?: string,
-        options?: MarkdownItPdf.Options,
+        options?: Options,
         logger?: Logger
     ) {
         logger?.debug(
@@ -125,7 +134,37 @@ abstract class MarkdownItPdfBase<U = MarkdownItPdf.Options>
     }
 
     public get availableMarkdownUrls(): string[] {
-        return this._server.availableMarkdownUrls;
+        return this._server.availableMarkdownPaths.map(
+            (x) => `${this.myUrl}${x}`
+        );
+    }
+
+    public get availableMarkdownPaths(): string[] {
+        return this._server.availableMarkdownPaths;
+    }
+
+    public get myUrl(): string {
+        return this._server.myUrl;
+    }
+}
+
+class MarkdownItRenderServer
+    extends MarkdownItPdfBase<MarkdownItPdf.ServerOptions>
+    implements MarkdownItPdf.Server
+{
+    public constructor(
+        server: MarkdownRenderServer,
+        _?: string,
+        options?: MarkdownItPdf.ServerOptions,
+        logger?: Logger
+    ) {
+        super(server, options, logger);
+    }
+    public listen(port?: number): Promise<number> {
+        return this._server.listen(port);
+    }
+    public close(): Promise<void> {
+        return this._server.close();
     }
 }
 
@@ -147,10 +186,10 @@ class MarkdownItPdfPrinter
     public async printAll(): Promise<this> {
         await this._server.listen();
 
-        const urls = this.availableMarkdownUrls;
+        const urls = this.availableMarkdownPaths;
 
         await PuppeteerPDFPrinter.intoFiles(
-            `http://localhost:${this._server.listeningPort}`,
+            this.myUrl,
             this._outputDir,
             this._options,
             this._logger
@@ -167,7 +206,7 @@ class MarkdownItPdfPrinter
         }
 
         await PuppeteerPDFPrinter.intoFiles(
-            `http://localhost:${this._server.listeningPort}`,
+            this.myUrl,
             this._outputDir,
             this._options,
             this._logger
@@ -180,7 +219,7 @@ class MarkdownItPdfPrinter
         await this._server.listen();
 
         const buffer = await PuppeteerPDFPrinter.intoMemory(
-            `http://localhost:${this._server.listeningPort}`,
+            this.myUrl,
             this._options,
             this._logger
         ).print(url);
@@ -188,25 +227,5 @@ class MarkdownItPdfPrinter
         await this._server.close();
 
         return buffer;
-    }
-}
-
-class MarkdownItRenderServer
-    extends MarkdownItPdfBase<MarkdownItPdf.ServerOptions>
-    implements MarkdownItPdf.Server
-{
-    public constructor(
-        server: MarkdownRenderServer,
-        _?: string,
-        options?: MarkdownItPdf.ServerOptions,
-        logger?: Logger
-    ) {
-        super(server, options, logger);
-    }
-    public listen(port?: number): Promise<number> {
-        return this._server.listen(port);
-    }
-    public close(): Promise<void> {
-        return this._server.close();
     }
 }

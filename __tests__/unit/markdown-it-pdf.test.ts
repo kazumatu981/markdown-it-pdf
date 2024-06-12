@@ -23,16 +23,16 @@ describe('Unit Tests - MarkdownItPdf', () => {
 
             unmockingTestDir();
         });
-        it('availableMarkdownUrls', async () => {
+        it('availableMarkdownPaths', async () => {
             mockingTestDir();
             const server = await MarkdownItPdf.createServer('test', {
                 recursive: true,
             });
-            const availableMarkdownUrls = server.availableMarkdownUrls;
+            const availableMarkdownPaths = server.availableMarkdownPaths;
             unmockingTestDir();
-            expect(availableMarkdownUrls).toContain('/test.md');
-            expect(availableMarkdownUrls).toContain('/sub/test.md');
-            expect(availableMarkdownUrls).toContain('/sub2/sub/test.md');
+            expect(availableMarkdownPaths).toContain('/test.md');
+            expect(availableMarkdownPaths).toContain('/sub/test.md');
+            expect(availableMarkdownPaths).toContain('/sub2/sub/test.md');
         });
     });
     describe('MarkdownItPdfPrinter', () => {

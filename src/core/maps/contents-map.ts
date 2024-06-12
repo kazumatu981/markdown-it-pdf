@@ -160,7 +160,7 @@ export class ContentsMap extends Map<string, ContentsMapEntity> {
      * @return {string[]} An array of entity URLs that match the provided renderType,
      * or all entity URLs if renderType is not provided.
      */
-    public getEntityUrls(renderType?: string): string[] {
+    public getEntityPaths(renderType?: string): string[] {
         // If renderType is provided, filter the entity URLs based on the render type
         return renderType
             ? [...this.keys()].filter((url) => {

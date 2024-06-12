@@ -64,7 +64,7 @@ describe('CoreLibrary Unit Tests - ContentsMap', () => {
             unmockingTestDir();
         });
     });
-    describe('getEntityUrls() with markdown', () => {
+    describe('getEntityPaths() with markdown', () => {
         it('should return the markdown entry urls', async () => {
             const resolverMap = new RenderMap();
             mockingTestDir();
@@ -72,14 +72,14 @@ describe('CoreLibrary Unit Tests - ContentsMap', () => {
                 resolverMap,
                 'test'
             );
-            expect(contentsMap.getEntityUrls('markdown')).toContain('/test.md');
-            expect(contentsMap.getEntityUrls('markdown')).toContain(
+            expect(contentsMap.getEntityPaths('markdown')).toContain('/test.md');
+            expect(contentsMap.getEntityPaths('markdown')).toContain(
                 '/sub/test.md'
             );
-            expect(contentsMap.getEntityUrls('markdown')).not.toContain(
+            expect(contentsMap.getEntityPaths('markdown')).not.toContain(
                 '/sample.txt'
             );
-            expect(contentsMap.getEntityUrls('markdown')).not.toContain(
+            expect(contentsMap.getEntityPaths('markdown')).not.toContain(
                 '/test.css'
             );
             unmockingTestDir();
@@ -94,16 +94,16 @@ describe('CoreLibrary Unit Tests - ContentsMap', () => {
                 'test',
                 {}
             );
-            expect(contentsMap.getEntityUrls('style')).not.toContain(
+            expect(contentsMap.getEntityPaths('style')).not.toContain(
                 '/test.md'
             );
-            expect(contentsMap.getEntityUrls('style')).not.toContain(
+            expect(contentsMap.getEntityPaths('style')).not.toContain(
                 '/sub/test.md'
             );
-            expect(contentsMap.getEntityUrls('style')).not.toContain(
+            expect(contentsMap.getEntityPaths('style')).not.toContain(
                 '/sample.txt'
             );
-            expect(contentsMap.getEntityUrls('style')).toContain('/test.css');
+            expect(contentsMap.getEntityPaths('style')).toContain('/test.css');
             unmockingTestDir();
         });
     });
@@ -117,10 +117,10 @@ describe('CoreLibrary Unit Tests - ContentsMap', () => {
                 'test',
                 {}
             );
-            expect(contentsMap.getEntityUrls()).toContain('/test.md');
-            expect(contentsMap.getEntityUrls()).toContain('/sub/test.md');
-            expect(contentsMap.getEntityUrls()).toContain('/sample.txt');
-            expect(contentsMap.getEntityUrls()).toContain('/test.css');
+            expect(contentsMap.getEntityPaths()).toContain('/test.md');
+            expect(contentsMap.getEntityPaths()).toContain('/sub/test.md');
+            expect(contentsMap.getEntityPaths()).toContain('/sample.txt');
+            expect(contentsMap.getEntityPaths()).toContain('/test.css');
             unmockingTestDir();
         });
     });

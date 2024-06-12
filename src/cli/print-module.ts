@@ -61,9 +61,9 @@ export const handler: (
         logger.info('ready to print.');
         await printer.printAll();
         // success
-        logger.info('%d files printed', printer.availableMarkdownUrls.length);
+        logger.info('%d files printed', printer.availableMarkdownPaths.length);
         logger.debug("printed files's ids:");
-        logger.debug(printer.availableMarkdownUrls);
+        logger.debug(printer.availableMarkdownPaths);
     } catch (error) {
         // error
         logger.error(
