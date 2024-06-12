@@ -10,4 +10,5 @@
     ],
     "todo-tree.general.tagGroups": {},
     "todo-tree.general.showActivityBarBadge": true,
+    "eslint.experimental.useFlatConfig": true,
 }
