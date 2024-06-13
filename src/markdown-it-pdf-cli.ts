@@ -1,8 +1,6 @@
 #!/usr/bin/env node
 
-import path from 'path';
 import yargs from 'yargs';
-import { type Argv } from 'yargs';
 import serveModule from './cli/serve-module';
 import printModule from './cli/print-module';
 import { type MarkdownItPdfCommandOptions } from './cli/command-options';
