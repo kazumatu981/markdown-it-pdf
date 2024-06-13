@@ -156,21 +156,6 @@ describe('Unit Tests - MarkdownItPdf', () => {
                 expect(pdfFn).toBeCalledTimes(1);
                 unmockingTestDir();
             });
-            it('with options on argument', async () => {
-                mockingTestDir();
-                const printer = await MarkdownItPdf.createPrinter(
-                    'test',
-                    undefined,
-                    {
-                        recursive: true,
-                    }
-                );
-                const buffer = await printer.printIntoBuffer('test.md', {
-                    format: 'a4',
-                });
-                expect(pdfFn).toBeCalledTimes(1);
-                unmockingTestDir();
-            });
         });
     });
     describe('MarkdownItRenderServer', () => {

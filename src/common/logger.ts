@@ -29,27 +29,27 @@ export interface Logger {
      * Logs a trace message.
      * @param message - The message to log.
      */
-    trace: (message: any, ...args: any[]) => void;
+    trace: (message: unknown, ...args: unknown[]) => void;
     /**
      * Logs a debug message.
      * @param message - The message to log.
      */
-    debug: (message: any, ...args: any[]) => void;
+    debug: (message: unknown, ...args: unknown[]) => void;
     /**
      * Logs an info message.
      * @param message - The message to log.
      */
-    info: (message: any, ...args: any[]) => void;
+    info: (message: unknown, ...args: unknown[]) => void;
     /**
      * Logs a warning message.
      * @param message - The message to log.
      */
-    warn: (message: any, ...args: any[]) => void;
+    warn: (message: unknown, ...args: unknown[]) => void;
     /**
      * Logs an error message.
      * @param message - The message to log.
      */
-    error: (message: any, ...args: any[]) => void;
+    error: (message: unknown, ...args: unknown[]) => void;
 }
 
 /**
@@ -65,7 +65,7 @@ export class ConsoleLogger implements Logger {
      * @param message - The message to log.
      * @param args - Additional arguments to pass to the log function.
      */
-    public trace(message: any, ...args: any[]): void {
+    public trace(message: unknown, ...args: unknown[]): void {
         // Logs a trace message at the trace log level.
         this.log('trace', message, ...args);
     }
@@ -74,7 +74,7 @@ export class ConsoleLogger implements Logger {
      * @param message - The message to log.
      * @param args - Additional arguments to pass to the log function.
      */
-    public debug(message: any, ...args: any[]): void {
+    public debug(message: unknown, ...args: unknown[]): void {
         // Logs a debug message at the debug log level.
         this.log('debug', message, ...args);
     }
@@ -83,7 +83,7 @@ export class ConsoleLogger implements Logger {
      * @param message - The message to log.
      * @param args - Additional arguments to pass to the log function.
      */
-    public info(message: any, ...args: any[]): void {
+    public info(message: unknown, ...args: unknown[]): void {
         // Logs an info message at the info log level.
         this.log('info', message, ...args);
     }
@@ -92,7 +92,7 @@ export class ConsoleLogger implements Logger {
      * @param message - The message to log.
      * @param args - Additional arguments to pass to the log function.
      */
-    public warn(message: any, ...args: any[]) {
+    public warn(message: unknown, ...args: unknown[]) {
         // Logs a warning message at the warn log level.
         this.log('warn', message, ...args);
     }
@@ -101,7 +101,7 @@ export class ConsoleLogger implements Logger {
      * @param message - The message to log.
      * @param args - Additional arguments to pass to the log function.
      */
-    public error(message: any, ...args: any[]) {
+    public error(message: unknown, ...args: unknown[]) {
         // Logs an error message at the error log level.
         this.log('error', message, ...args);
     }
@@ -132,7 +132,7 @@ export class ConsoleLogger implements Logger {
      * @param {string} message - The message to log.
      * @returns {string} The log message.
      */
-    private createMessage(level: LogLevel, message: string): string {
+    private createMessage(level: LogLevel, message: unknown): string {
         // Format the log message with the log level, timestamp, and message.
         let levelString: string = level;
         switch (level) {
@@ -171,7 +171,7 @@ export class ConsoleLogger implements Logger {
      * @param message The message to log.
      * @param args Any additional arguments to pass to the log function.
      */
-    private log(level: LogMethods, message: any, ...args: any[]) {
+    private log(level: LogMethods, message: unknown, ...args: unknown[]) {
         // If the log level is set to 'silent', do not log anything.
         if (this.level === 'silent') return;
 

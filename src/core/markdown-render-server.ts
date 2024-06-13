@@ -1,5 +1,4 @@
 import http from 'http';
-import path from 'path';
 import {
     type ContentsMapOptions,
     type RenderedEntity,
@@ -103,7 +102,7 @@ export class MarkdownRenderServer extends MarkdownItRender {
     public get listeningPort(): number | undefined {
         return this._listeningPort;
     }
-    
+
     public async listen(port?: number): Promise<number> {
         const portCandidate = port ?? this._options?.port;
         const serverPort = await tryToListen(
@@ -168,7 +167,6 @@ export class MarkdownRenderServer extends MarkdownItRender {
         });
     }
 
-    
     //#region private methods
     private writeNotFound(res: http.ServerResponse): void {
         this._logger?.warn(
