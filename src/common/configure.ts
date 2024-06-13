@@ -35,7 +35,7 @@ export async function readOptions<T>(
         }
         // If the file is a JavaScript file, require it and return the module
         else if (filePath.endsWith('.js') || filePath.endsWith('.cjs')) {
-            options = readJSOptions<T>(filePath);
+            options = await readJSOptions<T>(filePath);
         }
         // If the file is not a supported file type, log a warning
         else {
@@ -80,11 +80,11 @@ async function readJsonOptions<T>(filePath: string): Promise<T | undefined> {
  * @param {string} filePath - The path to the JavaScript file.
  * @returns {T | undefined} The parsed JavaScript module, or undefined if the file cannot be read or parsed.
  */
-function readJSOptions<T>(filePath: string): T | undefined {
+async function readJSOptions<T>(filePath: string): Promise<T | undefined> {
     // Read and parse the JavaScript file
     try {
         // Use Node.js's `require` function to load the module
-        const module = require(filePath);
+        const module = await import(filePath);
         // TypeScript does not know about the dynamic nature of `require`,
         // so we need to cast the module to the correct type.
         return module as T;

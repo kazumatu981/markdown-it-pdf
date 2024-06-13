@@ -1,4 +1,3 @@
-import path from 'path';
 import { type Argv } from 'yargs';
 
 import { type MarkdownItPdfCommandOptions } from './command-options';
@@ -17,7 +16,9 @@ export const describe: string = 'Starts the MD to HTML render server';
 // exports.builder: object declaring the options the command accepts, or a function accepting and returning a yargs instance
 export const builder: (
     yargs: Argv<MarkdownItPdfCommandOptions>
-) => Argv<MarkdownItPdfCommandOptions> = (yargs: any) => {
+) => Argv<MarkdownItPdfCommandOptions> = (
+    yargs: Argv<MarkdownItPdfCommandOptions>
+) => {
     return yargs.positional('dir', {
         alias: 'd',
         describe:
