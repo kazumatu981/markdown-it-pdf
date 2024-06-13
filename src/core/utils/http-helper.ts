@@ -6,13 +6,19 @@ const privatePortRange = {
     min: 49152,
     max: 65535,
 };
+
+const defaultListeningOptions = {
+    retry: 10,
+    range: privatePortRange,
+};
 //#endregion
 
 //#region types and interfaces
 
-// FIXME delete this interface !!
-
-export interface ServerPort {
+/**
+ * The server that is listening on a given port
+ */
+interface ListeningHttpServer {
     /**
      * The port that the server is listening on.
      */
@@ -37,11 +43,10 @@ export interface Range {
     max?: number;
 }
 
-// FIXME change this interface name to `PortScanOptions` !!
 /**
  * Options for listening on a port
  */
-export interface ServerPortOptions {
+export interface ListeningOptions {
     /**
      * The number of times to retry if the port is in use
      */
@@ -64,31 +69,35 @@ export interface ServerPortOptions {
  *
  * @param {number | undefined} port The port to listen on. If not specified, it will try to listen on
  * a random port within the specified range.
- * @param {ServerPortOptions | undefined} options The options for listening on a port.
+ * @param {ListeningOptions | undefined} options The options for listening on a port.
  * @param {Logger | undefined} logger The logger to log the events.
  * @returns {Promise<ServerPort | undefined>} A promise that resolves to the port that the server is listening on
  * or undefined if the specified port is in use and cannot be listened on.
  */
 export async function tryToListen(
     port?: number,
-    options?: ServerPortOptions,
+    options?: ListeningOptions,
     logger?: Logger
-): Promise<ServerPort | undefined> {
-    let serverPort = undefined;
+): Promise<ListeningHttpServer | undefined> {
+    let listeningHttpServer = undefined;
     if (port != undefined) {
         logger?.debug('Try to Listen on port %d', port);
-        serverPort = await tryToListenCore(port, logger);
+        listeningHttpServer = await tryToListenCore(port, logger);
     } else {
         logger?.debug('Try to Listen on port random mode');
-        for (let i = 0; i < (options?.retry ?? 10); i++) {
+        for (
+            let i = 0;
+            i < (options?.retry ?? defaultListeningOptions.retry);
+            i++
+        ) {
             port = getRandom(options?.range);
-            serverPort = await tryToListenCore(port, logger);
-            if (serverPort !== undefined) {
+            listeningHttpServer = await tryToListenCore(port, logger);
+            if (listeningHttpServer !== undefined) {
                 break; // success
             }
         }
     }
-    return serverPort;
+    return listeningHttpServer;
 }
 //#endregion
 
@@ -105,8 +114,8 @@ export async function tryToListen(
 function getRandom(range?: Range): number {
     // Set the default range if not specified
     const candidate = {
-        min: range?.min ?? privatePortRange.min,
-        max: range?.max ?? privatePortRange.max,
+        min: range?.min ?? defaultListeningOptions.range.min,
+        max: range?.max ?? defaultListeningOptions.range.max,
     };
 
     // Check if the range is valid
@@ -132,7 +141,7 @@ function getRandom(range?: Range): number {
 function tryToListenCore(
     port: number,
     logger?: Logger
-): Promise<ServerPort | undefined> {
+): Promise<ListeningHttpServer | undefined> {
     // Create a new http server
     const server = http.createServer();
 

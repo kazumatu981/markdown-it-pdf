@@ -10,11 +10,11 @@ import {
     utf8PlainTextRender,
     type HljsConfig,
 } from './render';
-import { type ServerPortOptions, tryToListen } from './utils';
+import { type ListeningOptions, tryToListen } from './utils';
 import { type Logger } from '../common';
 export interface RenderServerOptions
     extends ContentsMapOptions,
-        ServerPortOptions {
+        ListeningOptions {
     port?: number;
     externalUrls?: string[];
     templatePath?: string;
