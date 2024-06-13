@@ -9,6 +9,9 @@ const privatePortRange = {
 //#endregion
 
 //#region types and interfaces
+
+// FIXME delete this interface !!
+
 export interface ServerPort {
     /**
      * The port that the server is listening on.
@@ -34,6 +37,7 @@ export interface Range {
     max?: number;
 }
 
+// FIXME change this interface name to `PortScanOptions` !!
 /**
  * Options for listening on a port
  */
