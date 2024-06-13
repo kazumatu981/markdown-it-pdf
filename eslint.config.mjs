@@ -18,7 +18,7 @@ export default [
             'max-statements-per-line': ['error', { max: 1 }],
             'max-statements': ['error', 21],
             'max-nested-callbacks': ['error', 3],
-            'max-params': ['error', 4],
+            'max-params': ['error', 5],
             'max-depth': ['error', 3],
             complexity: ['error', 10],
         },
@@ -27,4 +27,3 @@ export default [
         ignores: ['**/node_modules/**', '**/__tests__/**'],
     },
 ];
-
