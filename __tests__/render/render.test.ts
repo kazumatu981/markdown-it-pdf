@@ -2,7 +2,7 @@ import { jest, expect, describe, it } from '@jest/globals';
 
 import { buildTreeOfFiles } from '../../src/core/utils';
 import { readFromServer } from '../utils/http-util';
-import { MarkdownItPdf } from '../../src/markdown-it-pdf';
+import { createServer, createPrinter } from '../../src/markdown-it-pdf';
 import { ConsoleLogger } from '../../src/common';
 
 describe('render test', () => {
@@ -11,10 +11,13 @@ describe('render test', () => {
         await buildTreeOfFiles([`${__dirname}/out/test.pdf`]);
     });
     it('render to html on local server', async () => {
-        const renderServer = await MarkdownItPdf.createRenderServer(logger, {
-            rootDir: `${__dirname}/src`,
-            port: 3000,
-        });
+        const renderServer = await createServer(
+            `${__dirname}/src`,
+            {
+                port: 3000,
+            },
+            logger
+        );
 
         await renderServer.listen();
 
@@ -40,11 +43,14 @@ describe('render test', () => {
         await renderServer.close();
     });
     it('render and print to pdf', async () => {
-        const printer = await MarkdownItPdf.createPdfPrinter(logger, {
-            rootDir: `${__dirname}/src`,
-            port: 3001,
-        });
+        const printer = await createPrinter(
+            `${__dirname}/src`,
+            `${__dirname}/out`,
+            {
+                port: 3001,
+            }
+        );
 
-        await printer.printAll(`${__dirname}/out`);
+        await printer.printAll();
     });
 });

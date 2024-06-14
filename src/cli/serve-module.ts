@@ -1,14 +1,9 @@
-import path from 'path';
 import { type Argv } from 'yargs';
 
 import { type MarkdownItPdfCommandOptions } from './command-options';
 import { readOptions, ConsoleLogger } from '../common';
 import { resolveFromCwd } from '../core/utils';
-import {
-    type MarkdownItPdfRenderServerOptions,
-    MarkdownItfRenderServer,
-    MarkdownItPdf,
-} from '../';
+import { type Server, type ServerOptions, createServer } from '../';
 
 // exports.command: string (or array of strings) that executes this command when given on the command line, first string may contain positional args
 export const command: string = 'serve [dir]';
@@ -21,7 +16,9 @@ export const describe: string = 'Starts the MD to HTML render server';
 // exports.builder: object declaring the options the command accepts, or a function accepting and returning a yargs instance
 export const builder: (
     yargs: Argv<MarkdownItPdfCommandOptions>
-) => Argv<MarkdownItPdfCommandOptions> = (yargs: any) => {
+) => Argv<MarkdownItPdfCommandOptions> = (
+    yargs: Argv<MarkdownItPdfCommandOptions>
+) => {
     return yargs.positional('dir', {
         alias: 'd',
         describe:
@@ -33,7 +30,7 @@ export const builder: (
     });
 };
 
-export let server: MarkdownItfRenderServer | undefined;
+export let server: Server | undefined;
 
 export async function stopServer(): Promise<void> {
     await server?.close();
@@ -46,20 +43,21 @@ export const handler: (
     const logger = new ConsoleLogger(args.log);
     logger.info('MarkdownItPDF Render Server is starting...');
 
-    const options = await readOptions<MarkdownItPdfRenderServerOptions>(
-        args.config,
-        logger
-    );
+    const options = await readOptions<ServerOptions>(args.config, logger);
     try {
-        server = await MarkdownItPdf.createRenderServer(logger, {
-            rootDir: args.dir,
-            ...options,
-        });
+        server = await createServer(
+            args.dir,
+            {
+                ...options,
+            },
+            logger
+        );
 
-        const port = await server.listen();
+        const port = await server?.listen();
         // success
         logger.info('server started at http://localhost:%d', port);
 
+        // TODO to readable and testable code.
         // register SIGINT handler
         process.on('SIGINT', async () => {
             // safe stop.....close server!!!

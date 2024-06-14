@@ -16,8 +16,11 @@ describe('CoreLibrary Unit Tests - MarkdownRenderServer', () => {
             await expect(server.close()).rejects.toThrow();
         }, 10000);
         it('rejects on twice call close - with logger', async () => {
-            const server =
-                await MarkdownRenderServer.createInstance(mockLogger);
+            const server = await MarkdownRenderServer.createInstance(
+                undefined,
+                undefined,
+                mockLogger
+            );
             await server.listen();
             await server.close();
             await expect(server.close()).rejects.toThrow();

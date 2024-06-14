@@ -21,6 +21,8 @@ const templateContents = `
     </body>
 `;
 
+// TODO Add test about Hljs configure.
+
 describe('CoreLibrary Unit Tests - MarkdownItRender', () => {
     afterEach(() => {
         jest.clearAllMocks();
@@ -35,14 +37,14 @@ describe('CoreLibrary Unit Tests - MarkdownItRender', () => {
     });
     it('Basic Render Test: Can render from string', async () => {
         const markdownItRender = new MarkdownItRender();
-        await markdownItRender.loadTemplateFrom();
+        await markdownItRender.configureTemplate();
         const result = markdownItRender.render('# test\n\nhello world');
         expect(result).toMatchSnapshot();
     });
     it('Render Test: Can use plugins', async () => {
         const markdownItRender = new MarkdownItRender();
         markdownItRender.use(MarkdownItSup);
-        await markdownItRender.loadTemplateFrom();
+        await markdownItRender.configureTemplate();
         const result = markdownItRender.render('# test\n\nhello ^world^');
         expect(result).toMatchSnapshot();
     });
@@ -50,7 +52,7 @@ describe('CoreLibrary Unit Tests - MarkdownItRender', () => {
         const markdownItRender = new MarkdownItRender();
         markdownItRender.addStyles(['./test.css']);
         const result = markdownItRender.render('# test\n\nhello world');
-        await markdownItRender.loadTemplateFrom();
+        await markdownItRender.configureTemplate();
         expect(result).toMatchSnapshot();
     });
     it('Render Test: Styles are rendered (externalStylesUrls)', async () => {
@@ -80,8 +82,9 @@ describe('CoreLibrary Unit Tests - MarkdownItRender', () => {
             }
         }) as any);
 
-        const result =
-            await markdownItRender.loadTemplateFrom('./template.html');
+        const result = await markdownItRender.configureTemplate({
+            templatePath: './template.html',
+        });
 
         expect(result['templateSource']).toMatchSnapshot();
     });

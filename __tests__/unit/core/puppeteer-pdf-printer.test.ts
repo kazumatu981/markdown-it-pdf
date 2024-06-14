@@ -4,6 +4,8 @@ import { PuppeteerPDFPrinter } from '../../../src/core/puppeteer-pdf-printer';
 
 jest.mock('puppeteer');
 
+// TODO add test intoMemory with/without logger.
+
 describe('CoreLibrary Unit Tests - PuppeteerPDFPrinter', () => {
     const gotoFn = jest.fn();
     const waitForSelectorFn = jest.fn();

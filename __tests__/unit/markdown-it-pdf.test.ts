@@ -1,5 +1,5 @@
 import { jest, expect, describe, it } from '@jest/globals';
-import { MarkdownItPdf } from '../../src/markdown-it-pdf';
+import { createServer, createPrinter } from '../../src/markdown-it-pdf';
 import { mockingTestDir, unmockingTestDir } from '../utils/test-dir';
 import { readFromServer } from '../utils/http-util';
 import path from 'path';
@@ -13,8 +13,7 @@ describe('Unit Tests - MarkdownItPdf', () => {
     describe('MarkdownItPdf (common functions)', () => {
         it('use', async () => {
             mockingTestDir();
-            const server = await MarkdownItPdf.createRenderServer(undefined, {
-                rootDir: 'test',
+            const server = await createServer('test', {
                 recursive: true,
             });
             // expect to no error!!
@@ -24,17 +23,16 @@ describe('Unit Tests - MarkdownItPdf', () => {
 
             unmockingTestDir();
         });
-        it('availableMarkdownUrls', async () => {
+        it('availableMarkdownPaths', async () => {
             mockingTestDir();
-            const server = await MarkdownItPdf.createRenderServer(undefined, {
-                rootDir: 'test',
+            const server = await createServer('test', {
                 recursive: true,
             });
-            const availableMarkdownUrls = server.availableMarkdownUrls;
+            const availableMarkdownPaths = server.availableMarkdownPaths;
             unmockingTestDir();
-            expect(availableMarkdownUrls).toContain('/test.md');
-            expect(availableMarkdownUrls).toContain('/sub/test.md');
-            expect(availableMarkdownUrls).toContain('/sub2/sub/test.md');
+            expect(availableMarkdownPaths).toContain('/test.md');
+            expect(availableMarkdownPaths).toContain('/sub/test.md');
+            expect(availableMarkdownPaths).toContain('/sub2/sub/test.md');
         });
     });
     describe('MarkdownItPdfPrinter', () => {
@@ -60,10 +58,10 @@ describe('Unit Tests - MarkdownItPdf', () => {
         describe('printAll', () => {
             it('on omit output', async () => {
                 mockingTestDir();
-                const printer = await MarkdownItPdf.createPdfPrinter(
+                const printer = await createPrinter(
+                    'test',
                     undefined,
                     {
-                        rootDir: 'test',
                         recursive: true,
                     }
                 );
@@ -81,12 +79,11 @@ describe('Unit Tests - MarkdownItPdf', () => {
             });
             it('with output', async () => {
                 mockingTestDir();
-                const printer = await MarkdownItPdf.createPdfPrinter(
-                    undefined,
+                const printer = await createPrinter(
+                    'test',
+                    'pdf2',
                     {
-                        rootDir: 'test',
                         recursive: true,
-                        outputDir: 'pdf2',
                     }
                 );
                 await printer.printAll();
@@ -107,10 +104,10 @@ describe('Unit Tests - MarkdownItPdf', () => {
         describe('print', () => {
             it('on omit output', async () => {
                 mockingTestDir();
-                const printer = await MarkdownItPdf.createPdfPrinter(
+                const printer = await createPrinter(
+                    'test',
                     undefined,
                     {
-                        rootDir: 'test',
                         recursive: true,
                     }
                 );
@@ -129,10 +126,10 @@ describe('Unit Tests - MarkdownItPdf', () => {
         describe('printIntoBuffer', () => {
             it('call pdf with no output', async () => {
                 mockingTestDir();
-                const printer = await MarkdownItPdf.createPdfPrinter(
+                const printer = await createPrinter(
+                    'test',
                     undefined,
                     {
-                        rootDir: 'test',
                         recursive: true,
                     }
                 );
@@ -147,10 +144,10 @@ describe('Unit Tests - MarkdownItPdf', () => {
             });
             it('with options on createInstance', async () => {
                 mockingTestDir();
-                const printer = await MarkdownItPdf.createPdfPrinter(
+                const printer = await createPrinter(
+                    'test',
                     undefined,
                     {
-                        rootDir: 'test',
                         recursive: true,
                         format: 'a4',
                     }
@@ -159,28 +156,12 @@ describe('Unit Tests - MarkdownItPdf', () => {
                 expect(pdfFn).toBeCalledTimes(1);
                 unmockingTestDir();
             });
-            it('with options on argument', async () => {
-                mockingTestDir();
-                const printer = await MarkdownItPdf.createPdfPrinter(
-                    undefined,
-                    {
-                        rootDir: 'test',
-                        recursive: true,
-                    }
-                );
-                const buffer = await printer.printIntoBuffer('test.md', {
-                    format: 'a4',
-                });
-                expect(pdfFn).toBeCalledTimes(1);
-                unmockingTestDir();
-            });
         });
     });
     describe('MarkdownItRenderServer', () => {
         it('listen', async () => {
             mockingTestDir();
-            const server = await MarkdownItPdf.createRenderServer(undefined, {
-                rootDir: 'test',
+            const server = await createServer('test', {
                 recursive: true,
             });
             const port = await server.listen();
