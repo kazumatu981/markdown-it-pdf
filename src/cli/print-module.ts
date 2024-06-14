@@ -2,7 +2,7 @@ import { type Argv } from 'yargs';
 import { type MarkdownItPdfCommandOptions } from './command-options';
 import { readOptions } from '../common/configure';
 import { resolveFromCwd } from '../core/utils';
-import { MarkdownItPdf } from '../';
+import { type PrinterOptions, createPrinter } from '../';
 import { ConsoleLogger } from '../common';
 
 // exports.command: string (or array of strings) that executes this command when given on the command line, first string may contain positional args
@@ -47,11 +47,8 @@ export const handler: (
     logger.info('MarkdownItPDF Printer is starting...');
 
     try {
-        const options = await readOptions<MarkdownItPdf.PrinterOptions>(
-            args.config,
-            logger
-        );
-        const printer = await MarkdownItPdf.createPrinter(
+        const options = await readOptions<PrinterOptions>(args.config, logger);
+        const printer = await createPrinter(
             args.dir,
             args.outputDir,
             {

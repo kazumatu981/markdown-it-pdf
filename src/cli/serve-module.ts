@@ -3,7 +3,7 @@ import { type Argv } from 'yargs';
 import { type MarkdownItPdfCommandOptions } from './command-options';
 import { readOptions, ConsoleLogger } from '../common';
 import { resolveFromCwd } from '../core/utils';
-import { MarkdownItPdf } from '../';
+import { type Server, type ServerOptions, createServer } from '../';
 
 // exports.command: string (or array of strings) that executes this command when given on the command line, first string may contain positional args
 export const command: string = 'serve [dir]';
@@ -30,7 +30,7 @@ export const builder: (
     });
 };
 
-export let server: MarkdownItPdf.Server | undefined;
+export let server: Server | undefined;
 
 export async function stopServer(): Promise<void> {
     await server?.close();
@@ -43,12 +43,9 @@ export const handler: (
     const logger = new ConsoleLogger(args.log);
     logger.info('MarkdownItPDF Render Server is starting...');
 
-    const options = await readOptions<MarkdownItPdf.ServerOptions>(
-        args.config,
-        logger
-    );
+    const options = await readOptions<ServerOptions>(args.config, logger);
     try {
-        server = await MarkdownItPdf.createServer(
+        server = await createServer(
             args.dir,
             {
                 ...options,

@@ -10,24 +10,16 @@ import {
     utf8PlainTextRender,
     type HljsConfig,
 } from './render';
-import { type ServerPortOptions, tryToListen } from './utils';
+import { type ListeningOptions, tryToListen } from './utils';
 import { type Logger } from '../common';
 export interface RenderServerOptions
     extends ContentsMapOptions,
-        ServerPortOptions {
+        ListeningOptions {
     port?: number;
     externalUrls?: string[];
     templatePath?: string;
     hljs?: HljsConfig | false;
 }
-
-const defaultOptions = {
-    rootDir: '.',
-    hljs: {
-        js: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js',
-        css: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css',
-    },
-};
 
 export class MarkdownRenderServer extends MarkdownItRender {
     private _options?: RenderServerOptions;
@@ -45,38 +37,26 @@ export class MarkdownRenderServer extends MarkdownItRender {
         );
 
         // create this instance
-        const theInstance = new MarkdownRenderServer();
-
-        // FIXME configure options
-        theInstance._options = options;
-        theInstance._logger = logger;
-        await theInstance.loadTemplateFrom(options?.templatePath);
-        theInstance.configureHljs(
-            options?.hljs === undefined ? defaultOptions.hljs : options?.hljs
+        const theInstance = await new MarkdownRenderServer()
+            // set the options
+            .setOptions(options)
+            // set the logger
+            .setLogger(logger)
+            // configure the template
+            .configureTemplate({ ...options })
+            // configure the contents map
+            .then((instance) => {
+                return instance.configureContentsMap(rootDir, options);
+            })
+            // refresh the contents map
+            .then((instance) => {
+                return instance.refresh(false);
+            });
+        logger?.debug(
+            'contentsUrls: %o',
+            theInstance.contentsMap.getEntityPaths()
         );
 
-        // create resolver map
-        const renderMap = new RenderMap();
-        renderMap.set('markdown', theInstance);
-        renderMap.set('style', utf8PlainTextRender);
-        renderMap.set('plainText', utf8PlainTextRender);
-
-        // create contents map
-        const contentsMap = await ContentsMap.createInstance(
-            renderMap,
-            rootDir,
-            options
-        );
-        logger?.debug('contentsUrls: %o', contentsMap.getEntityPaths());
-
-        // set contents map
-        theInstance.contentsMap = contentsMap;
-
-        // set style urls
-        theInstance.addStyles(theInstance.availableStylePaths);
-        theInstance.addExternalStyles(options?.externalUrls ?? []);
-
-        // return the instance
         return theInstance;
     }
 
@@ -121,7 +101,7 @@ export class MarkdownRenderServer extends MarkdownItRender {
         this._logger?.debug('Listening on port %d', this._listeningPort);
 
         // bind the server event listener
-        this._server.on('request', this.serverListener.bind(this));
+        this._server.on('request', this.onRequest.bind(this));
         return this._listeningPort;
     }
     public async close(): Promise<void> {
@@ -142,12 +122,26 @@ export class MarkdownRenderServer extends MarkdownItRender {
         });
     }
 
+    public async refresh(refreshContentsMap: boolean = true): Promise<this> {
+        if (refreshContentsMap) {
+            await this.contentsMap.refresh();
+        }
+        this.clearStyles();
+        this.addStyles(this.availableStylePaths);
+        this.clearExternalStyles();
+        this.addExternalStyles(this._options?.externalUrls ?? []);
+        return this;
+    }
+
+    //#region private methods
+
+    //#region HTTP responses
     /**
      * Listener for incoming requests
      * @param req Incoming message
      * @param res Server response
      */
-    public serverListener(
+    private onRequest(
         req: http.IncomingMessage,
         res: http.ServerResponse
     ): void {
@@ -167,7 +161,6 @@ export class MarkdownRenderServer extends MarkdownItRender {
         });
     }
 
-    //#region private methods
     private writeNotFound(res: http.ServerResponse): void {
         this._logger?.warn(
             'Response for url: %s, status code: %d',
@@ -195,5 +188,36 @@ export class MarkdownRenderServer extends MarkdownItRender {
         res.write(entity.contents);
         res.end();
     }
+    //#endregion
+
+    //#region configuration functions
+    private setOptions(options?: RenderServerOptions): this {
+        this._options = options;
+        return this;
+    }
+    private setLogger(logger?: Logger): this {
+        this._logger = logger;
+        return this;
+    }
+    private async configureContentsMap(
+        rootDir?: string,
+        options?: RenderServerOptions
+    ): Promise<this> {
+        const contentMap = await ContentsMap.createInstance(
+            new RenderMap(),
+            rootDir,
+            options
+        );
+        contentMap.renderMap
+            .set('markdown', this)
+            .set('style', utf8PlainTextRender)
+            .set('plainText', utf8PlainTextRender);
+        this.contentsMap = contentMap;
+
+        return this;
+    }
+
+    //#endregion
+
     //#endregion
 }

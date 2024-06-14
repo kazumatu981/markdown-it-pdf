@@ -125,6 +125,15 @@ export class ContentsMap extends Map<string, ContentsMapEntity> {
 
     //#endregion
 
+    //#region public properties
+    public get renderMap(): RenderMap {
+        return this._renderMap;
+    }
+    public set renderMap(renderMap: RenderMap) {
+        this._renderMap = renderMap;
+    }
+    //#endregion
+
     //#region public methods
     /**
      * Refreshes the contents of the map by clearing the current contents and
