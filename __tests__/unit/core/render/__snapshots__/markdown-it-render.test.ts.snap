@@ -28,8 +28,11 @@ exports[`CoreLibrary Unit Tests - MarkdownItRender Basic Render Test: Can render
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
         <title>Document</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css" />
     </head>
     <body>
+        <script>hljs.highlightAll();</script>
         <h1>test</h1>
 <p>hello world</p>
 
@@ -47,8 +50,11 @@ exports[`CoreLibrary Unit Tests - MarkdownItRender Render Test: Can use plugins 
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
         <title>Document</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css" />
     </head>
     <body>
+        <script>hljs.highlightAll();</script>
         <h1>test</h1>
 <p>hello <sup>world</sup></p>
 

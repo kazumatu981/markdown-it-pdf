@@ -7,6 +7,17 @@ import fsPromises from 'fs/promises';
 import Handlebars from 'handlebars';
 // TODO support user custom plugins on options.
 
+export interface TemplateOptions {
+    templatePath?: string;
+    hljs?: HljsConfig | false;
+}
+const defaultTemplateOPtions = {
+    hljs: {
+        js: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js',
+        css: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css',
+    },
+};
+
 export interface HljsConfig {
     js: string;
     css: string;
@@ -41,6 +52,11 @@ export class MarkdownItRender extends MarkdownIt implements FileRender {
         return this;
     }
 
+    public clearStyles(): this {
+        this.internalUrls = [];
+        return this;
+    }
+
     /**
      * Sets the external style URLs of this instance.
      *
@@ -52,9 +68,44 @@ export class MarkdownItRender extends MarkdownIt implements FileRender {
         return this;
     }
 
-    public configureHljs(hljs: HljsConfig | false): this {
+    public clearExternalStyles(): this {
+        this.externalUrls = [];
+        return this;
+    }
+
+    public async configureTemplate(options?: TemplateOptions): Promise<this> {
+        this.configureHljs(options?.hljs);
+        return this.loadTemplateFrom(options?.templatePath);
+    }
+
+    /**
+     * Renders the given markdown string into HTML.
+     *
+     * @param {string} markdown - The markdown string to render.
+     * @return {string} The rendered HTML string.
+     */
+    public render(markdown: string): string {
+        const model = this.getModel(markdown);
+        return this.templateEngine!(model);
+    }
+    /**
+     * Asynchronously renders a markdown file to HTML.
+     *
+     * @param {string} markdownFilePath - The path to the markdown file.
+     * @return {Promise<string>} A promise that resolves to the rendered HTML.
+     */
+    public async renderFromFile(markdownFilePath: string): Promise<string> {
+        const markdown = await fsPromises.readFile(markdownFilePath, 'utf8');
+        return this.render(markdown);
+    }
+
+    //#region private members
+
+    private configureHljs(hljs: HljsConfig | false | undefined): this {
         if (hljs === false) {
             this.hljs = undefined;
+        } else if (hljs === undefined) {
+            this.hljs = defaultTemplateOPtions.hljs;
         } else {
             this.hljs = hljs;
         }
@@ -67,7 +118,7 @@ export class MarkdownItRender extends MarkdownIt implements FileRender {
      * @param {string} templatePath - The path to the template file.
      * @return {Promise<this>} - A promise that resolves to the current instance.
      */
-    public async loadTemplateFrom(templatePath?: string): Promise<this> {
+    private async loadTemplateFrom(templatePath?: string): Promise<this> {
         // Read the template file as a string.
         if (templatePath) {
             this.templateSource = await fsPromises.readFile(
@@ -97,28 +148,5 @@ export class MarkdownItRender extends MarkdownIt implements FileRender {
         const body = super.render(markdown);
         return { styles, body, hljs: this.hljs };
     }
-
-    /**
-     * Renders the given markdown string into HTML.
-     *
-     * @param {string} markdown - The markdown string to render.
-     * @return {string} The rendered HTML string.
-     */
-    public render(markdown: string): string {
-        const model = this.getModel(markdown);
-        return this.templateEngine!(model);
-    }
-    /**
-     * Asynchronously renders a markdown file to HTML.
-     *
-     * @param {string} markdownFilePath - The path to the markdown file.
-     * @return {Promise<string>} A promise that resolves to the rendered HTML.
-     */
-    public async renderFromFile(markdownFilePath: string): Promise<string> {
-        const markdown = await fsPromises.readFile(markdownFilePath, 'utf8');
-        return this.render(markdown);
-    }
-
-    //#region private members
     //#endregion
 }
