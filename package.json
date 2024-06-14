@@ -4,6 +4,9 @@
     "description": "Markdown Renderer for PDF (compatible with `markdown-it`)",
     "main": "dist/lib/index.js",
     "types": "dist/lib/index.d.ts",
+    "bin": {
+        "markdown-it-pdf": "cli.js"
+    },
     "scripts": {
         "transpile:typescript": "tsc --project tsconfig.json",
         "transpile-watch:typescript": "tsc --watch --project tsconfig.json",
