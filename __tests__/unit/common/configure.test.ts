@@ -6,6 +6,8 @@ import { type PrinterOptions } from '../../../src/markdown-it-pdf';
 
 import { mockLogger } from '../../utils/mock-logger';
 
+// TODO Add test about collapsed json configure.
+
 function testConfigure(config?: PrinterOptions) {
     expect(config).toBeDefined();
     expect(config?.margin?.top).toBeDefined();
@@ -79,10 +81,7 @@ describe('Unit Tests - readOptions', () => {
         expect(config).toBeUndefined();
     });
     it('filePath as undefined - with logger', async () => {
-        const config = await readOptions<PrinterOptions>(
-            undefined,
-            mockLogger
-        );
+        const config = await readOptions<PrinterOptions>(undefined, mockLogger);
         expect(mockLogger.info).toBeCalled();
     });
 });

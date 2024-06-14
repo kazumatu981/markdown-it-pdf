@@ -3,6 +3,8 @@ import { ContentsMap } from '../../../../src/core/maps/contents-map';
 import { RenderMap } from '../../../../src/core/maps/render-map';
 import { mockingTestDir, unmockingTestDir } from '../../../utils/test-dir';
 
+// TODO add test get/set renderMap
+
 describe('CoreLibrary Unit Tests - ContentsMap', () => {
     describe('createInstance', () => {
         it('should create an instance - recursive', async () => {
@@ -72,7 +74,9 @@ describe('CoreLibrary Unit Tests - ContentsMap', () => {
                 resolverMap,
                 'test'
             );
-            expect(contentsMap.getEntityPaths('markdown')).toContain('/test.md');
+            expect(contentsMap.getEntityPaths('markdown')).toContain(
+                '/test.md'
+            );
             expect(contentsMap.getEntityPaths('markdown')).toContain(
                 '/sub/test.md'
             );

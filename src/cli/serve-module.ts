@@ -57,6 +57,7 @@ export const handler: (
         // success
         logger.info('server started at http://localhost:%d', port);
 
+        // TODO to readable and testable code.
         // register SIGINT handler
         process.on('SIGINT', async () => {
             // safe stop.....close server!!!

@@ -6,6 +6,8 @@ import http from 'http';
 
 jest.mock('http');
 
+// TODO Add test about refresh
+
 describe('CoreLibrary Unit Tests - MarkdownRenderServer', () => {
     const listenFn = jest.fn((port, cb: () => {}) => {
         cb();

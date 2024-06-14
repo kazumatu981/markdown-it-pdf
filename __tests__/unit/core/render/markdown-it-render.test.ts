@@ -21,6 +21,8 @@ const templateContents = `
     </body>
 `;
 
+// TODO Add test about Hljs configure.
+
 describe('CoreLibrary Unit Tests - MarkdownItRender', () => {
     afterEach(() => {
         jest.clearAllMocks();
