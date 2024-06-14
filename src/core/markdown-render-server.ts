@@ -21,6 +21,9 @@ export interface RenderServerOptions
     hljs?: HljsConfig | false;
 }
 
+// TODO support user custom plugins on options.
+// TODO Add jsdoc
+
 export class MarkdownRenderServer extends MarkdownItRender {
     private _options?: RenderServerOptions;
     private _server?: http.Server;
