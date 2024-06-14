@@ -1,6 +1,6 @@
 {
     "name": "@kazumatu981/markdown-it-pdf",
-    "version": "1.0.0",
+    "version": "0.0.2",
     "description": "Markdown Renderer for PDF (compatible with `markdown-it`)",
     "main": "dist/lib/index.js",
     "types": "dist/lib/index.d.ts",
