@@ -22,23 +22,19 @@ export class PlainTextRender implements FileRender {
 
     /**
      * Constructs a new instance of the PlainTextRender class.
-     *
      * @param charset - The charset of the file.
      */
     constructor(charset: string) {
         /**
          * The charset of the file.
-         * @type {string}
-         * @private
          */
         this._charset = charset;
     }
 
     /**
      * Asynchronously reads the contents of a file and returns it as a string.
-     *
      * @param {string} filePath - The path of the file to read.
-     * @return {Promise<string>} A promise that resolves to the contents of the file as a string.
+     * @returns {Promise<string>} A promise that resolves to the contents of the file as a string.
      */
     renderFromFile(filePath: string): Promise<string> {
         // Read the contents of the file and return it as a string.
@@ -55,11 +51,10 @@ export class PlainTextRender implements FileRender {
 export class BinaryRender implements FileRender {
     /**
      * Asynchronously reads the contents of a binary file and returns it as a Buffer.
-     *
      * @param {string} filePath - The path of the file to read.
-     * @return {Promise<Buffer>} A promise that resolves to the contents of the file as a Buffer.
+     * @returns {Promise<Buffer>} A promise that resolves to the contents of the file as a Buffer.
      */
-    renderFromFile(filePath: string): Promise<Buffer> {
+    public renderFromFile(filePath: string): Promise<Buffer> {
         // Read the contents of the file and return it as a Buffer.
         // The `encoding` option is set to `null`, indicating that the file is binary.
         return fsPromises.readFile(filePath, null);

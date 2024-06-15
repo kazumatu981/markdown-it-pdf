@@ -10,6 +10,7 @@
     "scripts": {
         "transpile:typescript": "tsc --project tsconfig.json",
         "transpile-watch:typescript": "tsc --watch --project tsconfig.json",
+        "lint:eslint": "eslint -c eslint.config.mjs src/**/*.ts",
         "test": "jest",
         "test-watch": "jest --watch",
         "test:unit": "jest --config=unit.jest.config.js",
@@ -27,6 +28,7 @@
         "@types/node": "^20.12.7",
         "@types/yargs": "^17.0.32",
         "eslint": "latest",
+        "eslint-plugin-jsdoc": "^48.2.12",
         "globals": "^15.4.0",
         "jest": "^29.7.0",
         "markdown-it-sup": "^2.0.0",

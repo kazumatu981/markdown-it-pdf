@@ -109,7 +109,6 @@ export class ConsoleLogger implements Logger {
     // #region Private Methods
     /**
      * Determines if the specified log level should be logged.
-     *
      * @param level - The log level to check.
      * @returns True if the log level should be logged, false otherwise.
      */
@@ -127,7 +126,6 @@ export class ConsoleLogger implements Logger {
 
     /**
      * Creates a log message with the specified log level and message.
-     *
      * @param {LogLevel} level - The log level.
      * @param {string} message - The message to log.
      * @returns {string} The log message.
@@ -190,6 +188,10 @@ export class ConsoleLogger implements Logger {
     // #endregion
 }
 
+/**
+ * Returns a string representing the current time in the format "HH:MM:SS".
+ * @returns {string} The current time in the format "HH:MM:SS".
+ */
 function getCurrentTimeString(): string {
     const date = new Date();
     return `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;

@@ -35,28 +35,23 @@ export abstract class PuppeteerPDFPrinter<
 > {
     /**
      * The base URL of the site to print.
-     * @type {string}
      */
     protected _siteUrl: string;
     /**
      * The directory where the PDFs will be saved.
-     * @type {string | undefined}
      */
     protected _outputDir?: string;
     /**
      * The options to configure the printer.
-     * @type {PuppeteerPrinterOptions | undefined}
      */
     protected _options?: PuppeteerPrinterOptions;
     /**
      * The logger to use.
-     * @type {Logger | undefined}
      */
     protected _logger?: Logger;
 
     /**
      * Constructor for the PuppeteerPDFPrinter.
-     *
      * @param {string} siteUrl - The base URL of the site to print.
      * @param {string} [outputDir] - The directory where the PDFs will be saved.
      * @param {PuppeteerPrinterOptions} [options] - The options to configure the printer.
@@ -76,12 +71,11 @@ export abstract class PuppeteerPDFPrinter<
 
     /**
      * Creates a new Printer that prints the PDFs into files.
-     *
      * @param {string} siteUrl - The base URL of the site to print.
      * @param {string} outputDir - The directory where the PDFs will be saved.
      * @param {PuppeteerPrinterOptions} [options] - The options to configure the printer.
      * @param {Logger} [logger] - The logger to use.
-     * @return {FilePrinter} The newly created Printer.
+     * @returns {FilePrinter} The newly created Printer.
      */
     public static intoFiles(
         siteUrl: string,
@@ -95,11 +89,10 @@ export abstract class PuppeteerPDFPrinter<
 
     /**
      * Creates a new Printer that prints the PDFs into memory.
-     *
      * @param {string} siteUrl - The base URL of the site to print.
      * @param {PuppeteerPrinterOptions} [options] - The options to configure the printer.
      * @param {Logger} [logger] - The logger to use.
-     * @return {MemoryPrinter} The newly created Printer.
+     * @returns {MemoryPrinter} The newly created Printer.
      */
     public static intoMemory(
         siteUrl: string,
@@ -123,15 +116,11 @@ export abstract class PuppeteerPDFPrinter<
 class VirtualBrowser {
     /**
      * The Puppeteer browser instance.
-     * @type {Browser}
-     * @private
      */
     private _browser: Browser;
 
     /**
      * The Puppeteer page instance.
-     * @type {Page}
-     * @private
      */
     private _page: Page;
 
@@ -147,7 +136,6 @@ class VirtualBrowser {
 
     /**
      * Launches a new instance of Puppeteer and creates a new page.
-     *
      * @returns {Promise<VirtualBrowser>} A new instance of VirtualBrowser.
      */
     public static async launch(): Promise<VirtualBrowser> {
@@ -167,7 +155,6 @@ class VirtualBrowser {
 
     /**
      * Navigates to the specified URL and waits for the body to load.
-     *
      * @param {string} url - The URL to navigate to.
      * @returns {Promise<void>} A promise that resolves when the page is fully loaded.
      */
@@ -183,7 +170,6 @@ class VirtualBrowser {
 
     /**
      * Prints the page as a PDF and returns the result.
-     *
      * @param {string} filePath - The path to save the PDF to. If not specified, the PDF is returned as a buffer.
      * @param {PuppeteerPrinterOptions} options - Additional options for the PDF.
      * @returns {Promise<Buffer | void>} The PDF as a buffer, or void if filePath is specified.
@@ -204,7 +190,6 @@ class VirtualBrowser {
 
     /**
      * Closes the page and browser associated with the virtual browser.
-     *
      * @returns {Promise<void>} A promise that resolves when the page and browser are closed.
      */
     public async close(): Promise<void> {
@@ -222,9 +207,8 @@ class VirtualBrowser {
 class FilePrinter extends PuppeteerPDFPrinter<string[], void> {
     /**
      * Prints multiple pages into files.
-     *
      * @param {string[]} targetUrls - The URLs of the pages to print.
-     * @return {Promise<void>} A promise that resolves when all pages are printed.
+     * @returns {Promise<void>} A promise that resolves when all pages are printed.
      */
     public async print(targetUrls: string[]): Promise<void> {
         // Build folder tree for the PDF files.
@@ -263,9 +247,8 @@ class FilePrinter extends PuppeteerPDFPrinter<string[], void> {
 class MemoryPrinter extends PuppeteerPDFPrinter<string, Buffer> {
     /**
      * Prints a single page into memory.
-     *
-     * @param {string} targetUrl - The URL of the page to print.
-     * @return {Promise<Buffer>} The PDF as a Buffer.
+     * @param {string} targetUrl The URL of the page to print.
+     * @returns {Promise<Buffer>} The PDF as a Buffer.
      */
     public async print(targetUrl: string): Promise<Buffer> {
         // Resolve the URL

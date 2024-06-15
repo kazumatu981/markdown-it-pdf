@@ -57,7 +57,6 @@ export async function readOptions<T>(
 
 /**
  * Asynchronously reads and parses a JSON file.
- *
  * @param {string} filePath - The path to the JSON file.
  * @returns {Promise<T | undefined>} A promise that resolves to the parsed JSON data, or undefined if the file is empty or cannot be read.
  */
@@ -76,7 +75,6 @@ async function readJsonOptions<T>(filePath: string): Promise<T | undefined> {
 
 /**
  * Asynchronously reads and parses a JavaScript file.
- *
  * @param {string} filePath - The path to the JavaScript file.
  * @returns {T | undefined} The parsed JavaScript module, or undefined if the file cannot be read or parsed.
  */

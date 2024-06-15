@@ -42,9 +42,8 @@ export class MarkdownItRender extends MarkdownIt implements FileRender {
 
     /**
      * Adds the given URLs to the list of internal styles for this instance.
-     *
      * @param {string[]} urls - The URLs of the styles to add.
-     * @return {this} - Returns the current instance for method chaining.
+     * @returns {this} - Returns the current instance for method chaining.
      */
     public addStyles(urls: string[]): this {
         this.internalUrls.push(...urls);
@@ -58,9 +57,8 @@ export class MarkdownItRender extends MarkdownIt implements FileRender {
 
     /**
      * Sets the external style URLs of this instance.
-     *
      * @param {string[]} urls - The URLs to set as external styles.
-     * @return {this} - Returns the current instance for method chaining.
+     * @returns {this} - Returns the current instance for method chaining.
      */
     public addExternalStyles(urls: string[]): this {
         this.externalUrls.push(...urls);
@@ -79,9 +77,8 @@ export class MarkdownItRender extends MarkdownIt implements FileRender {
 
     /**
      * Renders the given markdown string into HTML.
-     *
      * @param {string} markdown - The markdown string to render.
-     * @return {string} The rendered HTML string.
+     * @returns {string} The rendered HTML string.
      */
     public render(markdown: string): string {
         const model = this.getModel(markdown);
@@ -89,9 +86,8 @@ export class MarkdownItRender extends MarkdownIt implements FileRender {
     }
     /**
      * Asynchronously renders a markdown file to HTML.
-     *
      * @param {string} markdownFilePath - The path to the markdown file.
-     * @return {Promise<string>} A promise that resolves to the rendered HTML.
+     * @returns {Promise<string>} A promise that resolves to the rendered HTML.
      */
     public async renderFromFile(markdownFilePath: string): Promise<string> {
         const markdown = await fsPromises.readFile(markdownFilePath, 'utf8');
@@ -113,9 +109,8 @@ export class MarkdownItRender extends MarkdownIt implements FileRender {
 
     /**
      * Loads the template from the given file path.
-     *
      * @param {string} templatePath - The path to the template file.
-     * @return {Promise<this>} - A promise that resolves to the current instance.
+     * @returns {Promise<this>} - A promise that resolves to the current instance.
      */
     private async loadTemplateFrom(templatePath?: string): Promise<this> {
         // Read the template file as a string.

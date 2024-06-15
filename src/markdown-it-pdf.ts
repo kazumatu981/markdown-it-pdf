@@ -35,7 +35,6 @@ export interface PrinterOptions
  *     });
  * await server.listen();
  * ```
- *
  * @param rootDir {string | undefined} The root directory to start the search Markdown files from.
  * @param options {ServerOptions | undefined} The options to configure the server.
  * @param logger {Logger | undefined} The logger to use.
@@ -69,7 +68,6 @@ export async function createServer(
  *     });
  * await printer.printAll();
  * ```
- *
  * @param rootDir {string | undefined} The root directory to start the search Markdown files from.
  * @param outputDir {string | undefined} The directory where the PDFs will be saved.
  * @param options {PrinterOptions | undefined} The options to configure the printer.
