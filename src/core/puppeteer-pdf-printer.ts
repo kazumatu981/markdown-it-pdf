@@ -152,7 +152,11 @@ class VirtualBrowser {
      */
     public static async launch(): Promise<VirtualBrowser> {
         // Launch a new instance of Puppeteer.
-        const browser = await puppeteer.launch();
+        const browser = await puppeteer.launch({
+            headless: true,
+            args: ['--no-sandbox', '--disable-setuid-sandbox'],
+            ignoreHTTPSErrors: true,
+        });
 
         // Create a new page in the browser.
         const page = await browser.newPage();
