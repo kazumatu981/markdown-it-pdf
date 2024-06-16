@@ -61,6 +61,15 @@ export class BinaryRender implements FileRender {
     }
 }
 
+/**
+ * The plain text file render function.
+ */
 export const utf8PlainTextRender = new PlainTextRender('utf8');
+/**
+ * The binary file render function.
+ */
 export const binaryRender = new BinaryRender();
+/**
+ * The default render function. render as binary file.
+ */
 export const defaultRender = binaryRender;

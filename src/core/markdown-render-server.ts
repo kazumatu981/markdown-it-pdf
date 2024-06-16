@@ -12,24 +12,50 @@ import {
 } from './render';
 import { type ListeningOptions, tryToListen } from './utils';
 import { type Logger } from '../common';
+
+/**
+ * The options for the render server
+ */
 export interface RenderServerOptions
     extends ContentsMapOptions,
         ListeningOptions {
+    /**
+     * The port to listen on
+     */
     port?: number;
+
+    /**
+     * The external urls for styles
+     */
     externalUrls?: string[];
+    /**
+     * The template html file path
+     */
     templatePath?: string;
+    /**
+     * The highlight.js config
+     */
     hljs?: HljsConfig | false;
 }
 
 // TODO support user custom plugins on options.
-// TODO Add jsdoc
 
+/**
+ * The markdown render server
+ */
 export class MarkdownRenderServer extends MarkdownItRender {
     private _options?: RenderServerOptions;
     private _server?: http.Server;
     private _contentsMap?: ContentsMap;
     private _listeningPort?: number;
 
+    /**
+     * Create a new markdown render server
+     * @param rootDir {string} path to root directory of markdown files
+     * @param options {RenderServerOptions} the options on this server launch.
+     * @param logger {Logger} the logger
+     * @returns {Promise<MarkdownRenderServer>} the markdown render server
+     */
     public static async createInstance(
         rootDir?: string,
         options?: RenderServerOptions,
@@ -63,14 +89,26 @@ export class MarkdownRenderServer extends MarkdownItRender {
         return theInstance;
     }
 
+    /**
+     * Markdown paths which is available.
+     * @returns {string[]} Markdown paths
+     */
     public get availableMarkdownPaths(): string[] {
         return this.contentsMap.getEntityPaths('markdown');
     }
 
+    /**
+     * Style paths which is available.
+     * @returns {string[]} Style paths
+     */
     public get availableStylePaths(): string[] {
         return this.contentsMap.getEntityPaths('style');
     }
 
+    /**
+     * The url of the server. `http://localhost:{port}`
+     * @returns {string} the url
+     */
     public get myUrl(): string {
         return `http://localhost:${this._listeningPort}`;
     }
@@ -78,14 +116,28 @@ export class MarkdownRenderServer extends MarkdownItRender {
     private set contentsMap(contentsMap: ContentsMap) {
         this._contentsMap = contentsMap;
     }
+
+    /**
+     * The contents map
+     * @returns {ContentsMap} the contents map
+     */
     public get contentsMap(): ContentsMap {
         return this._contentsMap as ContentsMap;
     }
 
+    /**
+     * The listening port
+     * @returns {number} the listening port
+     */
     public get listeningPort(): number | undefined {
         return this._listeningPort;
     }
 
+    /**
+     * Start to listen from clients request.
+     * @param port {number | undefined} The port to listen on
+     * @returns {Promise<number>} A promise that resolves when the server is listening
+     */
     public async listen(port?: number): Promise<number> {
         const portCandidate = port ?? this._options?.port;
         const serverPort = await tryToListen(
@@ -107,6 +159,11 @@ export class MarkdownRenderServer extends MarkdownItRender {
         this._server.on('request', this.onRequest.bind(this));
         return this._listeningPort;
     }
+
+    /**
+     * Close the server
+     * @returns {Promise<void>} A promise that resolves when the server is closed
+     */
     public async close(): Promise<void> {
         if (this._server === undefined) {
             return Promise.resolve();
@@ -125,6 +182,11 @@ export class MarkdownRenderServer extends MarkdownItRender {
         });
     }
 
+    /**
+     * Refresh the contents of the server
+     * @param refreshContentsMap {boolean} whether to refresh the contents map
+     * @returns {this} this instance, for method chaining
+     */
     public async refresh(refreshContentsMap: boolean = true): Promise<this> {
         if (refreshContentsMap) {
             await this.contentsMap.refresh();

@@ -31,9 +31,23 @@ export interface MarkdownItPdf {
      * @param options {T}
      */
     use<T>(plugin: MarkdownIt.PluginWithOptions<T>, options?: T): this;
+    /**
+     * use() interface to inherit from markdown-it. (https://github.com/markdown-it/markdown-it#use)
+     * @param plugin {MarkdownIt.PluginWithParams}
+     * @param params {unknown[]}
+     */
     use(plugin: MarkdownIt.PluginWithParams, ...params: unknown[]): this;
+    /**
+     * The URLs of the available Markdown files.
+     */
     get availableMarkdownUrls(): string[];
+    /**
+     * The paths of the available Markdown files.
+     */
     get availableMarkdownPaths(): string[];
+    /**
+     * The URL of the server.
+     */
     get myUrl(): string;
 }
 

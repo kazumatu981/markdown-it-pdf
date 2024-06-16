@@ -1,6 +1,22 @@
 import fsPromises from 'fs/promises';
 import fs from 'fs';
+import path from 'path';
 import { type Logger } from './logger';
+
+class ExtnameToReaderFuncMap<T> {
+    private _map: Map<string, (filePath: string) => Promise<T | undefined>>;
+    constructor(
+        seed: Array<[string, (filePath: string) => Promise<T | undefined>]>
+    ) {
+        this._map = new Map(seed);
+    }
+
+    public get(
+        key: string
+    ): ((filePath: string) => Promise<T | undefined>) | undefined {
+        return this._map.get(key);
+    }
+}
 
 /**
  * Asynchronously reads the configuration options from a file. Supports JSON and JavaScript files.
@@ -12,6 +28,13 @@ export async function readOptions<T>(
     filePath?: string,
     logger?: Logger
 ): Promise<T | undefined> {
+    // define a map of file extensions to reader functions.
+    const extnameToReaderFuncMap = new ExtnameToReaderFuncMap<T>([
+        ['.json', readJsonOptions],
+        ['.js', readJSOptions],
+        ['.cjs', readJSOptions],
+    ]);
+
     // If the file path is empty, log a message and return undefined
     if (!filePath) {
         logger?.info(
@@ -29,20 +52,15 @@ export async function readOptions<T>(
             fs.constants.R_OK | fs.constants.F_OK
         );
 
-        // If the file is a JSON file, read it and parse it as JSON
-        if (filePath.endsWith('.json')) {
-            options = await readJsonOptions<T>(filePath);
-        }
-        // If the file is a JavaScript file, require it and return the module
-        else if (filePath.endsWith('.js') || filePath.endsWith('.cjs')) {
-            options = await readJSOptions<T>(filePath);
-        }
-        // If the file is not a supported file type, log a warning
-        else {
+        const reader = extnameToReaderFuncMap.get(path.extname(filePath));
+
+        if (!reader) {
             logger?.warn(
                 'Unsupported configuration file extension: %s, so using default options.',
                 filePath
             );
+        } else {
+            options = await reader(filePath);
         }
     } catch (_) {
         // If there was an error reading the file, log a warning
