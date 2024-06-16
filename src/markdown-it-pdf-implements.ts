@@ -76,10 +76,20 @@ abstract class MarkdownItPdfBase<U = Options> implements MarkdownItPdf {
     }
 }
 
+/**
+ * The markdown render server
+ */
 export class MarkdownItRenderServer
     extends MarkdownItPdfBase<ServerOptions>
     implements Server
 {
+    /**
+     * construct a new markdown render server
+     * @param server {MarkdownRenderServer} render server
+     * @param _ {string} this parameter is ignored
+     * @param options {ServerOptions} the options on this server launch.
+     * @param logger {Logger} the logger
+     */
     public constructor(
         server: MarkdownRenderServer,
         _?: string,
@@ -88,19 +98,41 @@ export class MarkdownItRenderServer
     ) {
         super(server, options, logger);
     }
+
+    /**
+     * start to listen from clients request
+     * @param port {number | undefined} port number
+     * @returns {Promise<number>} a promise that resolves when the server is listening
+     */
     public listen(port?: number): Promise<number> {
         return this._server.listen(port);
     }
+
+    /**
+     * stop the server
+     * @returns {Promise<void>} A promise that resolves when the server is closed.
+     */
     public close(): Promise<void> {
         return this._server.close();
     }
 }
 
+/**
+ * The markdown render printer
+ */
 export class MarkdownItPdfPrinter
     extends MarkdownItPdfBase<PrinterOptions>
     implements Printer
 {
     private _outputDir?: string;
+
+    /**
+     * print all pages into pdf file
+     * @param server {MarkdownRenderServer} render server
+     * @param outputDir {string} output directory
+     * @param options {PrinterOptions} the options for printing into pdf
+     * @param logger {Logger} the logger
+     */
     public constructor(
         server: MarkdownRenderServer,
         outputDir?: string,
@@ -111,6 +143,10 @@ export class MarkdownItPdfPrinter
         this._outputDir = outputDir;
     }
 
+    /**
+     * Print All Markdown under the root directory.
+     * @returns {Promise<this>} A promise that resolves when the server is closed.
+     */
     public async printAll(): Promise<this> {
         await this._server.listen();
 
@@ -126,6 +162,12 @@ export class MarkdownItPdfPrinter
         await this._server.close();
         return this;
     }
+
+    /**
+     * Print All Markdown under the root directory.
+     * @param url {string|string[]} The URLs of the pages to print.
+     * @returns {Promise<this>} A promise that resolves when the server is closed.
+     */
     public async print(url: string | string[]): Promise<this> {
         await this._server.listen();
 
@@ -143,6 +185,12 @@ export class MarkdownItPdfPrinter
         await this._server.close();
         return this;
     }
+
+    /**
+     * print page as PDF into memory
+     * @param url {string} The URL of the page to print.
+     * @returns {Promise<Buffer>} The PDF as a buffer.
+     */
     public async printIntoBuffer(url: string): Promise<Buffer> {
         await this._server.listen();
 

@@ -1,3 +1,6 @@
+/**
+ * The default template source.
+ */
 export const defaultTemplateSource = `
 <!doctype html>
 <html>

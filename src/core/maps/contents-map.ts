@@ -125,9 +125,16 @@ export class ContentsMap extends Map<string, ContentsMapEntity> {
     //#endregion
 
     //#region public properties
+    /**
+     * The resolver map used to resolve the URLs to the resolver for the contents.
+     * @returns {RenderMap} The resolver map used to resolve the URLs to the resolver for the contents.
+     */
     public get renderMap(): RenderMap {
         return this._renderMap;
     }
+    /**
+     * The resolver map used to resolve the URLs to the resolver for the contents.
+     */
     public set renderMap(renderMap: RenderMap) {
         this._renderMap = renderMap;
     }

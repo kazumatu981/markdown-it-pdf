@@ -6,8 +6,17 @@ import MarkdownIt from 'markdown-it';
 import fsPromises from 'fs/promises';
 import Handlebars from 'handlebars';
 
+/**
+ * The options for the template.
+ */
 export interface TemplateOptions {
+    /**
+     * The path to the template file.
+     */
     templatePath?: string;
+    /**
+     * The hljs configuration.
+     */
     hljs?: HljsConfig | false;
 }
 const defaultTemplateOPtions = {
@@ -17,8 +26,17 @@ const defaultTemplateOPtions = {
     },
 };
 
+/**
+ * The hljs configuration.
+ */
 export interface HljsConfig {
+    /**
+     * The url to the js. like CDN server.
+     */
     js: string;
+    /**
+     * The url to the css. like CDN server.
+     */
     css: string;
 }
 
@@ -50,6 +68,10 @@ export class MarkdownItRender extends MarkdownIt implements FileRender {
         return this;
     }
 
+    /**
+     * Clear the list of internal styles for this instance.
+     * @returns {this} - Returns the current instance for method chaining.
+     */
     public clearStyles(): this {
         this.internalUrls = [];
         return this;
@@ -65,11 +87,20 @@ export class MarkdownItRender extends MarkdownIt implements FileRender {
         return this;
     }
 
+    /**
+     * clear the list of external styles for this instance.
+     * @returns {this} - Returns the current instance for method chaining.
+     */
     public clearExternalStyles(): this {
         this.externalUrls = [];
         return this;
     }
 
+    /**
+     * Configures the template engine.
+     * @param options {TemplateOptions} the options for template
+     * @returns {this} - Returns the current instance for method chaining.
+     */
     public async configureTemplate(options?: TemplateOptions): Promise<this> {
         this.configureHljs(options?.hljs);
         return this.loadTemplateFrom(options?.templatePath);
