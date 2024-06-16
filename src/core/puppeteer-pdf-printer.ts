@@ -6,8 +6,15 @@ import { type PDFOptions } from 'puppeteer';
 import { Logger } from '../common/logger';
 
 //#region constants
+
+/**
+ * The default directory where the PDFs will be saved.
+ */
 export const defaultOutputDir = 'pdf';
 
+/**
+ * The default options to configure the printer.
+ */
 export const defaultPrinterOption: PDFOptions = {
     format: 'A4',
     margin: {
@@ -20,6 +27,9 @@ export const defaultPrinterOption: PDFOptions = {
 //#endregion
 //#region types and interfaces
 
+/**
+ * The options to configure the printer.
+ */
 export type PuppeteerPrinterOptions = Omit<PDFOptions, 'path'>;
 
 //#endregion

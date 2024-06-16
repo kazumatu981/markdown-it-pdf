@@ -3,8 +3,6 @@ import pluginJs from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import jsdoc from 'eslint-plugin-jsdoc';
 
-// TODO Add eslint-plugin-jsdoc
-
 export default [
     {
         languageOptions: { globals: globals.node },
