@@ -5,9 +5,12 @@ import { type MarkdownItPdfCommandOptions } from './cli/command-options';
 import { levelIndexes } from './common/logger';
 import { resolveFromCwd } from './core/utils/path-resolver';
 
+/**
+ * CLI interface
+ */
 export default function markdownItPdfCli() {
     // CLI interface
-    //  usage markdown-it-pdf <cmd> [dir] [options]
+    //  usage markdown-it-pdf <cmd> [rootDir] [outDir] [options]
     //  commands: serve, print
     //  options:
     //      -h, --help            output usage information

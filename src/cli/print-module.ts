@@ -5,15 +5,31 @@ import { resolveFromCwd } from '../core/utils';
 import { type PrinterOptions, createPrinter } from '../';
 import { ConsoleLogger } from '../common';
 
-// exports.command: string (or array of strings) that executes this command when given on the command line, first string may contain positional args
+/**
+ * For Yargs interfaces.
+ * string (or array of strings) that executes this command when given on the command line,
+ * first string may contain positional args
+ */
 export const command: string = 'print [dir] [outputDir]';
-// exports.aliases: array of strings (or a single string) representing aliases of exports.command, positional args defined in an alias are ignored
+
+/**
+ * array of strings (or a single string) representing aliases of exports.command,
+ * positional args defined in an alias are ignored
+ */
 export const aliases: string[] = ['p', 'pdf'];
 
-// exports.describe: string used as the description for the command in help text, use false for a hidden command
+/**
+ * string used as the description for the command in help text, use false for a hidden command
+ *
+ */
 export const describe: string = 'Starts the MD to HTML render server';
 
-// exports.builder: object declaring the options the command accepts, or a function accepting and returning a yargs instance
+/**
+ * object declaring the options the command accepts,
+ * or a function accepting and returning a yargs instance
+ * @param yargs {Argv<MarkdownItPdfCommandOptions>} - The yargs instance.
+ * @returns {Argv<MarkdownItPdfCommandOptions>} - The yargs instance changed by this method.
+ */
 export const builder: (
     yargs: Argv<MarkdownItPdfCommandOptions>
 ) => Argv<MarkdownItPdfCommandOptions> = (
@@ -39,7 +55,10 @@ export const builder: (
         });
 };
 
-// exports.handler: a function which will be passed the parsed argv.
+/**
+ * exports.handler: a function which will be passed the parsed argv.
+ * @param args {MarkdownItPdfCommandOptions} - The arguments from command line.
+ */
 export const handler: (
     args: MarkdownItPdfCommandOptions
 ) => Promise<void> = async (args: MarkdownItPdfCommandOptions) => {
@@ -73,7 +92,9 @@ export const handler: (
     }
 };
 
-// exports.deprecated: a boolean (or string) to show deprecation notice.
+/**
+ * this module is not deprecated.
+ */
 export const deprecated: boolean | string = false;
 
 export default { command, aliases, describe, builder, handler, deprecated };

@@ -10,12 +10,11 @@ type TransformFunction<T> = (filePath: string) => T;
 
 /**
  * Finds files in a given directory and returns an array of transformed results.
- *
  * @param {string} rootDir - The root directory to start the search from.
  * @param {boolean} recursive - Whether to search recursively in subdirectories.
  * @param {IsMatchFunction} isMatch - A function to check if a file matches a certain criteria.
  * @param {TransformFunction<T>} transform - A function to transform each found file.
- * @return {Promise<T[]>} A promise that resolves to an array of transformed file results.
+ * @returns {Promise<T[]>} A promise that resolves to an array of transformed file results.
  */
 export async function findFiles<T>(
     rootDir: string,
@@ -43,10 +42,9 @@ export async function findFiles<T>(
 
 /**
  * Converts a file path to a URL relative to the root directory.
- *
  * @param {string} rootDir - The root directory path.
  * @param {string} filePath - The file path to convert.
- * @return {string} The URL representing the file path relative to the root directory.
+ * @returns {string} The URL representing the file path relative to the root directory.
  * @throws {Error} If the file path is not in the root directory.
  */
 export function filePathToUrl(rootDir: string, filePath: string): string {
@@ -63,9 +61,8 @@ export function filePathToUrl(rootDir: string, filePath: string): string {
  * Normalizes a file path by converting it to a relative path and replacing any
  * Windows-style path separators with POSIX-style separators. Throws an error if
  * the file path is absolute.
- *
  * @param {string} filePath - The file path to normalize.
- * @return {string} The normalized file path.
+ * @returns {string} The normalized file path.
  * @throws {Error} If the file path is absolute.
  */
 export function normalizePath(filePath: string): string {
@@ -77,9 +74,8 @@ export function normalizePath(filePath: string): string {
 
 /**
  * Asynchronously builds a tree of directories based on the provided array of file paths.
- *
  * @param {string[]} files - An array of file paths.
- * @return {Promise<void>} A promise that resolves when the tree of directories is built successfully, or rejects with an error if there was a problem.
+ * @returns {Promise<void>} A promise that resolves when the tree of directories is built successfully, or rejects with an error if there was a problem.
  */
 export async function buildTreeOfFiles(files: string[]): Promise<void> {
     const dirs = Array.from(new Set(files.map((file) => path.dirname(file))));
@@ -94,7 +90,6 @@ export async function buildTreeOfFiles(files: string[]): Promise<void> {
 
 /**
  * Resolves a file path relative to the current working directory.
- *
  * @param {string} filePath - The file path to resolve.
  * @returns {string} The resolved file path.
  */
