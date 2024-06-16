@@ -21,7 +21,7 @@ export default [
             'max-nested-callbacks': ['error', 3],
             'max-params': ['error', 5],
             'max-depth': ['error', 3],
-            complexity: ['error', 10],
+            complexity: ['error', 5],
         },
     },
     {

@@ -12,6 +12,9 @@ const methodIndexes = ['trace', 'debug', 'info', 'warn', 'error'];
  */
 export type LogLevel = LogMethods | 'silent';
 
+/**
+ * Represents a log level index.
+ */
 export const levelIndexes = [
     'trace',
     'debug',
@@ -57,6 +60,11 @@ export interface Logger {
  */
 export class ConsoleLogger implements Logger {
     private level: LogLevel;
+
+    /**
+     * Implements a logger that logs messages to the console.
+     * @param level {LogLevel} The log level.
+     */
     public constructor(level: LogLevel = 'info') {
         this.level = level;
     }
