@@ -132,6 +132,19 @@ export class ConsoleLogger implements Logger {
         return levelIndex >= currentLevelIndex;
     }
 
+    private labelColorMap: Map<LogLevel, chalk.ChalkFunction> = new Map([
+        ['trace', chalk.yellowBright],
+        ['debug', chalk.gray],
+        ['info', chalk.blue],
+        ['warn', chalk.redBright],
+        ['error', chalk.bgRed],
+    ]);
+
+    private messageColorMap: Map<LogLevel, chalk.ChalkFunction> = new Map([
+        ['trace', chalk.gray],
+        ['debug', chalk.gray],
+    ]);
+
     /**
      * Creates a log message with the specified log level and message.
      * @param {LogLevel} level - The log level.
@@ -140,34 +153,16 @@ export class ConsoleLogger implements Logger {
      */
     private createMessage(level: LogLevel, message: unknown): string {
         // Format the log message with the log level, timestamp, and message.
-        let levelString: string = level;
-        switch (level) {
-            case 'trace':
-                levelString = chalk.yellowBright(level.toUpperCase());
-                break;
-            case 'debug':
-                levelString = chalk.gray(level.toUpperCase());
-                break;
-            case 'info':
-                levelString = chalk.blue(level.toUpperCase());
-                break;
-            case 'warn':
-                levelString = chalk.redBright(level.toUpperCase());
-                break;
-            case 'error':
-                levelString = chalk.bgRed(level.toUpperCase());
-                break;
-        }
-        const messageString = `[${levelString} ${getCurrentTimeString()}] ${message}`;
+        const levelString: string = (
+            this.labelColorMap.get(level) || chalk.gray
+        )(level.toUpperCase());
 
-        // Return the formatted log message.
-        switch (level) {
-            case 'trace':
-            case 'debug':
-                return chalk.gray(messageString);
-            default:
-                return messageString;
-        }
+        const messageDecorator = this.messageColorMap.get(level);
+        const messageString = messageDecorator
+            ? messageDecorator(message)
+            : message;
+
+        return `[${levelString} ${getCurrentTimeString()}] ${messageString}`;
     }
 
     /**
