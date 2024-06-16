@@ -12,6 +12,9 @@ const methodIndexes = ['trace', 'debug', 'info', 'warn', 'error'];
  */
 export type LogLevel = LogMethods | 'silent';
 
+/**
+ * Represents a log level index.
+ */
 export const levelIndexes = [
     'trace',
     'debug',
@@ -57,6 +60,11 @@ export interface Logger {
  */
 export class ConsoleLogger implements Logger {
     private level: LogLevel;
+
+    /**
+     * Implements a logger that logs messages to the console.
+     * @param level {LogLevel} The log level.
+     */
     public constructor(level: LogLevel = 'info') {
         this.level = level;
     }
@@ -109,7 +117,6 @@ export class ConsoleLogger implements Logger {
     // #region Private Methods
     /**
      * Determines if the specified log level should be logged.
-     *
      * @param level - The log level to check.
      * @returns True if the log level should be logged, false otherwise.
      */
@@ -125,43 +132,37 @@ export class ConsoleLogger implements Logger {
         return levelIndex >= currentLevelIndex;
     }
 
+    private labelColorMap: Map<LogLevel, chalk.ChalkFunction> = new Map([
+        ['trace', chalk.yellowBright],
+        ['debug', chalk.gray],
+        ['info', chalk.blue],
+        ['warn', chalk.redBright],
+        ['error', chalk.bgRed],
+    ]);
+
+    private messageColorMap: Map<LogLevel, chalk.ChalkFunction> = new Map([
+        ['trace', chalk.gray],
+        ['debug', chalk.gray],
+    ]);
+
     /**
      * Creates a log message with the specified log level and message.
-     *
      * @param {LogLevel} level - The log level.
      * @param {string} message - The message to log.
      * @returns {string} The log message.
      */
     private createMessage(level: LogLevel, message: unknown): string {
         // Format the log message with the log level, timestamp, and message.
-        let levelString: string = level;
-        switch (level) {
-            case 'trace':
-                levelString = chalk.yellowBright(level.toUpperCase());
-                break;
-            case 'debug':
-                levelString = chalk.gray(level.toUpperCase());
-                break;
-            case 'info':
-                levelString = chalk.blue(level.toUpperCase());
-                break;
-            case 'warn':
-                levelString = chalk.redBright(level.toUpperCase());
-                break;
-            case 'error':
-                levelString = chalk.bgRed(level.toUpperCase());
-                break;
-        }
-        const messageString = `[${levelString} ${getCurrentTimeString()}] ${message}`;
+        const levelString: string = (
+            this.labelColorMap.get(level) || chalk.gray
+        )(level.toUpperCase());
 
-        // Return the formatted log message.
-        switch (level) {
-            case 'trace':
-            case 'debug':
-                return chalk.gray(messageString);
-            default:
-                return messageString;
-        }
+        const messageDecorator = this.messageColorMap.get(level);
+        const messageString = messageDecorator
+            ? messageDecorator(message)
+            : message;
+
+        return `[${levelString} ${getCurrentTimeString()}] ${messageString}`;
     }
 
     /**
@@ -190,6 +191,10 @@ export class ConsoleLogger implements Logger {
     // #endregion
 }
 
+/**
+ * Returns a string representing the current time in the format "HH:MM:SS".
+ * @returns {string} The current time in the format "HH:MM:SS".
+ */
 function getCurrentTimeString(): string {
     const date = new Date();
     return `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;

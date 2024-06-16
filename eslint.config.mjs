@@ -1,14 +1,13 @@
 import globals from 'globals';
 import pluginJs from '@eslint/js';
 import tseslint from 'typescript-eslint';
-
-// TODO Add eslint-plugin-jsdoc
+import jsdoc from 'eslint-plugin-jsdoc';
 
 export default [
     {
         languageOptions: { globals: globals.node },
     },
-
+    jsdoc.configs['flat/recommended-typescript'],
     pluginJs.configs.recommended,
     ...tseslint.configs.recommended,
     // rules for code metrics
@@ -22,7 +21,38 @@ export default [
             'max-nested-callbacks': ['error', 3],
             'max-params': ['error', 5],
             'max-depth': ['error', 3],
-            complexity: ['error', 10],
+            complexity: ['error', 5],
+        },
+    },
+    {
+        files: ['**/*.ts'],
+        plugins: {
+            jsdoc,
+        },
+        rules: {
+            'jsdoc/require-jsdoc': [
+                'warn',
+                {
+                    publicOnly: true,
+                    require: {
+                        ArrowFunctionExpression: true,
+                        ClassDeclaration: true,
+                        ClassExpression: true,
+                        FunctionDeclaration: true,
+                        FunctionExpression: true,
+                        MethodDefinition: true,
+                    },
+                    contexts: [
+                        'VariableDeclaration',
+                        'TSInterfaceDeclaration',
+                        'TSTypeAliasDeclaration',
+                        'TSPropertySignature',
+                        'TSMethodSignature',
+                    ],
+                },
+            ],
+            'jsdoc/no-types': 'off',
+            'jsdoc/check-line-alignment': 'error',
         },
     },
     {

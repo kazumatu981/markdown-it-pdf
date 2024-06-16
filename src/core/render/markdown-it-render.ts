@@ -6,8 +6,17 @@ import MarkdownIt from 'markdown-it';
 import fsPromises from 'fs/promises';
 import Handlebars from 'handlebars';
 
+/**
+ * The options for the template.
+ */
 export interface TemplateOptions {
+    /**
+     * The path to the template file.
+     */
     templatePath?: string;
+    /**
+     * The hljs configuration.
+     */
     hljs?: HljsConfig | false;
 }
 const defaultTemplateOPtions = {
@@ -17,8 +26,17 @@ const defaultTemplateOPtions = {
     },
 };
 
+/**
+ * The hljs configuration.
+ */
 export interface HljsConfig {
+    /**
+     * The url to the js. like CDN server.
+     */
     js: string;
+    /**
+     * The url to the css. like CDN server.
+     */
     css: string;
 }
 
@@ -42,15 +60,18 @@ export class MarkdownItRender extends MarkdownIt implements FileRender {
 
     /**
      * Adds the given URLs to the list of internal styles for this instance.
-     *
      * @param {string[]} urls - The URLs of the styles to add.
-     * @return {this} - Returns the current instance for method chaining.
+     * @returns {this} - Returns the current instance for method chaining.
      */
     public addStyles(urls: string[]): this {
         this.internalUrls.push(...urls);
         return this;
     }
 
+    /**
+     * Clear the list of internal styles for this instance.
+     * @returns {this} - Returns the current instance for method chaining.
+     */
     public clearStyles(): this {
         this.internalUrls = [];
         return this;
@@ -58,20 +79,28 @@ export class MarkdownItRender extends MarkdownIt implements FileRender {
 
     /**
      * Sets the external style URLs of this instance.
-     *
      * @param {string[]} urls - The URLs to set as external styles.
-     * @return {this} - Returns the current instance for method chaining.
+     * @returns {this} - Returns the current instance for method chaining.
      */
     public addExternalStyles(urls: string[]): this {
         this.externalUrls.push(...urls);
         return this;
     }
 
+    /**
+     * clear the list of external styles for this instance.
+     * @returns {this} - Returns the current instance for method chaining.
+     */
     public clearExternalStyles(): this {
         this.externalUrls = [];
         return this;
     }
 
+    /**
+     * Configures the template engine.
+     * @param options {TemplateOptions} the options for template
+     * @returns {this} - Returns the current instance for method chaining.
+     */
     public async configureTemplate(options?: TemplateOptions): Promise<this> {
         this.configureHljs(options?.hljs);
         return this.loadTemplateFrom(options?.templatePath);
@@ -79,9 +108,8 @@ export class MarkdownItRender extends MarkdownIt implements FileRender {
 
     /**
      * Renders the given markdown string into HTML.
-     *
      * @param {string} markdown - The markdown string to render.
-     * @return {string} The rendered HTML string.
+     * @returns {string} The rendered HTML string.
      */
     public render(markdown: string): string {
         const model = this.getModel(markdown);
@@ -89,9 +117,8 @@ export class MarkdownItRender extends MarkdownIt implements FileRender {
     }
     /**
      * Asynchronously renders a markdown file to HTML.
-     *
      * @param {string} markdownFilePath - The path to the markdown file.
-     * @return {Promise<string>} A promise that resolves to the rendered HTML.
+     * @returns {Promise<string>} A promise that resolves to the rendered HTML.
      */
     public async renderFromFile(markdownFilePath: string): Promise<string> {
         const markdown = await fsPromises.readFile(markdownFilePath, 'utf8');
@@ -113,9 +140,8 @@ export class MarkdownItRender extends MarkdownIt implements FileRender {
 
     /**
      * Loads the template from the given file path.
-     *
      * @param {string} templatePath - The path to the template file.
-     * @return {Promise<this>} - A promise that resolves to the current instance.
+     * @returns {Promise<this>} - A promise that resolves to the current instance.
      */
     private async loadTemplateFrom(templatePath?: string): Promise<this> {
         // Read the template file as a string.

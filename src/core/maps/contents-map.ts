@@ -75,10 +75,10 @@ export class ContentsMap extends Map<string, ContentsMapEntity> {
     /**
      * Creates an instance of the ContentsMap class with the provided resolver map and options.
      * Then refreshes the contents of the map and returns the instance.
-     *
      * @param {RenderMap} resolverMap - The resolver map used to resolve the URLs to the contents.
-     * @param {ContentsMapOptions} [options] - The options for the contents map.
-     * @return {Promise<ContentsMap>} A promise that resolves to the created instance of the ContentsMap class.
+     * @param {string} rootDir - The root directory to start the search files from.
+     * @param {ContentsMapOptions} options - The options for the contents map.
+     * @returns {Promise<ContentsMap>} A promise that resolves to the created instance of the ContentsMap class.
      */
     public static async createInstance(
         resolverMap: RenderMap,
@@ -100,10 +100,9 @@ export class ContentsMap extends Map<string, ContentsMapEntity> {
 
     /**
      * Creates a new instance of the ContentsMap class.
-     *
-     * @private
      * @param {RenderMap} resolverMap - The resolver map used to resolve the URLs to the resolver for the contents.
-     * @param {ContentsMapOptions} [options] - The options for the contents map.
+     * @param {string} rootDir - The root directory to start the search files from.
+     * @param {ContentsMapOptions} options - The options for the contents map.
      */
     private constructor(
         resolverMap: RenderMap,
@@ -126,9 +125,16 @@ export class ContentsMap extends Map<string, ContentsMapEntity> {
     //#endregion
 
     //#region public properties
+    /**
+     * The resolver map used to resolve the URLs to the resolver for the contents.
+     * @returns {RenderMap} The resolver map used to resolve the URLs to the resolver for the contents.
+     */
     public get renderMap(): RenderMap {
         return this._renderMap;
     }
+    /**
+     * The resolver map used to resolve the URLs to the resolver for the contents.
+     */
     public set renderMap(renderMap: RenderMap) {
         this._renderMap = renderMap;
     }
@@ -139,8 +145,7 @@ export class ContentsMap extends Map<string, ContentsMapEntity> {
      * Refreshes the contents of the map by clearing the current contents and
      * re-populating it with the contents found in the root directory using the
      * provided options.
-     *
-     * @return {Promise<void>} A promise that resolves when the contents are
+     * @returns {Promise<void>} A promise that resolves when the contents are
      * refreshed.
      */
     public async refresh(): Promise<void> {
@@ -164,9 +169,8 @@ export class ContentsMap extends Map<string, ContentsMapEntity> {
     /**
      * Returns an array of entity URLs based on the provided renderType.
      * If renderType is not provided, all entity URLs are returned.
-     *
      * @param {string} renderType - The render type of the entities to retrieve.
-     * @return {string[]} An array of entity URLs that match the provided renderType,
+     * @returns {string[]} An array of entity URLs that match the provided renderType,
      * or all entity URLs if renderType is not provided.
      */
     public getEntityPaths(renderType?: string): string[] {
@@ -184,9 +188,8 @@ export class ContentsMap extends Map<string, ContentsMapEntity> {
     /**
      * Renders the entity associated with the provided filePath.
      * If the entity is not found, it returns undefined.
-     *
      * @param {string} filePath - The path of the file to render.
-     * @return {Promise<RenderedEntity | undefined>} - A promise that resolves to the rendered entity,
+     * @returns {Promise<RenderedEntity | undefined>} - A promise that resolves to the rendered entity,
      * or undefined if the entity is not found.
      */
     public async render(filePath: string): Promise<RenderedEntity | undefined> {
@@ -213,9 +216,8 @@ export class ContentsMap extends Map<string, ContentsMapEntity> {
     //#region private methods
     /**
      * Generates a content map entity for the provided file path.
-     *
      * @param {string} filePath - The path of the file.
-     * @return {ContentsMapEntity} The generated content map entity.
+     * @returns {ContentsMapEntity} The generated content map entity.
      */
     private generateContentMapEntity(filePath: string): ContentsMapEntity {
         // Get the resolver information for the file extension.

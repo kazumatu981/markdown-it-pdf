@@ -29,6 +29,9 @@ export class ExtensionMap extends Map<string, ExtensionTypeInfo> {
     }
 }
 
+/**
+ * The default extension map.
+ */
 export const DefaultExtensionMap: ExtensionMap = new ExtensionMap([
     [
         '.md',

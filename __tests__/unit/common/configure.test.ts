@@ -2,7 +2,7 @@ import { jest, describe, it, expect, afterEach } from '@jest/globals';
 
 import { readOptions } from '../../../src/common/configure';
 
-import { type PrinterOptions } from '../../../src/markdown-it-pdf';
+import { type PrinterOptions } from '../../../src/markdown-it-pdf-interfaces';
 
 import { mockLogger } from '../../utils/mock-logger';
 

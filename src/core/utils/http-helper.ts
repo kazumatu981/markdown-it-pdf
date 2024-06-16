@@ -66,7 +66,6 @@ export interface ListeningOptions {
  * Tries to listen on a given port. If the port is not specified, it tries to
  * listen on a random port within a specified range. If the specified port is
  * in use, it retries the specified number of times.
- *
  * @param {number | undefined} port The port to listen on. If not specified, it will try to listen on
  * a random port within the specified range.
  * @param {ListeningOptions | undefined} options The options for listening on a port.
@@ -104,7 +103,6 @@ export async function tryToListen(
 //#region internal functions
 /**
  * Generates a random number within a specified range.
- *
  * @param {Range | undefined} range - The range within which the random number
  * should be generated. If not specified, the function will use the default range
  * of 49152 to 65535.
@@ -132,7 +130,6 @@ function getRandom(range?: Range): number {
 /**
  * Tries to listen on a given port. If the port is in use, it rejects the
  * promise.
- *
  * @param {number} port The port to listen on.
  * @param {Logger | undefined} logger The logger to log the events.
  * @returns {Promise<ServerPort | undefined>} A promise that resolves to the port that the server is listening on
