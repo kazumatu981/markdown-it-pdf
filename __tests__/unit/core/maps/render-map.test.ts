@@ -1,6 +1,6 @@
 import { describe, it, expect } from '@jest/globals';
 import { RenderMap } from '../../../../src/core/maps/render-map';
-import { defaultRender } from '../../../../src/core/render/file-render';
+import { defaultRender } from '../../../../src/core/render/';
 
 describe('CoreLibrary Unit Tests - RenderMap', () => {
     let resolverMap: RenderMap;
