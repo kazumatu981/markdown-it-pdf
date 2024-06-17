@@ -1,9 +1,9 @@
 import { type Logger } from '../../common';
 import { type FileRender } from './file-render';
 import { defaultTemplateSource } from './defaultTemplate';
+import { SimpleFileRender } from './simple-file-render';
 
 import MarkdownIt from 'markdown-it';
-import fsPromises from 'fs/promises';
 import Handlebars from 'handlebars';
 
 /**
@@ -57,6 +57,7 @@ export class MarkdownItRender extends MarkdownIt implements FileRender {
     private templateEngine: Handlebars.TemplateDelegate<RenderedPageModel> =
         Handlebars.compile(defaultTemplateSource);
     private hljs: HljsConfig | undefined;
+    private simpleRender = new SimpleFileRender('utf8');
 
     /**
      * Adds the given URLs to the list of internal styles for this instance.
@@ -121,8 +122,9 @@ export class MarkdownItRender extends MarkdownIt implements FileRender {
      * @returns {Promise<string>} A promise that resolves to the rendered HTML.
      */
     public async renderFromFile(markdownFilePath: string): Promise<string> {
-        const markdown = await fsPromises.readFile(markdownFilePath, 'utf8');
-        return this.render(markdown);
+        const markdown =
+            await this.simpleRender.renderFromFile(markdownFilePath);
+        return this.render(markdown as string);
     }
 
     //#region private members
@@ -146,10 +148,9 @@ export class MarkdownItRender extends MarkdownIt implements FileRender {
     private async loadTemplateFrom(templatePath?: string): Promise<this> {
         // Read the template file as a string.
         if (templatePath) {
-            this.templateSource = await fsPromises.readFile(
-                templatePath,
-                'utf8'
-            );
+            this.templateSource = (await this.simpleRender.renderFromFile(
+                templatePath
+            )) as string;
         } else {
             this.templateSource = defaultTemplateSource;
         }
