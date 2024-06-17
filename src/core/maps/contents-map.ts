@@ -202,7 +202,7 @@ export class ContentsMap extends Map<string, ContentsMapEntity> {
         }
 
         // Get the render for the renderType of the entity.
-        const contentRender = this._renderMap.getRender(entity.renderType);
+        const contentRender = this._renderMap.safeGet(entity.renderType);
 
         // Render the contents of the entity using the render.
         const contents = await contentRender.renderFromFile(entity.contentPath);
@@ -221,9 +221,7 @@ export class ContentsMap extends Map<string, ContentsMapEntity> {
      */
     private generateContentMapEntity(filePath: string): ContentsMapEntity {
         // Get the resolver information for the file extension.
-        const resolver = DefaultExtensionMap.getTypeInfo(
-            path.extname(filePath)
-        );
+        const resolver = DefaultExtensionMap.safeGet(path.extname(filePath));
 
         // Generate the content map entity with the provided information.
         return {

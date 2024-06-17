@@ -1,19 +1,14 @@
+import { SafeMap } from './safe-map';
 import { type FileRender, defaultRender } from '../render';
 
 /**
  * The render map. It's a map of render types to the render functions.
  */
-export class RenderMap extends Map<string, FileRender> {
+export class RenderMap extends SafeMap<string, FileRender> {
     /**
-     * Returns the render function for the given renderType.
-     * If the renderType is not found, it returns the defaultRender function.
-     * @param {string} renderType - The type of the render function to retrieve.
-     * @returns {FileRender} The render function for the given renderType,
-     * or the defaultRender function if the renderType is not found.
+     * constructs a new instance of RenderMap.
      */
-    public getRender(renderType: string): FileRender {
-        // Get the render function for the given renderType.
-        // If the renderType is not found, return the defaultRender function.
-        return this.get(renderType) ?? defaultRender;
+    constructor() {
+        super(defaultRender);
     }
 }
