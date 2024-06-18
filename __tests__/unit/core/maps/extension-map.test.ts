@@ -10,7 +10,7 @@ describe('CoreLibrary Unit Tests - ExtensionMap', () => {
                 contentType: 'text/markdown',
                 resolvedContentType: 'text/html',
             };
-            const result = DefaultExtensionMap.getTypeInfo(extName);
+            const result = DefaultExtensionMap.safeGet(extName);
             expect(result).toEqual(expectedTypeInfo);
         });
 
@@ -20,7 +20,7 @@ describe('CoreLibrary Unit Tests - ExtensionMap', () => {
                 renderType: 'binary',
                 contentType: 'application/octet-stream',
             };
-            const result = DefaultExtensionMap.getTypeInfo(extName);
+            const result = DefaultExtensionMap.safeGet(extName);
             expect(result).toEqual(expectedTypeInfo);
         });
     });

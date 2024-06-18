@@ -18,13 +18,13 @@ describe('CoreLibrary Unit Tests - RenderMap', () => {
             };
             resolverMap.set('markdown', renderMock);
 
-            const result = resolverMap.getRender('markdown');
+            const result = resolverMap.safeGet('markdown');
 
             expect(result).toBe(renderMock);
         });
 
         it('should return the defaultContentsResolver function if the resolver type is not found', () => {
-            const result = resolverMap.getRender('pdf');
+            const result = resolverMap.safeGet('pdf');
 
             expect(result).toBe(defaultRender);
         });
