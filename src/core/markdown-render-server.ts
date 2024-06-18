@@ -1,9 +1,8 @@
 import http from 'http';
 import {
-    type ContentsMapOptions,
+    type ContentsManagerOptions,
     type RenderedEntity,
-    RenderMap,
-    ContentsMap,
+    ContentsManager,
 } from './maps';
 import {
     MarkdownItRender,
@@ -17,7 +16,7 @@ import { type Logger } from '../common';
  * The options for the render server
  */
 export interface RenderServerOptions
-    extends ContentsMapOptions,
+    extends ContentsManagerOptions,
         ListeningOptions {
     /**
      * The port to listen on
@@ -46,7 +45,7 @@ export interface RenderServerOptions
 export class MarkdownRenderServer extends MarkdownItRender {
     private _options?: RenderServerOptions;
     private _server?: http.Server;
-    private _contentsMap?: ContentsMap;
+    private _contentsManager?: ContentsManager;
     private _listeningPort?: number;
 
     /**
@@ -75,15 +74,12 @@ export class MarkdownRenderServer extends MarkdownItRender {
             .configureTemplate({ ...options })
             // configure the contents map
             .then((instance) => {
-                return instance.configureContentsMap(rootDir, options);
+                return instance.configureContentsManager(rootDir, options);
             })
-            // refresh the contents map
-            .then((instance) => {
-                return instance.refresh(false);
-            });
+            .then((instance) => instance.refresh());
         logger?.debug(
             'contentsUrls: %o',
-            theInstance.contentsMap.getEntityPaths()
+            theInstance.contentsManager.getEntityPaths()
         );
 
         return theInstance;
@@ -94,7 +90,7 @@ export class MarkdownRenderServer extends MarkdownItRender {
      * @returns {string[]} Markdown paths
      */
     public get availableMarkdownPaths(): string[] {
-        return this.contentsMap.getEntityPaths('markdown');
+        return this._contentsManager!.contentsMap.getEntityPaths('markdown');
     }
 
     /**
@@ -102,7 +98,7 @@ export class MarkdownRenderServer extends MarkdownItRender {
      * @returns {string[]} Style paths
      */
     public get availableStylePaths(): string[] {
-        return this.contentsMap.getEntityPaths('style');
+        return this._contentsManager!.contentsMap.getEntityPaths('style');
     }
 
     /**
@@ -113,16 +109,16 @@ export class MarkdownRenderServer extends MarkdownItRender {
         return `http://localhost:${this._listeningPort}`;
     }
 
-    private set contentsMap(contentsMap: ContentsMap) {
-        this._contentsMap = contentsMap;
+    private set contentsManager(contentsManager: ContentsManager) {
+        this._contentsManager = contentsManager;
     }
 
     /**
      * The contents map
      * @returns {ContentsMap} the contents map
      */
-    public get contentsMap(): ContentsMap {
-        return this._contentsMap as ContentsMap;
+    public get contentsManager(): ContentsManager {
+        return this._contentsManager as ContentsManager;
     }
 
     /**
@@ -189,7 +185,7 @@ export class MarkdownRenderServer extends MarkdownItRender {
      */
     public async refresh(refreshContentsMap: boolean = true): Promise<this> {
         if (refreshContentsMap) {
-            await this.contentsMap.refresh();
+            await this._contentsManager?.refresh();
         }
         this.clearStyles();
         this.addStyles(this.availableStylePaths);
@@ -214,7 +210,7 @@ export class MarkdownRenderServer extends MarkdownItRender {
         // Get requested file path
         const filePath = req.url as string;
         // Render the file contents with given path
-        (this._contentsMap as ContentsMap).render(filePath).then((entity) => {
+        this.contentsManager.render(filePath).then((entity) => {
             // If file not found or rendering failed
             // Return "Not Found" to the client
             if (!entity) {
@@ -264,20 +260,22 @@ export class MarkdownRenderServer extends MarkdownItRender {
         this._logger = logger;
         return this;
     }
-    private async configureContentsMap(
+    private async configureContentsManager(
         rootDir?: string,
         options?: RenderServerOptions
     ): Promise<this> {
-        const contentMap = await ContentsMap.createInstance(
-            new RenderMap(),
+        this._contentsManager = new ContentsManager(
             rootDir,
-            options
+            options,
+            this._logger
         );
-        contentMap.renderMap
-            .set('markdown', this)
-            .set('style', utf8PlainTextRender)
-            .set('plainText', utf8PlainTextRender);
-        this.contentsMap = contentMap;
+
+        this._contentsManager
+            .setRender('markdown', this)
+            .setRender('style', utf8PlainTextRender)
+            .setRender('plainText', utf8PlainTextRender);
+
+        await this._contentsManager.refresh();
 
         return this;
     }

@@ -43,7 +43,7 @@ export default [
                         MethodDefinition: true,
                     },
                     contexts: [
-                        'VariableDeclaration',
+                        // 'VariableDeclaration',
                         'TSInterfaceDeclaration',
                         'TSTypeAliasDeclaration',
                         'TSPropertySignature',
