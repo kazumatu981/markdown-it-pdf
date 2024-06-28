@@ -52,7 +52,7 @@
                 <mxCell id="24" value="MarkdownItRender" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;" parent="1" vertex="1">
                     <mxGeometry x="790" y="480" width="150" height="40" as="geometry"/>
                 </mxCell>
-                <mxCell id="25" value="FileRender" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;" parent="1" vertex="1">
+                <mxCell id="25" value="&amp;lt;&amp;lt;interface&amp;gt;&amp;gt;&lt;br&gt;FileRender" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;" parent="1" vertex="1">
                     <mxGeometry x="610" y="580" width="150" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="29" value="SimpleFileRender" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;" parent="1" vertex="1">
@@ -102,7 +102,7 @@
                 <mxCell id="36" value="ContentsManager" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;" parent="1" vertex="1">
                     <mxGeometry x="250" y="360" width="120" height="40" as="geometry"/>
                 </mxCell>
-                <mxCell id="37" value="SafeMap" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;" parent="1" vertex="1">
+                <mxCell id="37" value="&amp;lt;&amp;lt;abstract&amp;gt;&amp;gt;&lt;br&gt;SafeMap" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;" parent="1" vertex="1">
                     <mxGeometry x="330" y="580" width="120" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="51" value="&lt;h1&gt;Render Server Classes and Interfaces&lt;/h1&gt;&lt;p&gt;&lt;font style=&quot;position: relative; border-bottom: 2px solid transparent; text-decoration-style: dotted; text-underline-offset: 3px; text-decoration-color: var(--cib-color-foreground-neutral-tertiary); font-family: -apple-system, Roboto, SegoeUI, &amp;quot;Segoe UI&amp;quot;, &amp;quot;Helvetica Neue&amp;quot;, Helvetica, Meiryo, &amp;quot;Meiryo UI&amp;quot;, &amp;quot;Arial Unicode MS&amp;quot;, sans-serif; font-size: 16px;&quot; color=&quot;#ffffff&quot;&gt;These classes (interfaces) form a collection of libraries designed to read Markdown and CSS files placed in a specific directory and host them as an HTTP server on localhost&lt;/font&gt;&lt;br&gt;&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
@@ -143,6 +143,54 @@
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="373.8709677419356" y="690" as="sourcePoint"/>
                         <mxPoint x="306.1290322580646" y="774" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="tktCAtAPGU3b4pGUzxXG" name="Printer">
+        <mxGraphModel dx="1284" dy="746" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="OUa8rRKn-7IuZjv8CzeK-5" value="Create And Call" style="edgeStyle=none;html=1;fontFamily=Courier New;fontColor=default;elbow=vertical;dashed=1;dashPattern=12 12;endArrow=open;endFill=0;" edge="1" parent="1" source="OUa8rRKn-7IuZjv8CzeK-2" target="OUa8rRKn-7IuZjv8CzeK-3">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="570" y="180" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="OUa8rRKn-7IuZjv8CzeK-6" style="edgeStyle=none;html=1;fontFamily=Courier New;fontColor=default;elbow=vertical;dashed=1;dashPattern=12 12;endArrow=open;endFill=0;" edge="1" parent="1" source="OUa8rRKn-7IuZjv8CzeK-2" target="OUa8rRKn-7IuZjv8CzeK-4">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="OUa8rRKn-7IuZjv8CzeK-7" value="Create And Call" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=Courier New;fontColor=default;" vertex="1" connectable="0" parent="OUa8rRKn-7IuZjv8CzeK-6">
+                    <mxGeometry x="0.199" y="-1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="OUa8rRKn-7IuZjv8CzeK-2" value="&lt;div style=&quot;font-size: 14px; line-height: 19px;&quot;&gt;&amp;lt;&amp;lt;static&amp;gt;&amp;gt;&lt;/div&gt;&lt;div style=&quot;font-size: 14px; line-height: 19px;&quot;&gt;PuppeteerPDFPrinter&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;labelBackgroundColor=none;fontColor=default;fillColor=none;fontFamily=Courier New;" vertex="1" parent="1">
+                    <mxGeometry x="480" y="90" width="240" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="OUa8rRKn-7IuZjv8CzeK-10" style="edgeStyle=orthogonalEdgeStyle;html=1;fontFamily=Courier New;fontColor=default;endArrow=block;endFill=0;elbow=vertical;endSize=15;" edge="1" parent="1" source="OUa8rRKn-7IuZjv8CzeK-3" target="OUa8rRKn-7IuZjv8CzeK-9">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="OUa8rRKn-7IuZjv8CzeK-3" value="&lt;div style=&quot;font-size: 14px; line-height: 19px;&quot;&gt;MemoryPrinter&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;labelBackgroundColor=none;fontColor=default;fillColor=none;fontFamily=Courier New;" vertex="1" parent="1">
+                    <mxGeometry x="345" y="280" width="240" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="OUa8rRKn-7IuZjv8CzeK-11" style="edgeStyle=orthogonalEdgeStyle;html=1;fontFamily=Courier New;fontColor=default;endArrow=block;endFill=0;elbow=vertical;endSize=15;" edge="1" parent="1" source="OUa8rRKn-7IuZjv8CzeK-4" target="OUa8rRKn-7IuZjv8CzeK-9">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="OUa8rRKn-7IuZjv8CzeK-4" value="&lt;div style=&quot;font-size: 14px; line-height: 19px;&quot;&gt;FilePrinter&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;labelBackgroundColor=none;fontColor=default;fillColor=none;fontFamily=Courier New;" vertex="1" parent="1">
+                    <mxGeometry x="610" y="280" width="240" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="OUa8rRKn-7IuZjv8CzeK-9" value="&lt;div style=&quot;font-size: 14px; line-height: 19px;&quot;&gt;&amp;lt;&amp;lt;abstract&amp;gt;&amp;gt;&lt;/div&gt;&lt;div style=&quot;font-size: 14px; line-height: 19px;&quot;&gt;PuppeteerPDFPrinterBase&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;labelBackgroundColor=none;fontColor=default;fillColor=none;fontFamily=Courier New;" vertex="1" parent="1">
+                    <mxGeometry x="470" y="430" width="240" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="OUa8rRKn-7IuZjv8CzeK-12" value="&lt;div style=&quot;font-size: 14px; line-height: 19px;&quot;&gt;VirtualBrowser&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;labelBackgroundColor=none;fontColor=default;fillColor=none;fontFamily=Courier New;" vertex="1" parent="1">
+                    <mxGeometry x="470" y="540" width="240" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="OUa8rRKn-7IuZjv8CzeK-13" value="Create And Call" style="html=1;fontFamily=Courier New;fontColor=default;elbow=vertical;dashed=1;dashPattern=12 12;endArrow=open;endFill=0;" edge="1" parent="1" source="OUa8rRKn-7IuZjv8CzeK-9" target="OUa8rRKn-7IuZjv8CzeK-12">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="569.1428571428571" y="170" as="sourcePoint"/>
+                        <mxPoint x="484.2857142857142" y="280" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
             </root>
