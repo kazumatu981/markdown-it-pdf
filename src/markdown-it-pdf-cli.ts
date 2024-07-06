@@ -1,6 +1,7 @@
 import yargs from 'yargs';
 import serveModule from './cli/serve-module';
 import printModule from './cli/print-module';
+import { InitModuleCommand } from './cli/init-module';
 import { type MarkdownItPdfCommandOptions } from './cli/command-options';
 import { levelIndexes } from './common/logger';
 import { resolveFromCwd } from './core/utils/path-resolver';
@@ -19,7 +20,11 @@ export default function markdownItPdfCli() {
     //      -c, --config <file>   Configuration file
 
     yargs
-        .command<MarkdownItPdfCommandOptions>([serveModule, printModule])
+        .command<MarkdownItPdfCommandOptions>([
+            serveModule,
+            printModule,
+            new InitModuleCommand(),
+        ])
         .options({
             log: {
                 alias: 'l',
