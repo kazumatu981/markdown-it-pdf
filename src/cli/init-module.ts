@@ -1,8 +1,8 @@
 import { CommandModule } from 'yargs';
 import { type MarkdownItPdfCommandOptions } from './command-options';
 
-import { ConfigGenerator } from '../common/config-generator';
-import { DefaultConfigDefines } from '../common/default-config-defines';
+import { ConfigGenerator } from '../core/config/config-generator';
+import { DefaultConfigDefines } from '../core/config/default-config-defines';
 
 export class InitModuleCommand
     implements

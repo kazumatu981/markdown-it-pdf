@@ -1,7 +1,8 @@
 import { type Argv } from 'yargs';
 
 import { type MarkdownItPdfCommandOptions } from './command-options';
-import { readOptions, ConsoleLogger } from '../common';
+import { ConsoleLogger } from '../core/log/logger';
+import { readOptions } from '../core/config/configure';
 import { resolveFromCwd } from '../core/utils';
 import { type Server, type ServerOptions, createServer } from '../';
 

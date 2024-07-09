@@ -10,7 +10,7 @@ import {
     type HljsConfig,
 } from './render';
 import { type ListeningOptions, tryToListen } from './utils';
-import { type Logger } from '../common';
+import { type Logger } from './log/logger';
 
 /**
  * The options for the render server

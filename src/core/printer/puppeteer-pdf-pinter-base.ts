@@ -1,5 +1,5 @@
 import { type PDFOptions } from 'puppeteer';
-import { type Logger } from '../../common';
+import { type Logger } from '../log/logger';
 
 //#region constants
 

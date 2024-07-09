@@ -9,7 +9,7 @@ import {
     MarkdownItRenderServer,
     MarkdownItPdfPrinter,
 } from './markdown-it-pdf-implements';
-import { Logger } from './common/logger';
+import { Logger } from './core/log/logger';
 
 //#region main functions
 /**

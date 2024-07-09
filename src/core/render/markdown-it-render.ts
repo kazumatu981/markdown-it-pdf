@@ -1,4 +1,4 @@
-import { type Logger } from '../../common';
+import { type Logger } from '../log/logger';
 import { type FileRender } from './file-render';
 import { defaultTemplateSource } from './defaultTemplate';
 import { SimpleFileRender } from './simple-file-render';

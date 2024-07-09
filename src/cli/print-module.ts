@@ -1,9 +1,9 @@
 import { type Argv } from 'yargs';
 import { type MarkdownItPdfCommandOptions } from './command-options';
-import { readOptions } from '../common/configure';
+import { readOptions } from '../core/config/configure';
 import { resolveFromCwd } from '../core/utils';
 import { type PrinterOptions, createPrinter } from '../';
-import { ConsoleLogger } from '../common';
+import { ConsoleLogger } from '../core/log/logger';
 
 /**
  * For Yargs interfaces.

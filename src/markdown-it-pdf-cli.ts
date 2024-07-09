@@ -3,7 +3,7 @@ import serveModule from './cli/serve-module';
 import printModule from './cli/print-module';
 import { InitModuleCommand } from './cli/init-module';
 import { type MarkdownItPdfCommandOptions } from './cli/command-options';
-import { levelIndexes } from './common/logger';
+import { levelIndexes } from './core/log/logger';
 import { resolveFromCwd } from './core/utils/path-resolver';
 
 /**

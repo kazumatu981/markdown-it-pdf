@@ -1,7 +1,7 @@
 import fsPromises from 'fs/promises';
 import fs from 'fs';
 import path from 'path';
-import { type Logger } from './logger';
+import { type Logger } from '../log/logger';
 
 class ExtnameToReaderFuncMap<T> {
     private _map: Map<string, (filePath: string) => Promise<T | undefined>>;

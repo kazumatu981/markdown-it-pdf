@@ -2,7 +2,7 @@ import { DefaultExtensionMap, ExtensionMap } from './extension-map';
 import { RenderMap } from './render-map';
 import { ContentsMap, ContentsMapEntity } from './contents-map';
 import { findFiles, filePathToUrl } from '../utils';
-import { type Logger } from '../../common';
+import { type Logger } from '../log/logger';
 
 import path from 'path';
 import { FileRender } from '../render';

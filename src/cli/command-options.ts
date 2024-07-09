@@ -1,4 +1,4 @@
-import { LogLevel } from '../common';
+import { type LogLevel } from '../core/log/logger';
 
 /**
  * Represents the command options.

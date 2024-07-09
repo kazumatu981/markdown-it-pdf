@@ -1,4 +1,4 @@
-import { Logger } from './common/logger';
+import { Logger } from './core/log/logger';
 import { MarkdownRenderServer } from './core/markdown-render-server';
 
 import type MarkdownIt from 'markdown-it';
