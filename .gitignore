@@ -130,3 +130,4 @@ dist
 .pnp.*
 
 sandbox
+markdown-it-pdf.config.js
