@@ -19,13 +19,11 @@ export interface PropertyDefine {
     sampleValue?: PropertyValue;
 }
 
-export type ConfigDefine = Record<string, PropertyDefine>;
-
 export type ConfigCategory = 'render' | 'server' | 'printer';
 
 export interface CategorizedConfigDefine {
     description: string;
-    configDefine: ConfigDefine;
+    configDefine: Record<string, PropertyDefine>;
 }
 
 export type CategorizedConfigDefines = Record<

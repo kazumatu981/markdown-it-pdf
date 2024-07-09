@@ -6,7 +6,6 @@ import {
     type PropertyDefine,
     type PropertyValue,
     type PropertyValueType,
-    type ConfigDefine,
     type ConfigCategory,
     type CategorizedConfigDefine,
     type CategorizedConfigDefines,
@@ -77,26 +76,26 @@ export class ConfigGenerator {
         theDefine: CategorizedConfigDefine
     ): string {
         return `// ## Category: ${categoryName}
-                // ${theDefine.description}
+                ${ConfigGenerator.formatDescription(theDefine.description)}
                 ${Object.keys(theDefine.configDefine)
                     .map((name) =>
                         ConfigGenerator.formatProperty(
-                            theDefine.configDefine,
-                            name
+                            name,
+                            theDefine.configDefine[name]
                         )
                     )
                     .join(',\n\n')}
         `;
     }
     private static formatProperty(
-        theDefine: ConfigDefine,
-        name: string
+        name: string,
+        propertyDefine: PropertyDefine
     ): string {
-        const propertyDefine = theDefine[name] as PropertyDefine;
         return `// ### ${name}
-                // ${propertyDefine.description}
+                ${ConfigGenerator.formatDescription(propertyDefine.description)}
                 ${propertyDefine.defaultValue ? '' : '// '} ${name}: ${ConfigGenerator.formatValue(propertyDefine)}`;
     }
+
     private static formatValue(propertyDefine: PropertyDefine): string {
         const formatter = ConfigGenerator.formatterMap.get(
             propertyDefine.type
@@ -107,6 +106,13 @@ export class ConfigGenerator {
         return candidate ? formatter(candidate) : 'undefined';
     }
 
+    private static formatDescription(
+        description: string | Array<string>
+    ): string {
+        return Array.isArray(description)
+            ? description.map((desc) => `// ${desc}`).join('\n')
+            : `// ${description}`;
+    }
     private static formatString(value: PropertyValue): string {
         return `'${value}'`;
     }
@@ -127,10 +133,10 @@ export class ConfigGenerator {
     }
 
     private static formatObject(value: PropertyValue): string {
-        const entries = value as ConfigDefine;
+        const entries = value as Record<string, PropertyDefine>;
         return `{
             ${Object.keys(entries)
-                .map((key) => ConfigGenerator.formatProperty(entries, key))
+                .map((key) => ConfigGenerator.formatProperty(key, entries[key]))
                 .join(',\n')}
         }`;
     }
