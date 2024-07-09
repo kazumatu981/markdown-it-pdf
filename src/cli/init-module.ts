@@ -2,7 +2,7 @@ import { CommandModule } from 'yargs';
 import { type MarkdownItPdfCommandOptions } from './command-options';
 
 import { ConfigGenerator } from '../common/config-generator';
-import { DefaultConfigDefine } from '../common/config-define';
+import { DefaultConfigDefines } from '../common/default-config-defines';
 
 export class InitModuleCommand
     implements
@@ -16,7 +16,7 @@ export class InitModuleCommand
     public deprecated = false;
 
     public async handler(_: MarkdownItPdfCommandOptions): Promise<void> {
-        const configGenerator = new ConfigGenerator(DefaultConfigDefine);
+        const configGenerator = new ConfigGenerator(DefaultConfigDefines);
         await configGenerator.generate('./markdown-it-pdf.config.js');
     }
 }
