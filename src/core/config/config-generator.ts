@@ -3,12 +3,8 @@ import path from 'path';
 import js_beautify from 'js-beautify';
 
 import {
-    type PropertyDefine,
-    type PropertyValue,
-    type PropertyValueType,
-    type ConfigCategory,
-    type CategorizedConfigDefine,
     type CategorizedConfigDefines,
+    formatCategorizedConfigDefines,
 } from './config-define';
 
 const formatOptions: js_beautify.JSBeautifyOptions = {
@@ -17,17 +13,6 @@ const formatOptions: js_beautify.JSBeautifyOptions = {
 
 export class ConfigGenerator {
     _categorizedConfigDefine: CategorizedConfigDefines;
-    static readonly formatterMap = new Map<
-        PropertyValueType,
-        (value: PropertyValue) => string
-    >([
-        ['string', ConfigGenerator.formatString],
-        ['number', ConfigGenerator.formatNumber],
-        ['boolean', ConfigGenerator.formatBoolean],
-        ['string-array', ConfigGenerator.formatStringArray],
-        ['number-array', ConfigGenerator.formatNumberArray],
-        ['object', ConfigGenerator.formatObject],
-    ]);
     public constructor(categorizedConfigDefine: CategorizedConfigDefines) {
         this._categorizedConfigDefine = categorizedConfigDefine;
     }
@@ -56,88 +41,8 @@ export class ConfigGenerator {
     }
 
     private formatCore(): string {
-        return `{
-                ${Object.keys(this._categorizedConfigDefine)
-                    .map((category) =>
-                        ConfigGenerator.formatCategory(
-                            category,
-                            this._categorizedConfigDefine[
-                                category as ConfigCategory
-                            ]
-                        )
-                    )
-                    .join(',\n\n')}
-            }
-        `;
-    }
-
-    private static formatCategory(
-        categoryName: string,
-        theDefine: CategorizedConfigDefine
-    ): string {
-        return `// ## Category: ${categoryName}
-                ${ConfigGenerator.formatDescription(theDefine.description)}
-                ${Object.keys(theDefine.configDefine)
-                    .map((name) =>
-                        ConfigGenerator.formatProperty(
-                            name,
-                            theDefine.configDefine[name]
-                        )
-                    )
-                    .join(',\n\n')}
-        `;
-    }
-    private static formatProperty(
-        name: string,
-        propertyDefine: PropertyDefine
-    ): string {
-        return `// ### ${name}
-                ${ConfigGenerator.formatDescription(propertyDefine.description)}
-                ${propertyDefine.defaultValue ? '' : '// '} ${name}: ${ConfigGenerator.formatValue(propertyDefine)}`;
-    }
-
-    private static formatValue(propertyDefine: PropertyDefine): string {
-        const formatter = ConfigGenerator.formatterMap.get(
-            propertyDefine.type
-        ) as (value: PropertyValue) => string;
-        const candidate =
-            propertyDefine.defaultValue ?? propertyDefine.sampleValue;
-
-        return candidate ? formatter(candidate) : 'undefined';
-    }
-
-    private static formatDescription(
-        description: string | Array<string>
-    ): string {
-        return Array.isArray(description)
-            ? description.map((desc) => `// ${desc}`).join('\n')
-            : `// ${description}`;
-    }
-    private static formatString(value: PropertyValue): string {
-        return `'${value}'`;
-    }
-
-    private static formatNumber(value: PropertyValue): string {
-        return String(value);
-    }
-
-    private static formatBoolean(value: PropertyValue): string {
-        return String(value);
-    }
-
-    private static formatStringArray(values: PropertyValue): string {
-        return `[${(values as Array<string>).map((value) => "'" + value + "'").join(',')}]`;
-    }
-    private static formatNumberArray(values: PropertyValue): string {
-        return `[${(values as Array<number>).map(String).join(',')}]`;
-    }
-
-    private static formatObject(value: PropertyValue): string {
-        const entries = value as Record<string, PropertyDefine>;
-        return `{
-            ${Object.keys(entries)
-                .map((key) => ConfigGenerator.formatProperty(key, entries[key]))
-                .join(',\n')}
-        }`;
+        return formatCategorizedConfigDefines(
+            this._categorizedConfigDefine
+        ).join('\n');
     }
 }
