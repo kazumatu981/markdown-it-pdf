@@ -87,9 +87,88 @@ function formatPropertyDefines(
     return [...properties.map((item) => `    ${item}`)];
 }
 
+class PropertiesFormatter {
+    readonly defaultValueFormatter: PropertyValueFormatter = (value) => {
+        return [`${value}`];
+    };
+    readonly stringValueFormatter: PropertyValueFormatter = (value) => {
+        return [`"${value}"`];
+    };
+
+    readonly defaultArrayFormatter: PropertyValueFormatter = (value) => {
+        return [
+            '[',
+            ...(value as Array<string | number>).map((item) => `    ${item},`),
+            ']',
+        ];
+    };
+    readonly objectFormatter: PropertyValueFormatter = (value) => {
+        return [
+            '{',
+            ...this.formatPropertyDefines(
+                value as Record<string, PropertyDefine>,
+                false
+            ),
+            '}',
+        ];
+    };
+
+    valueFormatterMap: Record<PropertyValueType, PropertyValueFormatter> = {
+        undefined: this.defaultValueFormatter.bind(this),
+        string: this.stringValueFormatter.bind(this),
+        number: this.defaultValueFormatter.bind(this),
+        boolean: this.defaultValueFormatter.bind(this),
+        'string-array': this.defaultArrayFormatter.bind(this),
+        'number-array': this.defaultArrayFormatter.bind(this),
+        object: this.objectFormatter.bind(this),
+    };
+
+    formatPropertyDefine(
+        key: string,
+        configDefine: PropertyDefine
+    ): Array<string> {
+        const formatter = this.valueFormatterMap[configDefine.type];
+        if (!formatter) {
+            throw new Error('Not implemented');
+        }
+        const lines = formatter(configDefine.value).map((line, index) => {
+            // add key on the first line
+            if (index === 0) {
+                line = `${key}: ${line}`;
+            }
+            // add comment if needed
+            line = configDefine.isCommented ? commentOut(line) : line;
+
+            return line;
+        });
+        return [
+            `// ### ${key}`,
+            ...configDefine.description.map((line) => commentOut(line)),
+            ...lines,
+        ];
+    }
+
+    formatPropertyDefines(
+        configDefine: Record<string, PropertyDefine>,
+        addLastComma: boolean = true
+    ): Array<string> {
+        const properties = Object.keys(configDefine)
+            .map((key, index, thisArray) => {
+                const lines = formatPropertyDefine(key, configDefine[key]);
+                if (index !== thisArray.length - 1 || addLastComma) {
+                    lines[lines.length - 1] += ',';
+                }
+                return lines;
+            })
+            .flat();
+        return [...properties.map((item) => `    ${item}`)];
+    }
+}
+
 export function formatConfigDefines(
     categorizedConfigDefines: ConfigDefines
 ): Array<string> {
+    const propertiesFormatter = new PropertiesFormatter();
     return [
         '{',
         ...Object.keys(categorizedConfigDefines)
@@ -99,7 +178,7 @@ export function formatConfigDefines(
                 return [
                     `// ## ${key}`,
                     ...configDefine.description.map((line) => commentOut(line)),
-                    ...formatPropertyDefines(
+                    ...propertiesFormatter.formatPropertyDefines(
                         configDefine.properties,
                         index !== thisArray.length - 1
                     ),
