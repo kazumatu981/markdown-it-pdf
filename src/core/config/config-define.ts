@@ -1,37 +1,10 @@
-export type PropertyValue =
-    | undefined
-    | string
-    | number
-    | boolean
-    | Record<string, PropertyDefine>
-    | Array<string>
-    | Array<number>;
-export type PropertyValueType =
-    | 'undefined'
-    | 'string'
-    | 'number'
-    | 'boolean'
-    | 'string-array'
-    | 'number-array'
-    | 'object';
-export interface PropertyDefine {
-    description: Array<string>;
-    type: PropertyValueType;
-    isCommented?: boolean;
-    value: PropertyValue;
-}
-
-export type ConfigCategory = 'render' | 'server' | 'printer';
-
-export interface CategorizedConfigDefine {
-    description: Array<string>;
-    configDefine: Record<string, PropertyDefine>;
-}
-
-export type CategorizedConfigDefines = Record<
+import type {
+    PropertyValue,
+    PropertyValueType,
+    PropertyDefine,
+    ConfigDefines,
     ConfigCategory,
-    CategorizedConfigDefine
->;
+} from './config-define-types';
 
 export type PropertyValueFormatter = (value: PropertyValue) => Array<string>;
 
@@ -53,10 +26,14 @@ const defaultArrayFormatter: PropertyValueFormatter = (value) => {
 const objectFormatter: PropertyValueFormatter = (value) => {
     return [
         '{',
-        ...formatConfigDefine(value as Record<string, PropertyDefine>, false),
+        ...formatPropertyDefines(
+            value as Record<string, PropertyDefine>,
+            false
+        ),
         '}',
     ];
 };
+
 const valueFormatterMap: Record<PropertyValueType, PropertyValueFormatter> = {
     undefined: defaultValueFormatter,
     string: stringValueFormatter,
@@ -94,7 +71,7 @@ function formatPropertyDefine(
     ];
 }
 
-function formatConfigDefine(
+function formatPropertyDefines(
     configDefine: Record<string, PropertyDefine>,
     addLastComma: boolean = true
 ): Array<string> {
@@ -110,8 +87,8 @@ function formatConfigDefine(
     return [...properties.map((item) => `    ${item}`)];
 }
 
-export function formatCategorizedConfigDefines(
-    categorizedConfigDefines: CategorizedConfigDefines
+export function formatConfigDefines(
+    categorizedConfigDefines: ConfigDefines
 ): Array<string> {
     return [
         '{',
@@ -122,8 +99,8 @@ export function formatCategorizedConfigDefines(
                 return [
                     `// ## ${key}`,
                     ...configDefine.description.map((line) => commentOut(line)),
-                    ...formatConfigDefine(
-                        configDefine.configDefine,
+                    ...formatPropertyDefines(
+                        configDefine.properties,
                         index !== thisArray.length - 1
                     ),
                     '',

@@ -1,9 +1,9 @@
-import { CategorizedConfigDefines } from './config-define';
+import { ConfigDefines } from './config-define-types';
 
-export const DefaultConfigDefines: CategorizedConfigDefines = {
+export const DefaultConfigDefines: ConfigDefines = {
     server: {
         description: ['The options to configure the server.'],
-        configDefine: {
+        properties: {
             port: {
                 description: ['The port to listen on'],
                 type: 'number',
@@ -40,7 +40,7 @@ export const DefaultConfigDefines: CategorizedConfigDefines = {
 
     render: {
         description: ['The options to configure the Markdown renderer.'],
-        configDefine: {
+        properties: {
             externalUrls: {
                 description: ['The external urls for styles'],
                 type: 'string-array',
@@ -83,7 +83,7 @@ export const DefaultConfigDefines: CategorizedConfigDefines = {
 
     printer: {
         description: ['The options to configure the PDF printer.'],
-        configDefine: {
+        properties: {
             format: {
                 description: ['The paper size of the PDF.'],
                 type: 'string',

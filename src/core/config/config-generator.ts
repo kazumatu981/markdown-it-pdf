@@ -1,19 +1,16 @@
 import fsPromises from 'fs/promises';
 import path from 'path';
 import js_beautify from 'js-beautify';
-
-import {
-    type CategorizedConfigDefines,
-    formatCategorizedConfigDefines,
-} from './config-define';
+import { type ConfigDefines } from './config-define-types';
+import { formatConfigDefines } from './config-define';
 
 const formatOptions: js_beautify.JSBeautifyOptions = {
     preserve_newlines: true,
 };
 
 export class ConfigGenerator {
-    _categorizedConfigDefine: CategorizedConfigDefines;
-    public constructor(categorizedConfigDefine: CategorizedConfigDefines) {
+    _categorizedConfigDefine: ConfigDefines;
+    public constructor(categorizedConfigDefine: ConfigDefines) {
         this._categorizedConfigDefine = categorizedConfigDefine;
     }
 
@@ -41,8 +38,6 @@ export class ConfigGenerator {
     }
 
     private formatCore(): string {
-        return formatCategorizedConfigDefines(
-            this._categorizedConfigDefine
-        ).join('\n');
+        return formatConfigDefines(this._categorizedConfigDefine).join('\n');
     }
 }
