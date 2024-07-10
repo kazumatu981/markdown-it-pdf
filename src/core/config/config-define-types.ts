@@ -15,7 +15,7 @@ export type PropertyValueType =
     | 'number-array'
     | 'object';
 export interface PropertyDefine {
-    description: Array<string>;
+    description?: Array<string>;
     type: PropertyValueType;
     isCommented?: boolean;
     value: PropertyValue;

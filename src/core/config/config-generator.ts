@@ -2,7 +2,7 @@ import fsPromises from 'fs/promises';
 import path from 'path';
 import js_beautify from 'js-beautify';
 import { type ConfigDefines } from './config-define-types';
-import { formatConfigDefines } from './config-define';
+import { formatConfigDefines } from './config-define-formatter';
 
 const formatOptions: js_beautify.JSBeautifyOptions = {
     preserve_newlines: true,

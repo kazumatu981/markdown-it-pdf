@@ -23,12 +23,12 @@ export const DefaultConfigDefines: ConfigDefines = {
                 type: 'object',
                 value: {
                     min: {
-                        description: ['The minimum port to search for.'],
+                        // description: ['The minimum port to search for.'],
                         type: 'number',
                         value: 49152,
                     },
                     max: {
-                        description: ['The maximum port to search for.'],
+                        // description: ['The maximum port to search for.'],
                         type: 'number',
                         value: 65535,
                     },
@@ -62,12 +62,12 @@ export const DefaultConfigDefines: ConfigDefines = {
                 type: 'object',
                 value: {
                     js: {
-                        description: ['The url to the js. like CDN server.'],
+                        // description: ['The url to the js. like CDN server.'],
                         type: 'string',
                         value: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js',
                     },
                     css: {
-                        description: ['The url to the css. like CDN server.'],
+                        // description: ['The url to the css. like CDN server.'],
                         type: 'string',
                         value: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/github.min.css',
                     },
@@ -94,22 +94,22 @@ export const DefaultConfigDefines: ConfigDefines = {
                 type: 'object',
                 value: {
                     top: {
-                        description: ['The top margin of the PDF.'],
+                        // description: ['The top margin of the PDF.'],
                         type: 'string',
                         value: '12.7mm',
                     },
                     bottom: {
-                        description: ['The bottom margin of the PDF.'],
+                        // description: ['The bottom margin of the PDF.'],
                         type: 'string',
                         value: '12.7mm',
                     },
                     left: {
-                        description: ['The left margin of the PDF.'],
+                        // description: ['The left margin of the PDF.'],
                         type: 'string',
                         value: '12.7mm',
                     },
                     right: {
-                        description: ['The right margin of the PDF.'],
+                        // description: ['The right margin of the PDF.'],
                         type: 'string',
                         value: '12.7mm',
                     },
