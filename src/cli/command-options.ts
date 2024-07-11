@@ -20,4 +20,8 @@ export interface MarkdownItPdfCommandOptions {
      * Log level
      */
     log?: LogLevel;
+    /**
+     * mode: the style of config file which is created by init command
+     */
+    mode?: 'js' | 'json';
 }

@@ -2,7 +2,7 @@ import fsPromises from 'fs/promises';
 import path from 'path';
 import js_beautify from 'js-beautify';
 import { type ConfigDefines } from './config-define-types';
-import { formatConfigDefines } from './config-define-formatter';
+import { ConfigFormatter } from './config-formatter';
 
 const formatOptions: js_beautify.JSBeautifyOptions = {
     preserve_newlines: true,
@@ -25,19 +25,22 @@ export class ConfigGenerator {
     }
 
     public formatJson(): string {
-        return ConfigGenerator.prettierString(this.formatCore());
+        const jsonString = new ConfigFormatter({
+            mode: 'json',
+            eol: '\n',
+        }).format(this._categorizedConfigDefine);
+
+        return ConfigGenerator.prettierString(jsonString);
     }
     public formatJs(): string {
-        return ConfigGenerator.prettierString(
-            `module.exports = ${this.formatCore()}`
-        );
+        const jsonString = new ConfigFormatter({
+            mode: 'js',
+            eol: '\n',
+        }).format(this._categorizedConfigDefine);
+        return ConfigGenerator.prettierString(`module.exports = ${jsonString}`);
     }
 
     private static prettierString(str: string): string {
         return js_beautify.js(str, formatOptions);
-    }
-
-    private formatCore(): string {
-        return formatConfigDefines(this._categorizedConfigDefine).join('\n');
     }
 }
