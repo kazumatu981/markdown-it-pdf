@@ -1,12 +1,11 @@
 import { jest, expect, describe, it } from '@jest/globals';
-import { ConsoleLogger } from '../../../src/common/logger';
 import { mockLogger, resetMockLogger } from '../../utils/mock-logger';
 import { getFirstArgsOf } from '../../utils/mock-utils';
 import serveModule, { stopServer } from '../../../src/cli/serve-module';
 import { mockingTestDir, unmockingTestDir } from '../../utils/test-dir';
 import { type Argv } from 'yargs';
 
-jest.mock('../../../src/common/logger', () => ({
+jest.mock('../../../src/core/log/logger', () => ({
     ConsoleLogger: jest.fn(() => {
         return mockLogger;
     }),

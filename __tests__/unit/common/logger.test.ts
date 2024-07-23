@@ -1,5 +1,5 @@
 import { jest, describe, it, expect, beforeAll } from '@jest/globals';
-import { type Logger, ConsoleLogger } from '../../../src/common/logger';
+import { type Logger, ConsoleLogger } from '../../../src/core/log/logger';
 
 const methodIndexes = ['trace', 'debug', 'info', 'warn', 'error'];
 function createSpyOfLogger(): Logger {
@@ -101,7 +101,7 @@ describe('CommonLibrary Unit Tests - ConsoleLogger', () => {
         expect(spies.warn).toHaveBeenCalledTimes(0);
         expect(spies.error).toHaveBeenCalledTimes(0);
     });
-    
+
     it('if debug set, should debug level', () => {
         const logger = new ConsoleLogger('debug');
         logger.trace('Test Message %s', 'hello');

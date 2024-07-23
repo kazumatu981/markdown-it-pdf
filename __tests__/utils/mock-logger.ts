@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import { type Logger } from '../../src/common/logger';
+import { type Logger } from '../../src/core/log/logger';
 
 export const mockLogger: Logger = {
     trace: jest.fn(),

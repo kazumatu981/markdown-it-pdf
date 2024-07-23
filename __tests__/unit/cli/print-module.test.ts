@@ -5,7 +5,7 @@ import printModule from '../../../src/cli/print-module';
 import { mockingTestDir, unmockingTestDir } from '../../utils/test-dir';
 import { type Argv } from 'yargs';
 
-jest.mock('../../../src/common/logger', () => ({
+jest.mock('../../../src/core/log/logger', () => ({
     ConsoleLogger: jest.fn(() => {
         return mockLogger;
     }),

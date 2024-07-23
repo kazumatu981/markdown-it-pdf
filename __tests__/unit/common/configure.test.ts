@@ -1,6 +1,6 @@
 import { jest, describe, it, expect, afterEach } from '@jest/globals';
 
-import { readOptions } from '../../../src/common/configure';
+import { readOptions } from '../../../src/core/config/configure';
 
 import { type PrinterOptions } from '../../../src/markdown-it-pdf-interfaces';
 
