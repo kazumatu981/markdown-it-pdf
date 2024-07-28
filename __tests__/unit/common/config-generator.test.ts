@@ -7,36 +7,41 @@ import { readOptions } from '../../../src/core/config/configure';
 import { type PrinterOptions } from '../../../src/markdown-it-pdf-interfaces';
 
 describe('Unit Tests - ConfigGenerator', () => {
-    afterEach(() => {
-        mockFs.restore();
-    });
-    it('generate config json data', async () => {
-        const configGenerator = new ConfigGenerator(DefaultConfigDefines);
-        const configString = await configGenerator.formatJson();
-        expect(configString).toMatchSnapshot();
-    });
-    it('generate config script', async () => {
-        const configGenerator = new ConfigGenerator(DefaultConfigDefines);
-        const configString = await configGenerator.formatJs();
-        expect(configString).toMatchSnapshot();
+    describe('generate()', () => {
+        afterEach(() => {
+            mockFs.restore();
+        });
+        it('config js file', async () => {
+            mockFs({});
+            const configGenerator = new ConfigGenerator(DefaultConfigDefines);
+            await configGenerator.generate('/config.js');
+
+            const options = await readOptions<PrinterOptions>('/config.js');
+            expect(options).not.toBeUndefined();
+            expect(options?.port).toEqual(3000);
+        });
+        it('config json file', async () => {
+            mockFs({});
+            const configGenerator = new ConfigGenerator(DefaultConfigDefines);
+            await configGenerator.generate('/config.json');
+
+            const options = await readOptions<PrinterOptions>('/config.json');
+            expect(options).not.toBeUndefined();
+            expect(options?.port).toEqual(3000);
+        });
     });
 
-    it('generate config js file', async () => {
-        mockFs({});
-        const configGenerator = new ConfigGenerator(DefaultConfigDefines);
-        await configGenerator.generate('/config.js');
+    describe('format*()', () => {
+        it('config script', async () => {
+            const configGenerator = new ConfigGenerator(DefaultConfigDefines);
+            const configString = await configGenerator.formatJs();
+            expect(configString).toMatchSnapshot();
+        });
 
-        const options = await readOptions<PrinterOptions>('/config.js');
-        expect(options).not.toBeUndefined();
-        expect(options?.port).toEqual(3000);
-    });
-    it('generate config json file', async () => {
-        mockFs({});
-        const configGenerator = new ConfigGenerator(DefaultConfigDefines);
-        await configGenerator.generate('/config.json');
-
-        const options = await readOptions<PrinterOptions>('/config.json');
-        expect(options).not.toBeUndefined();
-        expect(options?.port).toEqual(3000);
+        it('json data', async () => {
+            const configGenerator = new ConfigGenerator(DefaultConfigDefines);
+            const configString = await configGenerator.formatJson();
+            expect(configString).toMatchSnapshot();
+        });
     });
 });

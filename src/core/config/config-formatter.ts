@@ -75,33 +75,27 @@ export class ConfigFormatter {
         } else if (description === undefined || description.length === 0) {
             return [];
         }
-        return [
-            '/**',
-            ...(description?.map((line) => ` * ${line}`) ?? []),
-            ' */',
-        ];
+        return ['/**', ...description.map((line) => ` * ${line}`), ' */'];
     }
 
     private formatCategoryDescription(
         categoryName: string,
-        description?: Array<string>
+        description: Array<string>
     ): Array<string> {
         if (this._mode === 'json') {
-            return [];
-        } else if (description === undefined || description.length === 0) {
             return [];
         }
         return [
             '// --------------------------------------------',
             `// Category: ${categoryName}`,
-            ...(description?.map((line) => `// ${line}`) ?? []),
+            ...description.map((line) => `// ${line}`),
             '// --------------------------------------------',
         ];
     }
 
     private formatPropertyDefines(
         configDefine: Record<string, PropertyDefine>,
-        addLastComma: boolean = true
+        addLastComma: boolean
     ): Array<string> {
         const properties = Object.keys(configDefine)
             .map((key, index, thisArray) => {

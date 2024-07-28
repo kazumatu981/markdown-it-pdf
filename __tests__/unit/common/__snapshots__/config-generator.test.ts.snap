@@ -1,27 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Unit Tests - ConfigGenerator generate config json data 1`] = `
-"{
-    "port": 3000,
-
-    "hljs": {
-        "js": "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js",
-        "css": "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/github.min.css"
-    },
-    "recursive": true,
-
-    "format": "A4",
-    "margin": {
-        "top": "12.7mm",
-        "bottom": "12.7mm",
-        "left": "12.7mm",
-        "right": "12.7mm"
-    }
-
-}"
-`;
-
-exports[`Unit Tests - ConfigGenerator generate config script 1`] = `
+exports[`Unit Tests - ConfigGenerator format*() config script 1`] = `
 "module.exports = {
     // --------------------------------------------
     // Category: server
@@ -85,6 +64,27 @@ exports[`Unit Tests - ConfigGenerator generate config script 1`] = `
         bottom: "12.7mm",
         left: "12.7mm",
         right: "12.7mm"
+    }
+
+}"
+`;
+
+exports[`Unit Tests - ConfigGenerator format*() json data 1`] = `
+"{
+    "port": 3000,
+
+    "hljs": {
+        "js": "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js",
+        "css": "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/github.min.css"
+    },
+    "recursive": true,
+
+    "format": "A4",
+    "margin": {
+        "top": "12.7mm",
+        "bottom": "12.7mm",
+        "left": "12.7mm",
+        "right": "12.7mm"
     }
 
 }"
