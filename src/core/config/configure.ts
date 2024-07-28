@@ -85,7 +85,7 @@ async function readJsonOptions<T>(filePath: string): Promise<T | undefined> {
 
         // Parse the JSON content and return it
         return JSON.parse(content) as T;
-    } catch (error) {
+    } catch (_) {
         // If there was an error reading the file or parsing the JSON, return undefined
         return undefined;
     }
@@ -104,7 +104,7 @@ async function readJSOptions<T>(filePath: string): Promise<T | undefined> {
         // TypeScript does not know about the dynamic nature of `require`,
         // so we need to cast the module to the correct type.
         return module as T;
-    } catch (error) {
+    } catch (_) {
         // If there was an error reading or parsing the file, return undefined
         return undefined;
     }

@@ -1,9 +1,15 @@
 import { jest, describe, it, expect, afterEach } from '@jest/globals';
+const mockFs = require('mock-fs');
 
 import { ConfigGenerator } from '../../../src/core/config/config-generator';
 import { DefaultConfigDefines } from '../../../src/core/config/default-config-defines';
+import { readOptions } from '../../../src/core/config/configure';
+import { type PrinterOptions } from '../../../src/markdown-it-pdf-interfaces';
 
 describe('Unit Tests - ConfigGenerator', () => {
+    afterEach(() => {
+        mockFs.restore();
+    });
     it('generate config json data', async () => {
         const configGenerator = new ConfigGenerator(DefaultConfigDefines);
         const configString = await configGenerator.formatJson();
@@ -13,5 +19,24 @@ describe('Unit Tests - ConfigGenerator', () => {
         const configGenerator = new ConfigGenerator(DefaultConfigDefines);
         const configString = await configGenerator.formatJs();
         expect(configString).toMatchSnapshot();
+    });
+
+    it('generate config js file', async () => {
+        mockFs({});
+        const configGenerator = new ConfigGenerator(DefaultConfigDefines);
+        await configGenerator.generate('/config.js');
+
+        const options = await readOptions<PrinterOptions>('/config.js');
+        expect(options).not.toBeUndefined();
+        expect(options?.port).toEqual(3000);
+    });
+    it('generate config json file', async () => {
+        mockFs({});
+        const configGenerator = new ConfigGenerator(DefaultConfigDefines);
+        await configGenerator.generate('/config.json');
+
+        const options = await readOptions<PrinterOptions>('/config.json');
+        expect(options).not.toBeUndefined();
+        expect(options?.port).toEqual(3000);
     });
 });

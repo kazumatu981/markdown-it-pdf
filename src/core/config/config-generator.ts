@@ -20,7 +20,6 @@ export class ConfigGenerator {
                 ? this.formatJs.bind(this)
                 : this.formatJson.bind(this);
         const formatted = formatter();
-        console.log(formatted);
         await fsPromises.writeFile(fileName, formatted);
     }
 
