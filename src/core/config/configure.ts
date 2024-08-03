@@ -4,16 +4,26 @@ import path from 'path';
 import { type Logger } from '../log/logger';
 
 class ExtnameToReaderFuncMap<T> {
-    private _map: Map<string, (filePath: string) => Promise<T | undefined>>;
+    private _map: Map<
+        string,
+        (filePath: string, logger?: Logger) => Promise<T | undefined>
+    >;
     constructor(
-        seed: Array<[string, (filePath: string) => Promise<T | undefined>]>
+        seed: Array<
+            [
+                string,
+                (filePath: string, logger?: Logger) => Promise<T | undefined>,
+            ]
+        >
     ) {
         this._map = new Map(seed);
     }
 
     public get(
         key: string
-    ): ((filePath: string) => Promise<T | undefined>) | undefined {
+    ):
+        | ((filePath: string, logger?: Logger) => Promise<T | undefined>)
+        | undefined {
         return this._map.get(key);
     }
 }
@@ -60,7 +70,7 @@ export async function readOptions<T>(
                 filePath
             );
         } else {
-            options = await reader(filePath);
+            options = await reader(filePath, logger);
         }
     } catch (_) {
         // If there was an error reading the file, log a warning
@@ -76,9 +86,13 @@ export async function readOptions<T>(
 /**
  * Asynchronously reads and parses a JSON file.
  * @param {string} filePath - The path to the JSON file.
+ * @param {Logger} logger - The logger instance to use for logging.
  * @returns {Promise<T | undefined>} A promise that resolves to the parsed JSON data, or undefined if the file is empty or cannot be read.
  */
-async function readJsonOptions<T>(filePath: string): Promise<T | undefined> {
+async function readJsonOptions<T>(
+    filePath: string,
+    logger?: Logger
+): Promise<T | undefined> {
     try {
         // Read the file content as a string
         const content = await fsPromises.readFile(filePath, 'utf-8');
@@ -87,6 +101,7 @@ async function readJsonOptions<T>(filePath: string): Promise<T | undefined> {
         return JSON.parse(content) as T;
     } catch (_) {
         // If there was an error reading the file or parsing the JSON, return undefined
+        logger?.warn('Failed to read JSON configuration file: %s', filePath);
         return undefined;
     }
 }
@@ -94,9 +109,13 @@ async function readJsonOptions<T>(filePath: string): Promise<T | undefined> {
 /**
  * Asynchronously reads and parses a JavaScript file.
  * @param {string} filePath - The path to the JavaScript file.
+ * @param {Logger} logger - The logger instance to use for logging.
  * @returns {T | undefined} The parsed JavaScript module, or undefined if the file cannot be read or parsed.
  */
-async function readJSOptions<T>(filePath: string): Promise<T | undefined> {
+async function readJSOptions<T>(
+    filePath: string,
+    logger?: Logger
+): Promise<T | undefined> {
     // Read and parse the JavaScript file
     try {
         // Use Node.js's `require` function to load the module
@@ -106,6 +125,7 @@ async function readJSOptions<T>(filePath: string): Promise<T | undefined> {
         return module as T;
     } catch (_) {
         // If there was an error reading or parsing the file, return undefined
+        logger?.warn('Failed to read JS configuration file: %s', filePath);
         return undefined;
     }
 }
