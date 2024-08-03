@@ -31,6 +31,13 @@ describe('Unit Tests - readOptions', () => {
 
         testConfigure(config);
     });
+    it('configure is described in node js standard file generated with generator.', async () => {
+        const config = await readOptions<PrinterOptions>(
+            __dirname + '/__data__/config2.js'
+        );
+
+        testConfigure(config);
+    });
     it('configure is described in common js file', async () => {
         const config = await readOptions<PrinterOptions>(
             __dirname + '/__data__/config.cjs'

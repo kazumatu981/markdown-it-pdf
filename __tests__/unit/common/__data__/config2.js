@@ -1,0 +1,66 @@
+module.exports = {
+    // --------------------------------------------
+    // Category: server
+    // The options to configure the server.
+    // --------------------------------------------
+    /**
+     * The port to listen on
+     */
+    port: 3000,
+    /**
+     * The number of times to retry if the port is in use.
+     */
+    // retry: 10,
+    /**
+     * The range of ports to search for.
+     */
+    // range: {
+    //     min: 49152,
+    //     max: 65535
+    // },
+
+    // --------------------------------------------
+    // Category: render
+    // The options to configure the Markdown renderer.
+    // --------------------------------------------
+    /**
+     * The external urls for styles
+     */
+    // externalUrls: [
+    //     https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/github.min.css,
+    // ],
+    /**
+     * The template html file path
+     */
+    // templatePath: "./template.html",
+    /**
+     * The highlight.js config. if false, no highlight.js will be used.
+     */
+    hljs: {
+        js: "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js",
+        css: "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/github.min.css"
+    },
+    /**
+     * Whether to recursively search for files.
+     */
+    recursive: true,
+
+    // --------------------------------------------
+    // Category: printer
+    // The options to configure the PDF printer.
+    // --------------------------------------------
+    /**
+     * The paper size of the PDF.
+     */
+    format: "A4",
+    /**
+     * The margin of the PDF.
+     */
+    margin: {
+        top: "12.7mm",
+        bottom: "12.7mm",
+        left: "12.7mm",
+        right: "12.7mm"
+    }
+
+}
