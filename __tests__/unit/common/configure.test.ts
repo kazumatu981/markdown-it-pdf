@@ -77,6 +77,19 @@ describe('Unit Tests - readOptions', () => {
         );
         expect(mockLogger.warn).toBeCalled();
     });
+    it('collapse configure json file (on error)', async () => {
+        const config = await readOptions<PrinterOptions>(
+            __dirname + '/__data__/collapse_config.json'
+        );
+        expect(config).toBeUndefined();
+    });
+    it('collapse configure json file (on error) - with logger', async () => {
+        const config = await readOptions<PrinterOptions>(
+            __dirname + '/__data__/collapse_config.json',
+            mockLogger
+        );
+        expect(mockLogger.warn).toBeCalled();
+    });
     it('filePath not exists', async () => {
         const config = await readOptions<PrinterOptions>(
             __dirname + '/__data__/config1.json'
