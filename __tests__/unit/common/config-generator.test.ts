@@ -1,33 +1,45 @@
 import { jest, describe, it, expect, afterEach } from '@jest/globals';
 const mockFs = require('mock-fs');
+import crypto from 'crypto';
+import * as fsPromises from 'fs/promises';
 
 import { ConfigGenerator } from '../../../src/core/config/config-generator';
 import { DefaultConfigDefines } from '../../../src/core/config/default-config-defines';
 import { readOptions } from '../../../src/core/config/configure';
 import { type PrinterOptions } from '../../../src/markdown-it-pdf-interfaces';
+import { ConsoleLogger } from '../../../src/core/log/logger';
 
 describe('Unit Tests - ConfigGenerator', () => {
+    const logger = new ConsoleLogger();
     describe('generate()', () => {
         afterEach(() => {
             mockFs.restore();
         });
         it('config js file', async () => {
-            mockFs({});
-            const configGenerator = new ConfigGenerator(DefaultConfigDefines);
-            await configGenerator.generate('/config.js');
+            const extName = '.js';
+            const testFile = `${__dirname}/__data__/${crypto.randomUUID()}_config${extName}`;
 
-            const options = await readOptions<PrinterOptions>('/config.js');
+            const configGenerator = new ConfigGenerator(DefaultConfigDefines);
+            await configGenerator.generate(testFile);
+
+            const options = await readOptions<PrinterOptions>(testFile, logger);
             expect(options).not.toBeUndefined();
             expect(options?.port).toEqual(3000);
+
+            await fsPromises.rm(testFile);
         });
         it('config json file', async () => {
-            mockFs({});
-            const configGenerator = new ConfigGenerator(DefaultConfigDefines);
-            await configGenerator.generate('/config.json');
+            const extName = '.json';
+            const testFile = `${__dirname}/__data__/${crypto.randomUUID()}_config${extName}`;
 
-            const options = await readOptions<PrinterOptions>('/config.json');
+            const configGenerator = new ConfigGenerator(DefaultConfigDefines);
+            await configGenerator.generate(testFile);
+
+            const options = await readOptions<PrinterOptions>(testFile, logger);
             expect(options).not.toBeUndefined();
             expect(options?.port).toEqual(3000);
+
+            await fsPromises.rm(testFile);
         });
     });
 
