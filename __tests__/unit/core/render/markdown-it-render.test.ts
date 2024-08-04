@@ -9,16 +9,26 @@ import { PathLike } from 'fs';
 const MarkdownItSup = require('markdown-it-sup');
 
 jest.mock('fs/promises');
+const testTemplateMark = '<!-- markdown-it-render-test-template -->';
 const templateContents = `
 <html>
+    ${testTemplateMark}
     <head>
-        {{#{styles}}}
+        {{#hljs}}
+        <script src="{{js}}"></script>
+        <link rel="stylesheet" type="text/css" href="{{css}}" />
+        {{/hljs}}
+        {{#styles}}
         <link rel="stylesheet" type="text/css" href="{{.}}" />
         {{/styles}}
     </head>
     <body>
+        {{#hljs}}
+        <script>hljs.highlightAll();</script>
+        {{/hljs}}
         {{{body}}}
     </body>
+</html>
 `;
 
 // TODO Add test about Hljs configure.
@@ -70,22 +80,93 @@ describe('CoreLibrary Unit Tests - MarkdownItRender', () => {
         expect(mockLogger.debug).toMatchSnapshot();
     });
 
-    it('readTemplateFromFile', async () => {
-        const markdownItRender = new MarkdownItRender();
-        (
-            fsAsync.readFile as jest.MockedFunction<typeof fsAsync.readFile>
-        ).mockImplementation(((filePath: any, options: any) => {
-            if (filePath === './template.html') {
-                return Promise.resolve(templateContents);
-            } else if (filePath === './test.md') {
-                return Promise.resolve('# test\n\nhello world');
-            }
-        }) as any);
+    // add tests for template and hljs;
+    describe('Template', () => {
+        function mockReadFile(): jest.MockedFunction<typeof fsAsync.readFile> {
+            return (
+                fsAsync.readFile as jest.MockedFunction<typeof fsAsync.readFile>
+            ).mockImplementation(((filePath: any, options: any) => {
+                if (filePath === './template.html') {
+                    return Promise.resolve(templateContents);
+                } else if (filePath === './test.md') {
+                    return Promise.resolve('# test\n\nhello world');
+                }
+            }) as any);
+        }
+        it('configureTemplate() returns this', async () => {
+            const readFileMock = mockReadFile();
+            const markdownItRender = new MarkdownItRender();
 
-        const result = await markdownItRender.configureTemplate({
-            templatePath: './template.html',
+            const result = await markdownItRender.configureTemplate({
+                templatePath: './template.html',
+            });
+
+            expect(result).toEqual(markdownItRender);
+
+            readFileMock.mockRestore();
         });
+        it('if templatePath is provided, configureTemplate() loads template from file', async () => {
+            const readFileMock = mockReadFile();
+            const markdownItRender = new MarkdownItRender();
+            await markdownItRender.configureTemplate({
+                templatePath: './template.html',
+            });
 
-        expect(result['templateSource']).toMatchSnapshot();
+            expect(readFileMock).toHaveBeenCalledWith(
+                './template.html',
+                expect.any(Object)
+            );
+
+            readFileMock.mockRestore();
+        });
+        it('if templatePath is not provided, configureTemplate() loads template from file', async () => {
+            const readFileMock = mockReadFile();
+            const markdownItRender = new MarkdownItRender();
+            await markdownItRender.configureTemplate({});
+
+            expect(readFileMock).not.toHaveBeenCalled();
+            readFileMock.mockRestore();
+        });
+        it('if templatePath is provided, it must be used to render', async () => {
+            const readFileMock = mockReadFile();
+            const markdownItRender = new MarkdownItRender();
+            await markdownItRender.configureTemplate({
+                templatePath: './template.html',
+            });
+
+            const rendered = markdownItRender.render('# test\n\nhello world');
+            expect(rendered.includes(testTemplateMark)).toBeTruthy();
+            readFileMock.mockRestore();
+        });
+        it('if hljs is false, it must not include hljs', async () => {
+            const readFileMock = mockReadFile();
+            const markdownItRender = new MarkdownItRender();
+            await markdownItRender.configureTemplate({
+                templatePath: './template.html',
+                hljs: false,
+            });
+            const rendered = markdownItRender.render('# test\n\nhello world');
+            expect(
+                rendered.includes('<script>hljs.highlightAll();</script>')
+            ).toBeFalsy();
+            readFileMock.mockRestore();
+        });
+        it('if hljs is provided, it must include hljs', async () => {
+            const testJsUrl = 'https://hoo.bar/test.js';
+            const testCssUrl = 'https://hoo.bar/test.css';
+            const readFileMock = mockReadFile();
+            const markdownItRender = new MarkdownItRender();
+            await markdownItRender.configureTemplate({
+                templatePath: './template.html',
+                hljs: {
+                    js: testJsUrl,
+                    css: testCssUrl,
+                },
+            });
+            const rendered = markdownItRender.render('# test\n\nhello world');
+            expect(rendered.includes(testJsUrl)).toBeTruthy();
+            expect(rendered.includes(testCssUrl)).toBeTruthy();
+            readFileMock.mockRestore();
+        });
     });
 });

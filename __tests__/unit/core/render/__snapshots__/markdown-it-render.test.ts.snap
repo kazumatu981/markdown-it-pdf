@@ -138,17 +138,3 @@ exports[`CoreLibrary Unit Tests - MarkdownItRender Render Test: with logger 1`] 
   ],
 }
 `;
-
-exports[`CoreLibrary Unit Tests - MarkdownItRender readTemplateFromFile 1`] = `
-"
-<html>
-    <head>
-        {{#{styles}}}
-        <link rel="stylesheet" type="text/css" href="{{.}}" />
-        {{/styles}}
-    </head>
-    <body>
-        {{{body}}}
-    </body>
-"
-`;

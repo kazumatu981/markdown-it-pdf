@@ -96,6 +96,14 @@ describe('Unit Tests - readOptions', () => {
         );
         expect(config).toBeUndefined();
     });
+    it('filePath not exists with logger', async () => {
+        const config = await readOptions<PrinterOptions>(
+            __dirname + '/__data__/config1.json',
+            mockLogger
+        );
+        expect(config).toBeUndefined();
+        expect(mockLogger.warn).toBeCalled();
+    });
     it('filePath as undefined', async () => {
         const config = await readOptions<PrinterOptions>();
         expect(config).toBeUndefined();
